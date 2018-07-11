@@ -65,11 +65,16 @@ This file currently mostly contains the concept/idea/flows behind this project.
     * `salt` - Trigger salt on the salt-master(s)
     * `status` - Show status of a cluster
     * `delete` - Delete a cluster (undeploy salt-master(s))
+* `completion`
+    * `bash` - Output BASH completion
+    * `zsh` - Output ZSH completion
+* `config` - Config management command
+    * `create`
 * `nodes` - Nodes management command
     * `add` - Add a node to a cluster
     * `delete` - Remove a node to a cluster
     * `info` - Show info about a node in the cluster it is in
-    * `getlist` - getlist command
+    * `genlist` - genlist command
         * `terraform` - "Translate" Terraform outputs to a YAML node list for GLUE
-        * Other providers too in the future
+        * Other "inputs" will be available too in the future for "auto generation" of node lists.
 * `help` - Show help menu.

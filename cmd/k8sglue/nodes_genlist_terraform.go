@@ -22,8 +22,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// clusterGetListTerraform represents the terraform command
-var clusterGetListTerraform = &cobra.Command{
+// clusterGenListTerraform represents the terraform command
+var clusterGenListTerraform = &cobra.Command{
 	Use:   "terraform",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
@@ -38,15 +38,15 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	nodesGetlistCmd.AddCommand(clusterGetListTerraform)
+	nodesGetlistCmd.AddCommand(clusterGenListTerraform)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// clusterGetListTerraform.PersistentFlags().String("foo", "", "A help for foo")
+	// clusterGenListTerraform.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// clusterGetListTerraform.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// clusterGenListTerraform.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

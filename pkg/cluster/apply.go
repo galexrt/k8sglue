@@ -14,8 +14,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package doer
 
-func main() {
-	Execute()
+import (
+	"fmt"
+
+	"github.com/galexrt/k8sglue/pkg/terraform"
+)
+
+func (c *Cluster) Apply() error {
+	defer func() {
+		logger.Info("Apply() defer called")
+	}()
+	logger.Info("Apply() called")
+
+	if c.Cluster.Machines.Terraform.Enabled {
+		if err := terraform.ApplyFull(); err != nil {
+			return err
+		}
+	}
+
+	// After Terraform has been run
+	nodes, err := c.GetNodeList()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("TEST: %+v\n", nodes)
+
+	return nil
 }

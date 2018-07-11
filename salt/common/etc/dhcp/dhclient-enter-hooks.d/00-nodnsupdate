@@ -1,0 +1,13 @@
+make_resolv_conf(){
+    rscf="$(mktemp "${TMPDIR:-/tmp}/XXXXXX")"
+    [[ -z "${rscf}" ]] && return
+    cat << EOF > "${rscf}"
+nameserver 1.1.1.1
+nameserver 8.8.8.8
+nameserver 1.0.0.1
+nameserver 8.4.4.8
+EOF
+
+    change_resolv_conf "${rscf}"
+    rm -f "${rscf}"
+}

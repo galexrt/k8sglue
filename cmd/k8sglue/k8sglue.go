@@ -20,10 +20,13 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/coreos/pkg/capnslog"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
+
+var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/cmd/k8sglue", "root")
 
 var cfgFile string
 
@@ -37,16 +40,17 @@ examples and usage of using your application. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
+}
+
+func main() {
+	Execute()
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		logger.Fatal(err)
 		os.Exit(1)
 	}
 }

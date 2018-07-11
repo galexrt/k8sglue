@@ -14,20 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package models
 
-import (
-	"github.com/spf13/cobra"
-)
-
-// clusterCmd represents the cluster command
-var clusterCmd = &cobra.Command{
-	Use:   "cluster",
-	Short: "A brief description of your command",
-	Long:  ``,
-}
-
-func init() {
-	rootCmd.AddCommand(clusterCmd)
-	clusterCmd.PersistentFlags().String("cluster", "", "Cluster config file")
+// Kubeadm contains kubeadm configurations which will be used for the cluster.
+type Kubeadm struct {
 }

@@ -14,20 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package doer
 
-import (
-	"github.com/spf13/cobra"
-)
+import "github.com/galexrt/k8sglue/pkg/terraform"
 
-// clusterCmd represents the cluster command
-var clusterCmd = &cobra.Command{
-	Use:   "cluster",
-	Short: "A brief description of your command",
-	Long:  ``,
-}
+func (c *Cluster) Destroy() error {
+	defer func() {
+		logger.Info("Destroy() defer called")
+	}()
+	logger.Info("Destroy() called")
 
-func init() {
-	rootCmd.AddCommand(clusterCmd)
-	clusterCmd.PersistentFlags().String("cluster", "", "Cluster config file")
+	if c.Cluster.Machines.Terraform.Enabled {
+		if err := terraform.DestroyFull(); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

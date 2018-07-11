@@ -14,20 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/*
+
+k8sglue main package contains all available commands with their subcommands.
+
+*/
 package main
-
-import (
-	"github.com/spf13/cobra"
-)
-
-// clusterCmd represents the cluster command
-var clusterCmd = &cobra.Command{
-	Use:   "cluster",
-	Short: "A brief description of your command",
-	Long:  ``,
-}
-
-func init() {
-	rootCmd.AddCommand(clusterCmd)
-	clusterCmd.PersistentFlags().String("cluster", "", "Cluster config file")
-}

@@ -1,0 +1,1 @@
+# TODO Define kubeadm k8sglue settings file, which is used on every node (Kubernetes master and worker)

@@ -22,31 +22,31 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// nodesGetlistCmd represents the getlist command
-var nodesGetlistCmd = &cobra.Command{
-	Use:   "getlist",
+// clusterSaltApplyCmd represents the salt command
+var clusterSaltApplyCmd = &cobra.Command{
+	Use:   "apply",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
 Cobra is a CLI library for Go that empowers applications.
-This application is a tool to getlist the needed files
+This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("getlist called")
+		fmt.Println("salt called")
 	},
 }
 
 func init() {
-	nodesCmd.AddCommand(nodesGetlistCmd)
+	clusterCmd.AddCommand(clusterSaltApplyCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// nodesGetlistCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// clusterSaltApplyCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// nodesGetlistCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// clusterSaltApplyCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

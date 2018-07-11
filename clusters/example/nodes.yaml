@@ -1,0 +1,14 @@
+machines:
+- hostname: test-node1
+  addresses:
+    ipv4:
+    - 2.2.2.2
+    ipv6:
+    - 2003:cf:a3c8:7300:8968:b614:88dc:2fd2/64
+  roles:
+    etcd: true
+    kubernetes:
+      master: true
+      worker: true
+    salt:
+      master: true
