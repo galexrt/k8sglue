@@ -39,7 +39,4 @@ to quickly create a Cobra application.`,
 
 func init() {
 	clusterCmd.AddCommand(clusterStatusCmd)
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// clusterStatusCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
