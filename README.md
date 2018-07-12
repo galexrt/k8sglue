@@ -20,7 +20,7 @@ This file currently mostly contains the concept/idea/flows behind this project.
 1. GLUE builds list of machines, get machines with `roles.salt.master: true` for the next step.
 1. GLUE checks if salt-master node(s) already have a certificate, if so download.
     1. GLUE creates or renews salt-master(s) certificates.
-1. GLUE uses `salt-ssh` to trigger the `salt-master` and `kubernetes-master` state on each Kubernetes-master and salt-master node(s).
+1. GLUE uses `salt-ssh` to trigger the `salt-master` state on each Kubernetes-master and salt-master node(s).
     1. For the begining it should be enough to have the salt-master(s) run on the same node as the Kubernetes masters.
     1. Create a file roster with `minion_opts` for `salt-ssh`, so that the roles grain can be used and set in the `salt-minion` config.
     1. Copy `salt` directory to `salt-master` node(s) `/srv/salt`.
