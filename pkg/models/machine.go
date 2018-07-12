@@ -42,23 +42,67 @@ type Addresses struct {
 // Roles contains the roles a machine/host/node can have.
 type Roles struct {
 	// ETCD role
-	ETCD bool `yaml:"etcd"`
+	ETCD *bool `yaml:"etcd"`
 	// Kubernetes roles
-	Kubernetes RolesKubernetes `yaml:"kubernetes"`
+	Kubernetes *RolesKubernetes `yaml:"kubernetes"`
 	// Salt roles
-	Salt RolesSalt `yaml:"salt"`
+	Salt *RolesSalt `yaml:"salt"`
 }
 
 // RolesKubernetes contains the Kubernetes roles a machine/host/node can have.
 type RolesKubernetes struct {
 	// Kubernetes Master role
-	Master bool `yaml:"master"`
+	Master *bool `yaml:"master"`
 	// Kubernetes Worker role
-	Worker bool `yaml:"worker"`
+	Worker *bool `yaml:"worker"`
 }
 
 // RolesSalt contains the Salt roles a machine/host/node can have.
 type RolesSalt struct {
 	// Salt Master role
-	Master bool `yaml:"master"`
+	Master *bool `yaml:"master"`
+}
+
+// GetMachineByHostname get a machine by hostname
+func (ml *MachineList) GetMachineByHostname(hostname string) *Machine {
+	for _, machine := range ml.Machines {
+		if machine.Hostname == hostname {
+			return &machine
+		}
+	}
+	return nil
+}
+
+// GetMachinesByRole get a machine by matching roles
+func (ml *MachineList) GetMachinesByRole(roles Roles) []Machine {
+	var machines []Machine
+	for _, machine := range ml.Machines {
+		if roles.ETCD != nil {
+			if machine.Roles.ETCD != nil &&
+				*machine.Roles.ETCD == *roles.ETCD {
+				machines = append(machines, machine)
+			}
+		}
+		if roles.Kubernetes != nil &&
+			machine.Roles.Kubernetes != nil {
+			if roles.Kubernetes.Master != nil &&
+				machine.Roles.Kubernetes.Master != nil &&
+				*machine.Roles.Kubernetes.Master == *roles.Kubernetes.Master {
+				machines = append(machines, machine)
+			}
+			if roles.Kubernetes.Worker != nil &&
+				machine.Roles.Kubernetes.Worker != nil &&
+				*machine.Roles.Kubernetes.Worker == *roles.Kubernetes.Worker {
+				machines = append(machines, machine)
+			}
+		}
+		if roles.Salt != nil && machine.Roles.Salt != nil {
+			if roles.Salt.Master != nil &&
+				machine.Roles.Salt.Master != nil &&
+				*machine.Roles.Salt.Master == *roles.Salt.Master {
+				machines = append(machines, machine)
+			}
+		}
+	}
+	return machines
 }

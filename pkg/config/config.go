@@ -19,6 +19,7 @@ package config
 import (
 	"io/ioutil"
 	"path"
+	"path/filepath"
 
 	"github.com/galexrt/k8sglue/pkg/models"
 	yaml "gopkg.in/yaml.v2"
@@ -29,8 +30,8 @@ const (
 	ClusterConfigName = "cluster.yaml"
 	// KubeadmConfigName kubeadm config name
 	KubeadmConfigName = "kubeadm.yaml"
-	// MachinesConfigName machines list config name
-	MachinesConfigName = "machines.yaml"
+	// MachinesConfigName machines list config directory
+	MachinesConfigName = "machines"
 )
 
 // Config holds all the configs about a cluster
@@ -54,7 +55,7 @@ func Load(configPath, tempDir string) error {
 	if err != nil {
 		return err
 	}
-	machineList, err := LoadMachineList(configPath)
+	machineList, err := LoadMachineLists(configPath)
 	if err != nil {
 		return err
 	}
@@ -93,17 +94,39 @@ func LoadKubeadm(configPath string) (*models.Kubeadm, error) {
 	return kubeadm, nil
 }
 
-// LoadMachineList load a machine list config
+// LoadMachineLists load all machine lists in the MachinesConfigName directory
+func LoadMachineLists(configPath string) (*models.MachineList, error) {
+	machines := []models.Machine{}
+	mlFiles, err := filepath.Glob(path.Join(configPath, MachinesConfigName, "*.yaml"))
+	if err != nil {
+		return nil, err
+	}
+	for _, mlPath := range mlFiles {
+		var ml *models.MachineList
+		ml, err = loadMachineListConfig(mlPath)
+		if err != nil {
+			return nil, err
+		}
+		machines = append(machines, ml.Machines...)
+	}
+	return &models.MachineList{
+		Machines: machines,
+	}, nil
+}
+
+// LoadMachineList load a single machine list config
 func LoadMachineList(configPath string) (*models.MachineList, error) {
-	out, err := loadYAML(path.Join(configPath, MachinesConfigName))
+	return loadMachineListConfig(path.Join(configPath, MachinesConfigName))
+}
+
+func loadMachineListConfig(filePath string) (*models.MachineList, error) {
+	out, err := loadYAML(filePath)
 	if err != nil {
 		return nil, err
 	}
 	machineList := &models.MachineList{}
-	if err := yaml.Unmarshal(out, machineList); err != nil {
-		return nil, err
-	}
-	return machineList, nil
+	err = yaml.Unmarshal(out, machineList)
+	return machineList, err
 }
 
 func loadYAML(configPath string) ([]byte, error) {
