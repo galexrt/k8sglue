@@ -1,3 +1,4 @@
+---
 machines:
 - hostname: test-node1
   addresses:

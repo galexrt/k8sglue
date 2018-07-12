@@ -14,10 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package models
+package kubeadm
 
-// Cluster holds special cluster information.
-type Cluster struct {
-	GlobalParameters    map[string]interface{} `yaml:"globalParameters"`
-	NodeParametersMerge bool                   `yaml:"nodeParametersMerge"`
+import (
+	"fmt"
+
+	"github.com/galexrt/k8sglue/pkg/rand"
+)
+
+// GenerateToken generates a kubeadm join token
+func GenerateToken(n int) (string, error) {
+	first, err := rand.GenerateString(6)
+	if err != nil {
+		return "", err
+	}
+	second, err := rand.GenerateString(16)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%s.%s", first, second), nil
 }

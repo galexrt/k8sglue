@@ -30,7 +30,9 @@ This file currently mostly contains the concept/idea/flows behind this project.
 
 ### Adding a node(s) to a Cluster
 
-1. GLUE generate kubeadm join token (+ certificate if needed).
+1. GLUE generate kubeadm join token (+ certificate).
+    1. Either the `kubeadm init` output is used or the certificate is generated locally and then copied to all Kubernetes masters (`openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'`).
+        * See https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-init/#custom-certificates.
 1. GLUE uses `salt-ssh` on all machines to apply `salt-minion` state which configures the `salt-minion`.
     1. Use `salt-ssh` roster `minion_opts` to set the roles grain.
     * Results in: all machines having their roles set as a static minion grain and are connecting to one of the salt-master(s).
@@ -41,7 +43,7 @@ This file currently mostly contains the concept/idea/flows behind this project.
 
 1. GLUE Run salt `ping` on all machines to verify they are reachable.
 1. GLUE Salt high state is triggered or all new machines, which configures all new machines with current state.
-    1. Saltstack magic happens, so that kubeadm and other magic is installed on the servers as needed given by their role grain(s).
+    1. Satl magic happens, so that kubeadm and other magic is installed on the servers as needed given by their role grain(s).
 
 1. Salt high state is triggered in an interval of 30 minutes to ensure everything is setup as wanted.
 

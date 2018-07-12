@@ -1,0 +1,6 @@
+---
+globalParameters:
+# roles:
+#    loadbalancer: true
+## If node specific parameters should be merged with `globalParameters`, default is `false`.
+nodeParametersMerge: false
