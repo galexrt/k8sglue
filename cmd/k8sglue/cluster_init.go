@@ -34,18 +34,17 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("init called")
+
+		// TODO Get list of `roles.salt.master: true`
+		// TODO Get salt-master(s) certificate if it exists
+		// TODO Generate salt-master(s) certificate
+		// TODO scp the salt-master certificate to the salt-master(s)
+		// TODO scp the `salt/` directory to the salt-master(s)
 	},
 }
 
 func init() {
 	clusterCmd.AddCommand(clusterInitCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// clusterInitCmd.PersistentFlags().String("foo", "", "A help for foo")
-
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// clusterInitCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")

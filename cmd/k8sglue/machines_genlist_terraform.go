@@ -38,7 +38,7 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	nodesGetlistCmd.AddCommand(clusterGenListTerraform)
+	machinesGetlistCmd.AddCommand(clusterGenListTerraform)
 
 	// Here you will define your flags and configuration settings.
 

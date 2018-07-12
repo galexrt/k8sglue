@@ -20,8 +20,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// zshCmd represents the zsh command
-var zshCmd = &cobra.Command{
+// completionZshCmd represents the zsh command
+var completionZshCmd = &cobra.Command{
 	Use:   "zsh",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
@@ -36,5 +36,5 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	completionCmd.AddCommand(zshCmd)
+	completionCmd.AddCommand(completionZshCmd)
 }

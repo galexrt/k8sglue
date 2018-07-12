@@ -3,6 +3,11 @@ install salt-master package:
     - name: salt-master
     - refresh: True
 
+install salt-ssh package:
+  pkg.latest:
+    - name: salt-ssh
+    - refresh: True
+
 # TODO use replace to simply change `master` and `ssl` config in master config file
 # no matter what OS and/or changes happen to this file
 configure salt-master:

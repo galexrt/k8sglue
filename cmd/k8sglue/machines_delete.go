@@ -22,8 +22,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// nodesDeleteCmd represents the delete command
-var nodesDeleteCmd = &cobra.Command{
+// machinesDeleteCmd represents the delete command
+var machinesDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
@@ -38,15 +38,15 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	nodesCmd.AddCommand(nodesDeleteCmd)
+	machinesCmd.AddCommand(machinesDeleteCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// nodesDeleteCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// machinesDeleteCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// nodesDeleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// machinesDeleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

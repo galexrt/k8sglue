@@ -20,8 +20,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// bashCmd represents the bash command
-var bashCmd = &cobra.Command{
+// completionBashCmd represents the bash command
+var completionBashCmd = &cobra.Command{
 	Use:   "bash",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
@@ -36,5 +36,5 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	completionCmd.AddCommand(bashCmd)
+	completionCmd.AddCommand(completionBashCmd)
 }

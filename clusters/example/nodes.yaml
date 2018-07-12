@@ -12,3 +12,9 @@ machines:
       worker: true
     salt:
       master: true
+  parameters:
+    # TODO Define if firewall parameter in Salt is either plain iptable rules, iptables-save or a list of accepted and rejected ports.
+    firewall: |
+        iptables -A INPUT
+    roles:
+      loadbalancer: true
