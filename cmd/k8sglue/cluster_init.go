@@ -18,9 +18,7 @@ package main
 
 import (
 	"fmt"
-	"time"
 
-	"github.com/galexrt/k8sglue/pkg/cert"
 	"github.com/spf13/cobra"
 )
 
@@ -34,22 +32,25 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("init called")
 
-		cert.Generate([]string{}, "", 1+time.Second, false, 100, "1")
+		// TODO Check if salt-master(s) already have certs
+		/*
+			saltCert, saltKey, err := cert.Generate([]string{"127.0.0.1"}, "", 24*time.Hour, false, 4096, "P521")
+			if err != nil {
+				return err
+			}*/
 
 		// TODO Get list of roles.salt.master: true`
-		// TODO Get salt-master(s) certificate if it exists
 		// TODO Generate salt-master(s) certificate
 		// TODO scp the salt-master certificate to the salt-master(s)
 		// TODO scp the `salt/` directory to the salt-master(s)
+
+		return nil
 	},
 }
 
 func init() {
 	clusterCmd.AddCommand(clusterInitCmd)
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// clusterInitCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

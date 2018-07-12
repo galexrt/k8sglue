@@ -18,7 +18,6 @@ limitations under the License.
 package cert
 
 import (
-	"bufio"
 	"bytes"
 	"crypto/ecdsa"
 	"crypto/elliptic"
@@ -72,6 +71,8 @@ func Generate(hosts []string, validFrom string, validFor time.Duration, isCA boo
 	var err error
 	switch ecdsaCurve {
 	case "":
+		fallthrough
+	case "RSA":
 		priv, err = rsa.GenerateKey(rand.Reader, rsaBits)
 	case "P224":
 		priv, err = ecdsa.GenerateKey(elliptic.P224(), rand.Reader)
@@ -138,17 +139,15 @@ func Generate(hosts []string, validFrom string, validFor time.Duration, isCA boo
 	}
 
 	var certOut bytes.Buffer
-	certWriter := bufio.NewWriter(&certOut)
-	if err = pem.Encode(certWriter, &pem.Block{Type: "CERTIFICATE", Bytes: derBytes}); err != nil {
+	if err = pem.Encode(&certOut, &pem.Block{Type: "CERTIFICATE", Bytes: derBytes}); err != nil {
 		return "", "", fmt.Errorf("failed to pem encode certificate: %s", err)
 	}
-	var keyOut bytes.Buffer
-	keyWriter := bufio.NewWriter(&keyOut)
 	keyPEMBlock, err := pemBlockForKey(priv)
 	if err != nil {
 		return "", "", fmt.Errorf("failed to pem block key: %s", err)
 	}
-	if err = pem.Encode(keyWriter, keyPEMBlock); err != nil {
+	var keyOut bytes.Buffer
+	if err = pem.Encode(&keyOut, keyPEMBlock); err != nil {
 		return "", "", fmt.Errorf("failed to pem encode key: %s", err)
 	}
 
