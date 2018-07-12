@@ -18,7 +18,9 @@ package main
 
 import (
 	"fmt"
+	"time"
 
+	"github.com/galexrt/k8sglue/pkg/cert"
 	"github.com/spf13/cobra"
 )
 
@@ -35,7 +37,9 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("init called")
 
-		// TODO Get list of `roles.salt.master: true`
+		cert.Generate([]string{}, "", 1+time.Second, false, 100, "1")
+
+		// TODO Get list of roles.salt.master: true`
 		// TODO Get salt-master(s) certificate if it exists
 		// TODO Generate salt-master(s) certificate
 		// TODO scp the salt-master certificate to the salt-master(s)

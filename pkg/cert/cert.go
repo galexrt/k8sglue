@@ -60,14 +60,14 @@ func pemBlockForKey(priv interface{}) (*pem.Block, error) {
 	}
 }
 
-// GenerateCert generates a PEM encoded certificate and key for the given hosts
+// Generate generates a PEM encoded certificate and key for the given hosts
 // hosts      - Hostnames and IPs to generate a certificate for
 // validFrom  - Creation date formatted as Jan 1 15:04:05 2011
 // validFor   - Duration that certificate is valid for
 // isCA       - whether this cert should be its own Certificate Authority
 // rsaBits    - Size of RSA key to generate. Ignored if --ecdsa-curve is set
 // ecdsaCurve - ECDSA curve to use to generate a key. Valid values are P224, P256 (recommended), P384, P521
-func GenerateCert(hosts []string, validFrom string, validFor time.Duration, isCA bool, rsaBits int, ecdsaCurve string) (string, string, error) {
+func Generate(hosts []string, validFrom string, validFor time.Duration, isCA bool, rsaBits int, ecdsaCurve string) (string, string, error) {
 	var priv interface{}
 	var err error
 	switch ecdsaCurve {
