@@ -16,6 +16,11 @@ limitations under the License.
 
 package models
 
+import (
+	"github.com/imdario/mergo"
+	"golang.org/x/crypto/ssh"
+)
+
 // MachineList a list of Machines.
 type MachineList struct {
 	// Machines list
@@ -24,7 +29,9 @@ type MachineList struct {
 
 // Machine holds information about a machine/host/node.
 type Machine struct {
-	Hostname string `yaml:"hostname"`
+	Hostname  string            `yaml:"hostname"`
+	SSHConfig *ssh.ClientConfig `yaml:"sshConfig"`
+	SSHPort   uint16            `yaml:"sshPort"`
 	// (Unique) Server ID
 	ID        string    `yaml:"id"`
 	Addresses Addresses `yaml:"addresses"`
@@ -61,6 +68,17 @@ type RolesKubernetes struct {
 type RolesSalt struct {
 	// Salt Master role
 	Master *bool `yaml:"master"`
+}
+
+// MergeSSHConfig merges a given ssh.ClientConfig with the machine's SSHConfig ssh.ClientConfig
+func (m *Machine) MergeSSHConfig(global *ssh.ClientConfig) (*ssh.ClientConfig, error) {
+	if m.SSHConfig == nil {
+		m.SSHConfig = global
+	}
+	if err := mergo.Merge(m.SSHConfig, *global); err != nil {
+		return nil, err
+	}
+	return m.SSHConfig, nil
 }
 
 // GetMachineByHostname get a machine by hostname

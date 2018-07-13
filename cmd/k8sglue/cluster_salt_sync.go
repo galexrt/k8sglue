@@ -26,17 +26,13 @@ import (
 var clusterSaltSyncCmd = &cobra.Command{
 	Use:   "sync",
 	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("salt called")
+		return errCommandNotImplemented
 	},
 }
 
 func init() {
 	clusterCmd.AddCommand(clusterSaltSyncCmd)
+	clusterSaltSyncCmd.Flags().StringVar(&saltStatesDir, "salt-states", "./salt", "Path to the `salt/` directory which contains the salt states to be copied to each salt-master(s)")
 }

@@ -16,8 +16,15 @@ limitations under the License.
 
 package models
 
+import (
+	"golang.org/x/crypto/ssh"
+)
+
 // Cluster holds special cluster information.
 type Cluster struct {
 	GlobalParameters    map[string]interface{} `yaml:"globalParameters"`
 	NodeParametersMerge bool                   `yaml:"nodeParametersMerge"`
+	SSHConfig           *ssh.ClientConfig      `yaml:"sshConfig"`
+	SSHPort             uint16                 `yaml:"sshPort"`
+	SSHConfigMerge      bool                   `yaml:"sshConfigMerge"`
 }

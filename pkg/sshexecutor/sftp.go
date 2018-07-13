@@ -21,8 +21,6 @@ import (
 )
 
 // SFTP create new SFTP client using github.com/pkg/sftp package
-func (se *SSHExecutor) SFTP() error {
-	var err error
-	se.sftpClient, err = sftp.NewClient(se.client)
-	return err
+func (se *SSHExecutor) SFTP() (*sftp.Client, error) {
+	return sftp.NewClient(se.client)
 }

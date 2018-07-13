@@ -4,3 +4,7 @@ globalParameters:
 #    loadbalancer: true
 ## If node specific parameters should be merged with `globalParameters`, default is `false`.
 nodeParametersMerge: false
+sshConfig:
+  user: atrost
+sshPort: 22
+sshConfigMerge: false

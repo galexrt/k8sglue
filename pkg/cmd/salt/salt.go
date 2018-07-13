@@ -14,24 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package salt
 
 import (
-	"fmt"
-
-	"github.com/spf13/cobra"
+	"github.com/coreos/pkg/capnslog"
 )
 
-// clusterGenListTerraform represents the terraform command
-var clusterGenListTerraform = &cobra.Command{
-	Use:   "terraform",
-	Short: "A brief description of your command",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("terraform called")
-		return errCommandNotImplemented
-	},
-}
-
-func init() {
-	machinesGetlistCmd.AddCommand(clusterGenListTerraform)
-}
+var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/pkg/cmd/salt", "salt")

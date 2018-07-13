@@ -14,24 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package salt
 
 import (
-	"fmt"
+	"os"
+	"path"
 
-	"github.com/spf13/cobra"
+	"github.com/galexrt/k8sglue/pkg/config"
+	"github.com/galexrt/k8sglue/pkg/tar"
 )
 
-// clusterGenListTerraform represents the terraform command
-var clusterGenListTerraform = &cobra.Command{
-	Use:   "terraform",
-	Short: "A brief description of your command",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("terraform called")
-		return errCommandNotImplemented
-	},
-}
-
-func init() {
-	machinesGetlistCmd.AddCommand(clusterGenListTerraform)
+// Tar Create salt states directory
+func Tar() error {
+	saltTar, err := os.OpenFile(
+		path.Join(config.Cfg.TempDir, "salt.tar.gz"),
+		os.O_WRONLY|os.O_CREATE|os.O_TRUNC,
+		os.FileMode(0660),
+	)
+	if err != nil {
+		return err
+	}
+	defer saltTar.Close()
+	return tar.CreateTarGz("salt/", saltTar)
 }

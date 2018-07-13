@@ -66,7 +66,7 @@ func pemBlockForKey(priv interface{}) (*pem.Block, error) {
 // isCA       - whether this cert should be its own Certificate Authority
 // rsaBits    - Size of RSA key to generate. Ignored if --ecdsa-curve is set
 // ecdsaCurve - ECDSA curve to use to generate a key. Valid values are P224, P256 (recommended), P384, P521
-func Generate(hosts []string, validFrom string, validFor time.Duration, isCA bool, rsaBits int, ecdsaCurve string) (string, string, error) {
+func Generate(hosts []string, validFrom string, validFor time.Duration, isCA bool, rsaBits int, ecdsaCurve string) ([]byte, []byte, error) {
 	var priv interface{}
 	var err error
 	switch ecdsaCurve {
@@ -83,10 +83,10 @@ func Generate(hosts []string, validFrom string, validFor time.Duration, isCA boo
 	case "P521":
 		priv, err = ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
 	default:
-		return "", "", fmt.Errorf("unrecognized elliptic curve: %q", ecdsaCurve)
+		return nil, nil, fmt.Errorf("unrecognized elliptic curve: %q", ecdsaCurve)
 	}
 	if err != nil {
-		return "", "", fmt.Errorf("failed to generate private key: %s", err)
+		return nil, nil, fmt.Errorf("failed to generate private key: %s", err)
 	}
 
 	var notBefore time.Time
@@ -95,7 +95,7 @@ func Generate(hosts []string, validFrom string, validFor time.Duration, isCA boo
 	} else {
 		notBefore, err = time.Parse("Jan 2 15:04:05 2006", validFrom)
 		if err != nil {
-			return "", "", fmt.Errorf("failed to parse creation date: %s", err)
+			return nil, nil, fmt.Errorf("failed to parse creation date: %s", err)
 		}
 	}
 
@@ -135,21 +135,21 @@ func Generate(hosts []string, validFrom string, validFor time.Duration, isCA boo
 
 	derBytes, err := x509.CreateCertificate(rand.Reader, &template, &template, publicKey(priv), priv)
 	if err != nil {
-		return "", "", fmt.Errorf("failed to create certificate: %s", err)
+		return nil, nil, fmt.Errorf("failed to create certificate: %s", err)
 	}
 
 	var certOut bytes.Buffer
 	if err = pem.Encode(&certOut, &pem.Block{Type: "CERTIFICATE", Bytes: derBytes}); err != nil {
-		return "", "", fmt.Errorf("failed to pem encode certificate: %s", err)
+		return nil, nil, fmt.Errorf("failed to pem encode certificate: %s", err)
 	}
 	keyPEMBlock, err := pemBlockForKey(priv)
 	if err != nil {
-		return "", "", fmt.Errorf("failed to pem block key: %s", err)
+		return nil, nil, fmt.Errorf("failed to pem block key: %s", err)
 	}
 	var keyOut bytes.Buffer
 	if err = pem.Encode(&keyOut, keyPEMBlock); err != nil {
-		return "", "", fmt.Errorf("failed to pem encode key: %s", err)
+		return nil, nil, fmt.Errorf("failed to pem encode key: %s", err)
 	}
 
-	return certOut.String(), keyOut.String(), nil
+	return certOut.Bytes(), keyOut.Bytes(), nil
 }

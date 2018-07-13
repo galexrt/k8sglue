@@ -13,6 +13,9 @@ machines:
       worker: true
     salt:
       master: true
+  sshConfig:
+    user: root
+  sshPort: 22
   parameters:
     # TODO Define if firewall parameter in Salt is either plain iptable rules, iptables-save or a list of accepted and rejected ports.
     firewall: |

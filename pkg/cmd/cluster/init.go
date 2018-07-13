@@ -17,6 +17,10 @@ limitations under the License.
 package cluster
 
 import (
+	"fmt"
+
+	"github.com/galexrt/k8sglue/pkg/cmd/machines"
+	"github.com/galexrt/k8sglue/pkg/cmd/salt"
 	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/models"
 	"github.com/galexrt/k8sglue/pkg/util"
@@ -24,23 +28,37 @@ import (
 
 // Init calls all steps necessary to initate a cluster
 func Init() error {
-	masters := config.Cfg.MachineList.GetMachinesByRole(models.Roles{
+	masters := config.Cfg.Cluster.MachineList.GetMachinesByRole(models.Roles{
 		Salt: &models.RolesSalt{
 			Master: &util.True,
 		},
 	})
 	logger.Debugf("master machines found by `salt.master: true` role: %+v\n", masters)
+	if len(masters) == 0 {
+		return fmt.Errorf("no machines with `roles.salt.master: true` found")
+	}
 
-	// TODO Check if salt-master(s) certs, already exist locally
-	// TODO Generate salt-master(s) certificate
-	/*
-	   saltCert, saltKey, err := cert.Generate([]string{"127.0.0.1"}, "", 24*time.Hour, false, 4096, "P521")
-	   if err != nil {
-	       return err
-	   }
-	*/
+	// TODO Check if salt-master(s) certs, already exist remotely. If so, don't generate new ones.
+	var certPath, keyPath string
+	var err error
+	if certPath, keyPath, err = salt.Certs(machines.GetAddressesFromMachines(masters)); err != nil {
+		return err
+	}
 
-	// TODO scp the salt-master certificate to the salt-master(s)
+	// TODO Add functionality to salt.CertsCopy() which copies the certificates to the machines
+	if err = salt.CertsCopy(certPath, keyPath); err != nil {
+		return err
+	}
+
+	if err = salt.Tar(); err != nil {
+		return err
+	}
+
+	if err = salt.Sync(masters); err != nil {
+		return err
+	}
+
+	// TODO Run `salt apply salt-master`
 
 	return nil
 }

@@ -18,10 +18,13 @@ package config
 
 import (
 	"io/ioutil"
+	"os"
 	"path"
 	"path/filepath"
 
+	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/models"
+	"golang.org/x/crypto/ssh"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -34,18 +37,40 @@ const (
 	MachinesConfigName = "machines"
 )
 
-// Config holds all the configs about a cluster
+// Config holds all the configs and a cluster if loaded
 type Config struct {
-	TempDir     string
-	Cluster     *models.Cluster
-	Kubeadm     *models.Kubeadm
-	MachineList *models.MachineList
+	Cluster  *Cluster
+	LogLevel capnslog.LogLevel
+	TempDir  string
+}
+
+// Cluster configs related to a cluster
+type Cluster struct {
+	Cluster       *models.Cluster
+	Kubeadm       *models.Kubeadm
+	MachineList   *models.MachineList
+	SaltStatesDir string
 }
 
 // Cfg is a Config struct pointer to be able to access all configs from "anywhere"
 var Cfg *Config
 
-// Load load configs into Cfg variable
+// Init creates a new empty Config and "saves" it to Cfg
+func Init(appName string) error {
+	tempDir, err := ioutil.TempDir(os.TempDir(), appName)
+	if err != nil {
+		return nil
+	}
+
+	Cfg = &Config{
+		Cluster:  &Cluster{},
+		LogLevel: capnslog.INFO,
+		TempDir:  tempDir,
+	}
+	return nil
+}
+
+// Load load cluster configs into Cfg variable
 func Load(configPath, tempDir string) error {
 	cluster, err := LoadCluster(configPath)
 	if err != nil {
@@ -59,12 +84,14 @@ func Load(configPath, tempDir string) error {
 	if err != nil {
 		return err
 	}
-	Cfg = &Config{
-		Cluster:     cluster,
-		Kubeadm:     kubeadm,
-		MachineList: machineList,
-		TempDir:     tempDir,
+	Cfg.Cluster.Cluster = cluster
+	if Cfg.Cluster.Cluster.SSHConfig == nil {
+		sshConfig := &ssh.ClientConfig{}
+		Cfg.Cluster.Cluster.SSHConfig = sshConfig
 	}
+	Cfg.Cluster.Cluster.SSHConfig.SetDefaults()
+	Cfg.Cluster.Kubeadm = kubeadm
+	Cfg.Cluster.MachineList = machineList
 	return nil
 }
 

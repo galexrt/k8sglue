@@ -26,13 +26,7 @@ import (
 // clusterInitCmd represents the init command
 var clusterInitCmd = &cobra.Command{
 	Use:   "init",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Initiate a cluster by setting up the salt-master(s)",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("init called")
 		return cluster.Init()
@@ -41,4 +35,5 @@ to quickly create a Cobra application.`,
 
 func init() {
 	clusterCmd.AddCommand(clusterInitCmd)
+	clusterInitCmd.Flags().StringVar(&saltStatesDir, "salt-states", "./salt", "Path to the `salt/` directory which contains the salt states to be copied to each salt-master(s)")
 }

@@ -18,19 +18,19 @@ package sshexecutor
 
 import (
 	"github.com/coreos/pkg/capnslog"
-	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
 )
+
+const DefaultSSHPort = 22
 
 var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/pkg/ssh", "ssh")
 
 // SSHExecutor holds the info for one host connection
 type SSHExecutor struct {
-	Host       string
-	SSHConfig  *ssh.ClientConfig
-	client     *ssh.Client
-	session    *ssh.Session
-	sftpClient *sftp.Client
+	Host      string
+	SSHConfig *ssh.ClientConfig
+	client    *ssh.Client
+	session   *ssh.Session
 }
 
 // New creates a SSHExecutor struct, ready for use

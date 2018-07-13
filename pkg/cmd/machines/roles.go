@@ -14,24 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package machines
 
-import (
-	"fmt"
+import "github.com/galexrt/k8sglue/pkg/models"
 
-	"github.com/spf13/cobra"
-)
-
-// clusterGenListTerraform represents the terraform command
-var clusterGenListTerraform = &cobra.Command{
-	Use:   "terraform",
-	Short: "A brief description of your command",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("terraform called")
-		return errCommandNotImplemented
-	},
-}
-
-func init() {
-	machinesGetlistCmd.AddCommand(clusterGenListTerraform)
+func GetAddressesFromMachines(machines []models.Machine) []string {
+	addresses := []string{}
+	for _, machine := range machines {
+		if len(machine.Addresses.IPv4) > 0 {
+			addresses = append(addresses, machine.Addresses.IPv4...)
+		}
+		if len(machine.Addresses.IPv6) > 0 {
+			addresses = append(addresses, machine.Addresses.IPv6...)
+		}
+	}
+	return addresses
 }

@@ -17,9 +17,6 @@ limitations under the License.
 package main
 
 import (
-	"io/ioutil"
-	"os"
-
 	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -31,16 +28,11 @@ var configPath string
 var clusterCmd = &cobra.Command{
 	Use:   "cluster",
 	Short: "A brief description of your command",
-	Long:  ``,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		logger.Debug("clusterPreRun: load config if cluster flag isn't empty")
 		// TODO Remove the conditional flag check when https://github.com/spf13/cobra/issues/655 has been resolved
 		if viper.GetString("cluster") != "" {
-			tempDir, err := ioutil.TempDir(os.TempDir(), cmd.Root().Name())
-			if err != nil {
-				return nil
-			}
-
-			return config.Load(configPath, tempDir)
+			return config.Load(configPath, rootCmd.Name())
 		}
 		return nil
 	},
