@@ -15,3 +15,9 @@ limitations under the License.
 */
 
 package cluster
+
+import (
+	"github.com/coreos/pkg/capnslog"
+)
+
+var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/pkg/cluster", "cluster")

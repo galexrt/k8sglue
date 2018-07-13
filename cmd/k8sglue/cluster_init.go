@@ -19,9 +19,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/galexrt/k8sglue/pkg/config"
-	"github.com/galexrt/k8sglue/pkg/models"
-	"github.com/galexrt/k8sglue/pkg/util"
+	"github.com/galexrt/k8sglue/pkg/cmd/cluster"
 	"github.com/spf13/cobra"
 )
 
@@ -37,28 +35,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("init called")
-
-		masters := config.Cfg.MachineList.GetMachinesByRole(models.Roles{
-			Salt: &models.RolesSalt{
-				Master: &util.True,
-			},
-		})
-		logger.Debugf("master machines found by `salt.master: true` role: %+v\n", masters)
-
-		// TODO Check if salt-master(s) certs, already exist locally
-		// TODO Generate salt-master(s) certificate
-		/*
-			saltCert, saltKey, err := cert.Generate([]string{"127.0.0.1"}, "", 24*time.Hour, false, 4096, "P521")
-			if err != nil {
-				return err
-			}
-		*/
-
-		// TODO scp the salt-master certificate to the salt-master(s)
-
-		// TODO scp the `salt/` directory to the salt-master(s)
-
-		return nil
+		return cluster.Init()
 	},
 }
 
