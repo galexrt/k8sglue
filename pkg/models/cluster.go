@@ -28,7 +28,7 @@ type Cluster struct {
 	SSHConfigMerge      bool                   `yaml:"sshConfigMerge"`
 }
 
-// SSHConfig
+// SSHConfig contains ssh config
 type SSHConfig struct {
 	Config     *ssh.ClientConfig `yaml:"config"`
 	Port       uint16            `yaml:"port"`
