@@ -21,8 +21,7 @@ import (
 	"sync"
 
 	"github.com/galexrt/k8sglue/pkg/models"
-	"github.com/galexrt/k8sglue/pkg/util"
-	"github.com/pkg/sftp"
+	"github.com/galexrt/k8sglue/pkg/sshexecutor"
 )
 
 // Sync syncs the salt/ directory to the salt-master(s) machines
@@ -35,15 +34,13 @@ func Sync(masters []models.Machine) error {
 		wg.Add(1)
 		go func(machine models.Machine) {
 			defer wg.Done()
-			sshExec, err := util.GetSSHExecutorForMachine(machine)
+			sftpClient, err := sshexecutor.GetSFTPForMachine(machine)
 			if err != nil {
 				errs <- err
 				return
 			}
-			defer sshExec.Close()
+			defer sftpClient.Close()
 
-			var sftpClient *sftp.Client
-			sftpClient, err = sshExec.SFTP()
 			if err != nil {
 				errs <- err
 				return

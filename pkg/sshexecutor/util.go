@@ -14,39 +14,50 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package sshexecutor
 
 import (
 	"fmt"
 
-	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/models"
-	"github.com/galexrt/k8sglue/pkg/sshexecutor"
+	"github.com/pkg/sftp"
+	"golang.org/x/crypto/ssh"
 )
 
-var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/pkg/util", "ssh")
+// GetSSHForMachine return started SSHExecutor struct from models.Machine
+func GetSSHForMachine(machine models.Machine) (*SSHExecutor, error) {
+	mergedSSHConfig, err := getSSHConnectionDetails(machine)
+	if err != nil {
+		return nil, err
+	}
 
-// GetSSHExecutorForMachine return started sshexecutor.SSHExecutor struct from models.Machine
-func GetSSHExecutorForMachine(machine models.Machine) (*sshexecutor.SSHExecutor, error) {
+	host := fmt.Sprintf("%s:%d", machine.Hostname, machine.SSHPort)
+	sshExec := New(host, mergedSSHConfig)
+	logger.Debugf("starting connection to %s", machine.Hostname)
+	return sshExec, sshExec.Start()
+}
+
+// GetSFTPForMachine return sftp.Client from a SSHExecutor ssh.Client connection
+func GetSFTPForMachine(machine models.Machine) (*sftp.Client, error) {
+	sshExec, err := GetSSHForMachine(machine)
+	if err != nil {
+		return nil, err
+	}
+	return sshExec.SFTP()
+}
+
+func getSSHConnectionDetails(machine models.Machine) (*ssh.ClientConfig, error) {
 	if machine.SSHPort == 0 {
 		if config.Cfg.Cluster.Cluster.SSHPort != 0 {
 			machine.SSHPort = config.Cfg.Cluster.Cluster.SSHPort
 		} else {
-			logger.Warningf("no port for machine and cluster config given, defaulting to %d", sshexecutor.DefaultSSHPort)
-			machine.SSHPort = sshexecutor.DefaultSSHPort
+			logger.Warningf("no port for machine and cluster config given, defaulting to %d", DefaultSSHPort)
+			machine.SSHPort = DefaultSSHPort
 		}
 	}
 
 	mergedSSHConfig, err := machine.MergeSSHConfig(config.Cfg.Cluster.Cluster.SSHConfig)
-	if err != nil {
-		return nil, err
-	}
 	logger.Debugf("ssh.ClientConfig for machine %s: %+v", machine.Hostname, mergedSSHConfig)
-
-	host := fmt.Sprintf("%s:%d", machine.Hostname, machine.SSHPort)
-	sshExec := sshexecutor.New(host, mergedSSHConfig)
-	logger.Debugf("starting connection infos for %s", machine.Hostname)
-	err = sshExec.Start()
-	return sshExec, err
+	return mergedSSHConfig, err
 }

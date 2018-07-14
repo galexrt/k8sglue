@@ -20,10 +20,13 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"sync"
 	"time"
 
 	"github.com/galexrt/k8sglue/pkg/cert"
 	"github.com/galexrt/k8sglue/pkg/config"
+	"github.com/galexrt/k8sglue/pkg/models"
+	"github.com/galexrt/k8sglue/pkg/sshexecutor"
 )
 
 // Certs generate salt-master certs
@@ -74,8 +77,41 @@ func Certs(saltMasterIPs []string) (string, string, error) {
 }
 
 // CertsCopy copy the certs by path to the salt-master(s) machines
-func CertsCopy(saltCertPath, saltKeyPath string) error {
-	// TODO Add functionality to salt.CertsCopy() which copies the certificates to the machines
+func CertsCopy(masters []models.Machine, saltCertPath, saltKeyPath string) error {
+	errs := make(chan error, 1)
 
+	wg := sync.WaitGroup{}
+	for _, machine := range masters {
+		logger.Debugf("getting connection infos for %s", machine.Hostname)
+		wg.Add(1)
+		go func(machine models.Machine) {
+			defer wg.Done()
+			sftpClient, err := sshexecutor.GetSFTPForMachine(machine)
+			if err != nil {
+				errs <- err
+				return
+			}
+			defer sftpClient.Close()
+
+			if err != nil {
+				errs <- err
+				return
+			}
+			files, err := sftpClient.ReadDir(".")
+			if err != nil {
+				errs <- err
+				return
+			}
+			fmt.Printf("TEST: %+v\n", files)
+		}(machine)
+	}
+	logger.Infof("waiting for all salt-master syncs to be completed")
+	wg.Wait()
+	close(errs)
+
+	var err error
+	for err = range errs {
+		logger.Errorf("salt sync error. %+v", err)
+	}
 	return nil
 }

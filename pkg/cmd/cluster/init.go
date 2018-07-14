@@ -45,8 +45,7 @@ func Init() error {
 		return err
 	}
 
-	// TODO Add functionality to salt.CertsCopy() which copies the certificates to the machines
-	if err = salt.CertsCopy(certPath, keyPath); err != nil {
+	if err = salt.CertsCopy(masters, certPath, keyPath); err != nil {
 		return err
 	}
 

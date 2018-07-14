@@ -3,9 +3,9 @@ machines:
 - hostname: test-node1
   addresses:
     ipv4:
-    - 2.2.2.2
-    ipv6:
-    - 2003:cf:a3c8:7300:8968:b614:88dc:2fd2/64
+    - 192.168.1.10
+    #ipv6:
+    #- 2003:cf:a3c8:7300:8968:b614:88dc:2fd2/64
   roles:
     etcd: true
     kubernetes:
@@ -13,9 +13,11 @@ machines:
       worker: true
     salt:
       master: true
-  sshConfig:
-    user: root
-  sshPort: 22
+  ssh:
+    config:
+      user: vagrant
+    port: 22
+    privateKey: /home/atrost/.vagrant.d/insecure_private_key
   parameters:
     # TODO Define if firewall parameter in Salt is either plain iptable rules, iptables-save or a list of accepted and rejected ports.
     firewall: |

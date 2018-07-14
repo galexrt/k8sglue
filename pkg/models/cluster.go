@@ -24,7 +24,13 @@ import (
 type Cluster struct {
 	GlobalParameters    map[string]interface{} `yaml:"globalParameters"`
 	NodeParametersMerge bool                   `yaml:"nodeParametersMerge"`
-	SSHConfig           *ssh.ClientConfig      `yaml:"sshConfig"`
-	SSHPort             uint16                 `yaml:"sshPort"`
+	SSHConfig           SSHConfig              `yaml:"ssh"`
 	SSHConfigMerge      bool                   `yaml:"sshConfigMerge"`
+}
+
+// SSHConfig
+type SSHConfig struct {
+	Config     *ssh.ClientConfig `yaml:"config"`
+	Port       uint16            `yaml:"port"`
+	PrivateKey string            `yaml:"privateKey"`
 }
