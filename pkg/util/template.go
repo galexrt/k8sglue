@@ -14,25 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package util
 
 import (
-	"fmt"
-
-	"github.com/spf13/cobra"
+	"bufio"
+	"strings"
 )
 
-// clusterSaltApplyCmd represents the salt command
-var clusterSaltApplyCmd = &cobra.Command{
-	Use:   "apply",
-	Short: "A brief description of your command",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("salt called")
-		return errCommandNotImplemented
-	},
-}
-
-func init() {
-	clusterCmd.AddCommand(clusterSaltApplyCmd)
-	clusterSaltApplyCmd.Flags().StringVar(&saltStatesDir, "salt-states", "./salt", "Path to the `salt/` directory which contains the salt states to be copied to each salt-master(s)")
+// TemplateIndent add indent of `width` to each non empty line
+func TemplateIndent(in string, width int) string {
+	out := ""
+	indent := ""
+	for i := 0; i < width; i++ {
+		indent += " "
+	}
+	scanner := bufio.NewScanner(strings.NewReader(in))
+	for scanner.Scan() {
+		text := scanner.Text()
+		if text != "" {
+			out += indent
+		}
+		out += text
+		out += "\n"
+	}
+	return out
 }

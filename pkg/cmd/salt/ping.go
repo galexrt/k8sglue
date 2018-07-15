@@ -14,8 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package models
+package salt
 
-// Kubeadm contains kubeadm configurations which will be used for the cluster.
-type Kubeadm struct {
+import "github.com/galexrt/k8sglue/pkg/executor"
+
+// Ping runs `salt-ssh` `test.ping` on all salt-master(s).
+func Ping() error {
+	args := append(getSaltSSHDefaultArgs(),
+		"*",
+		"test.ping",
+	)
+
+	return executor.ExecOutToLog("salt-ssh test.ping", SaltSSHCommand, args)
 }

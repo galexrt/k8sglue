@@ -14,24 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package salt
 
-import (
-	"fmt"
-
-	"github.com/spf13/cobra"
-)
-
-// clusterInfoCmd represents the init command
-var clusterInfoCmd = &cobra.Command{
-	Use:   "info",
-	Short: "A brief description of your command",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("info called")
-		return errCommandNotImplemented
-	},
-}
-
-func init() {
-	clusterCmd.AddCommand(clusterInfoCmd)
+// Secrets generate salt-master(s) certificate and key, and SSH deploy key.
+func Secrets() ([]byte, []byte, error) {
+	// TODO
+	return nil, nil, nil
 }

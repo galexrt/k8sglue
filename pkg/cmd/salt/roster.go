@@ -14,24 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package salt
 
 import (
-	"fmt"
-
-	"github.com/spf13/cobra"
+	"github.com/galexrt/k8sglue/pkg/config"
 )
 
-// clusterStatusCmd represents the status command
-var clusterStatusCmd = &cobra.Command{
-	Use:   "status",
-	Short: "A brief description of your command",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("status called")
-		return errCommandNotImplemented
-	},
-}
-
-func init() {
-	clusterCmd.AddCommand(clusterStatusCmd)
+// Roster prints out the master roster file
+func Roster() ([]byte, error) {
+	opts := map[string]interface{}{
+		"grains": map[string]interface{}{
+			"roles": []string{
+				"salt-master",
+			},
+		},
+	}
+	if err := config.Cfg.Cluster.Salt.Masters.AddMinionOpts(opts, true); err != nil {
+		return nil, err
+	}
+	return config.Cfg.Cluster.Salt.Masters.ToByte()
 }

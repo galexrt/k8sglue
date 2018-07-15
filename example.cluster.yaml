@@ -1,0 +1,16 @@
+---
+salt:
+  masters:
+    node1:
+      host: 192.168.1.11
+    node2:
+      host: 192.168.1.12
+    node3:
+      host: 192.168.1.13
+  defaultRosterData:
+    port: 22
+    user: vagrant
+    sudo: true
+    priv: ~/.ssh/id_rsa
+kubernetes:
+  kubeadm:

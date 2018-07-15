@@ -16,8 +16,5 @@ limitations under the License.
 
 package salt
 
-import (
-	"github.com/coreos/pkg/capnslog"
-)
-
-var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/pkg/cmd/salt", "salt")
+// SaltSSHCommand holds the name of salt-ssh binary
+var SaltSSHCommand = "salt-ssh"

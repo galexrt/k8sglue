@@ -23,23 +23,13 @@ import (
 	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var logLevelRaw string
 var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/cmd/k8sglue", "root")
 
 var errCommandNotImplemented = fmt.Errorf("command or subcommand has not been implemented yet")
-
-var banner = ` _   ___          _
-| |_( _ )___ __ _| |_  _ ___
-| / / _ (_-</ _` + "`" + ` | | || / -_)
-|_\_\___/__/\__, |_|\_,_\___|
-             |___/
-Made by Alexander Trost
-=======================
-`
-
-var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -52,15 +42,28 @@ But with some magic allowing for simple integration into any server deployment
 that in the end is able to spit out a list of machines to use.
 
 For more information refer to the README.md and the docs.`,
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		config.Init(cmd.Name())
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		config.Init("k8sglue")
+		// TODO Remove the conditional flag check when https://github.com/spf13/cobra/issues/655 has been resolved
+		if viper.GetString("cluster") == "" {
+			return fmt.Errorf(`required flag(s) "cluster" not set`)
+		}
+		if err := config.Load(viper.GetString("cluster")); err != nil {
+			return err
+		}
 		SetLogLevel()
-		fmt.Print(banner)
+		return nil
 	},
 }
 
 func init() {
+	viper.SetEnvPrefix("k8sglue")
+	viper.AutomaticEnv()
+
 	rootCmd.PersistentFlags().StringVar(&logLevelRaw, "log-level", "INFO", "Set log level")
+
+	rootCmd.PersistentFlags().String("cluster", "", "Cluster config file")
+	viper.BindPFlag("cluster", rootCmd.PersistentFlags().Lookup("cluster"))
 }
 
 func main() {
@@ -74,7 +77,6 @@ func SetLogLevel() {
 	if err != nil {
 		logger.Warningf("failed to set log level %s. %+v", logLevelRaw, err)
 	}
-	fmt.Printf("TEST: %+v\n", logLevelRaw)
 	config.Cfg.LogLevel = ll
 	capnslog.SetGlobalLogLevel(config.Cfg.LogLevel)
 }

@@ -19,20 +19,20 @@ package main
 import (
 	"fmt"
 
+	"github.com/galexrt/k8sglue/pkg/cmd/salt"
 	"github.com/spf13/cobra"
 )
 
-// clusterSaltSyncCmd represents the salt command
-var clusterSaltSyncCmd = &cobra.Command{
-	Use:   "sync",
+// saltApplyCmd represents the apply command
+var saltApplyCmd = &cobra.Command{
+	Use:   "apply",
 	Short: "A brief description of your command",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("salt called")
-		return errCommandNotImplemented
+		fmt.Println("apply called")
+		return salt.Apply()
 	},
 }
 
 func init() {
-	clusterCmd.AddCommand(clusterSaltSyncCmd)
-	clusterSaltSyncCmd.Flags().StringVar(&saltStatesDir, "salt-states", "./salt", "Path to the `salt/` directory which contains the salt states to be copied to each salt-master(s)")
+	saltCmd.AddCommand(saltApplyCmd)
 }

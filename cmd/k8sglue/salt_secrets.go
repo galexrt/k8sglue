@@ -19,19 +19,23 @@ package main
 import (
 	"fmt"
 
+	"github.com/galexrt/k8sglue/pkg/cmd/salt"
 	"github.com/spf13/cobra"
 )
 
-// machinesGetlistCmd represents the genlist command
-var machinesGetlistCmd = &cobra.Command{
-	Use:   "genlist",
+// saltSecretsCmd represents the secrets command
+var saltSecretsCmd = &cobra.Command{
+	Use:   "secrets",
 	Short: "A brief description of your command",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("genlist called")
-		return errCommandNotImplemented
+		fmt.Println("salt certs called")
+		cert, key, err := salt.Secrets()
+		fmt.Printf("Certificate:\n%s\n", cert)
+		fmt.Printf("Key:\n%s\n", key)
+		return err
 	},
 }
 
 func init() {
-	machinesCmd.AddCommand(machinesGetlistCmd)
+	saltCmd.AddCommand(saltSecretsCmd)
 }

@@ -19,22 +19,20 @@ package main
 import (
 	"fmt"
 
+	"github.com/galexrt/k8sglue/pkg/cmd/salt"
 	"github.com/spf13/cobra"
 )
 
-var saltStatesDir string
-
-// clusterSaltCmd represents the salt command
-var clusterSaltCmd = &cobra.Command{
-	Use:   "salt",
+// saltSyncCmd represents the sync command
+var saltSyncCmd = &cobra.Command{
+	Use:   "sync",
 	Short: "A brief description of your command",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("salt called")
-		// config.Cfg.Cluster.SaltStatesDir = saltStatesDir
-		return errCommandNotImplemented
+		fmt.Println("salt sync called")
+		return salt.Sync()
 	},
 }
 
 func init() {
-	clusterCmd.AddCommand(clusterSaltCmd)
+	saltCmd.AddCommand(saltSyncCmd)
 }

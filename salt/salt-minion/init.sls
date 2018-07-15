@@ -12,7 +12,7 @@ configure salt-minion:
     - group: root
     - mode: 644
     - template: jinja
-    - source: salt://salt-minion/minion
+    - source: salt://salt-minion/etc/salt/minion
 
 start salt-minion:
   service.running:

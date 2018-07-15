@@ -17,30 +17,19 @@ limitations under the License.
 package main
 
 import (
-	"github.com/galexrt/k8sglue/pkg/config"
+	"github.com/galexrt/k8sglue/pkg/cmd/salt"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
-var configPath string
-
-// clusterCmd represents the cluster command
-var clusterCmd = &cobra.Command{
-	Use:   "cluster",
+// saltCmd represents the salt command
+var saltCmd = &cobra.Command{
+	Use:   "salt",
 	Short: "A brief description of your command",
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		logger.Debug("clusterPreRun: load config if cluster flag isn't empty")
-		// TODO Remove the conditional flag check when https://github.com/spf13/cobra/issues/655 has been resolved
-		if viper.GetString("cluster") != "" {
-			return config.Load(configPath, rootCmd.Name())
-		}
-		return nil
+		return salt.PrepareSaltSSH()
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(clusterCmd)
-	clusterCmd.PersistentFlags().StringVar(&configPath, "cluster", "", "Cluster config directory")
-	clusterCmd.MarkPersistentFlagRequired("cluster")
-	viper.BindPFlag("cluster", clusterCmd.PersistentFlags().Lookup("cluster"))
+	rootCmd.AddCommand(saltCmd)
 }

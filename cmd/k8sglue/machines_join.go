@@ -19,21 +19,18 @@ package main
 import (
 	"fmt"
 
-	"github.com/galexrt/k8sglue/pkg/cmd/cluster"
 	"github.com/spf13/cobra"
 )
 
-// clusterInitCmd represents the init command
-var clusterInitCmd = &cobra.Command{
-	Use:   "init",
-	Short: "Initiate a cluster by setting up the salt-master(s)",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("init called")
-		return cluster.Init()
+// machinesJoinCmd represents the join command
+var machinesJoinCmd = &cobra.Command{
+	Use:   "join",
+	Short: "A brief description of your command",
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("machines join called")
 	},
 }
 
 func init() {
-	clusterCmd.AddCommand(clusterInitCmd)
-	clusterInitCmd.Flags().StringVar(&saltStatesDir, "salt-states", "./salt", "Path to the `salt/` directory which contains the salt states to be copied to each salt-master(s)")
+	machinesCmd.AddCommand(machinesJoinCmd)
 }

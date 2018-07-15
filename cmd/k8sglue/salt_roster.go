@@ -14,13 +14,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package sshexecutor
+package main
 
 import (
-	"github.com/pkg/sftp"
+	"fmt"
+
+	"github.com/galexrt/k8sglue/pkg/cmd/salt"
+	"github.com/spf13/cobra"
 )
 
-// SFTP create new SFTP client using github.com/pkg/sftp package
-func (se *SSHExecutor) SFTP() (*sftp.Client, error) {
-	return sftp.NewClient(se.client)
+// saltRosterCmd represents the roster command
+var saltRosterCmd = &cobra.Command{
+	Use:   "roster",
+	Short: "A brief description of your command",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		out, err := salt.Roster()
+		if err != nil {
+			return err
+		}
+		fmt.Println(string(out))
+		return nil
+	},
+}
+
+func init() {
+	saltCmd.AddCommand(saltRosterCmd)
 }

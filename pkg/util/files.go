@@ -14,24 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package util
 
 import (
-	"fmt"
-
-	"github.com/spf13/cobra"
+	"os"
+	"strconv"
 )
 
-// machinesAddCmd represents the add command
-var machinesAddCmd = &cobra.Command{
-	Use:   "add",
-	Short: "A brief description of your command",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("add called")
-		return errCommandNotImplemented
-	},
-}
+// CreateDirectory create a directory if it does not exist
+func CreateDirectory(path string, mode string) error {
+	n, err := strconv.ParseUint(mode, 8, 32)
+	if err != nil {
+		return err
+	}
 
-func init() {
-	machinesCmd.AddCommand(machinesAddCmd)
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		if err = os.Mkdir(path, os.FileMode(n)); err != nil {
+			return err
+		}
+	}
+	return nil
 }

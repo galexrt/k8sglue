@@ -14,24 +14,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package salt
 
 import (
-	"fmt"
-
-	"github.com/spf13/cobra"
+	"github.com/coreos/pkg/capnslog"
 )
 
-// clusterDeleteCmd represents the delete command
-var clusterDeleteCmd = &cobra.Command{
-	Use:   "delete",
-	Short: "A brief description of your command",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("delete called")
-		return errCommandNotImplemented
-	},
-}
+var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/pkg/cmd/salt", "salt")
 
-func init() {
-	clusterCmd.AddCommand(clusterDeleteCmd)
+// Init call steps necessary to init salt-master(s)
+func Init() error {
+	if err := Ping(); err != nil {
+		return err
+	}
+
+	if _, _, err := Secrets(); err != nil {
+		return err
+	}
+
+	if err := Apply(); err != nil {
+		return err
+	}
+
+	if err := Sync(); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -17,20 +17,42 @@ limitations under the License.
 package models
 
 import (
-	"golang.org/x/crypto/ssh"
+	saltmodels "github.com/galexrt/k8sglue/pkg/salt/models"
 )
 
 // Cluster holds special cluster information.
 type Cluster struct {
-	GlobalParameters    map[string]interface{} `yaml:"globalParameters"`
-	NodeParametersMerge bool                   `yaml:"nodeParametersMerge"`
-	SSHConfig           SSHConfig              `yaml:"ssh"`
-	SSHConfigMerge      bool                   `yaml:"sshConfigMerge"`
+	Salt       Salt       `yaml:"salt"`
+	Hostnames  Hostnames  `yaml:"hostnames"`
+	Kubernetes Kubernetes `yaml:"kubernetes"`
 }
 
-// SSHConfig contains ssh config
-type SSHConfig struct {
-	Config     *ssh.ClientConfig `yaml:"config"`
-	Port       uint16            `yaml:"port"`
-	PrivateKey string            `yaml:"privateKey"`
+// Salt will hold all required information for cluster setup.
+type Salt struct {
+	Masters           saltmodels.Roster     `yaml:"masters"`
+	DefaultRosterData saltmodels.RosterData `yaml:"defaultRosterData"`
+}
+
+// Hostnames holds info about which hostnames/addresses to use for certain services
+type Hostnames struct {
+	Salt       HostnamesSalt       `yaml:"salt"`
+	Kubernetes HostnamesKubernetes `yaml:"kubernetes"`
+}
+
+// HostnamesSalt
+type HostnamesSalt struct {
+}
+
+// HostnamesKubernetes
+type HostnamesKubernetes struct {
+}
+
+// Kubernetes will hold all Kubernetes and kubeadm related settings.
+type Kubernetes struct {
+	Kubeadm Kubeadm `yaml:"kubeadm"`
+}
+
+// Kubeadm contains kubeadm configurations which will be used for the cluster.
+type Kubeadm struct {
+	// TODO Add kubeadm settings, which is used on every node (Kubernetes master and worker)
 }

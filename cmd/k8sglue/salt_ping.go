@@ -19,19 +19,20 @@ package main
 import (
 	"fmt"
 
+	"github.com/galexrt/k8sglue/pkg/cmd/salt"
 	"github.com/spf13/cobra"
 )
 
-// machinesDeleteCmd represents the delete command
-var machinesDeleteCmd = &cobra.Command{
-	Use:   "delete",
+// saltPingCmd represents the ping command
+var saltPingCmd = &cobra.Command{
+	Use:   "ping",
 	Short: "A brief description of your command",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("delete called")
-		return errCommandNotImplemented
+		fmt.Println("ping called")
+		return salt.Ping()
 	},
 }
 
 func init() {
-	machinesCmd.AddCommand(machinesDeleteCmd)
+	saltCmd.AddCommand(saltPingCmd)
 }

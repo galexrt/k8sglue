@@ -14,10 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package cluster
+package salt
 
-import (
-	"github.com/coreos/pkg/capnslog"
-)
+import "github.com/galexrt/k8sglue/pkg/executor"
 
-var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/pkg/cluster", "cluster")
+// Apply trigger Salt highstate using salt-ssh on the salt-master(s)
+func Apply() error {
+	args := append(getSaltSSHDefaultArgs(),
+		"*",
+		"state.apply",
+	)
+
+	return executor.ExecOutToLog("salt-ssh state.apply", SaltSSHCommand, args)
+}

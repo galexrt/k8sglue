@@ -19,19 +19,20 @@ package main
 import (
 	"fmt"
 
+	"github.com/galexrt/k8sglue/pkg/cmd/salt"
 	"github.com/spf13/cobra"
 )
 
-// clusterGenListTerraform represents the terraform command
-var clusterGenListTerraform = &cobra.Command{
-	Use:   "terraform",
+// saltInitCmd represents the init command
+var saltInitCmd = &cobra.Command{
+	Use:   "init",
 	Short: "A brief description of your command",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("terraform called")
-		return errCommandNotImplemented
+		fmt.Println("salt init called")
+		return salt.Init()
 	},
 }
 
 func init() {
-	machinesGetlistCmd.AddCommand(clusterGenListTerraform)
+	saltCmd.AddCommand(saltInitCmd)
 }

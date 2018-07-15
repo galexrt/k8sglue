@@ -17,50 +17,21 @@ limitations under the License.
 package salt
 
 import (
-	"fmt"
-	"sync"
-
-	"github.com/galexrt/k8sglue/pkg/models"
-	"github.com/galexrt/k8sglue/pkg/sshexecutor"
+	"github.com/galexrt/k8sglue/pkg/executor"
 )
 
-// Sync syncs the salt/ directory to the salt-master(s) machines
-func Sync(masters []models.Machine) error {
-	errs := make(chan error, 1)
+// Sync syncs current local `salt/` directory to the salt-master(s).
+func Sync() error {
+	args := append(getSaltSSHDefaultArgs(),
+		"*",
+		"state.single",
+		"file.recurse",
+		"name=/srv/salt",
+		"source=salt://salt",
+		"dir_mode=0750",
+		"user=root",
+		"group=root",
+	)
 
-	wg := sync.WaitGroup{}
-	for _, machine := range masters {
-		logger.Debugf("getting connection infos for %s", machine.Hostname)
-		wg.Add(1)
-		go func(machine models.Machine) {
-			defer wg.Done()
-			sftpClient, err := sshexecutor.GetSFTPForMachine(machine)
-			if err != nil {
-				errs <- err
-				return
-			}
-			defer sftpClient.Close()
-
-			if err != nil {
-				errs <- err
-				return
-			}
-			files, err := sftpClient.ReadDir(".")
-			if err != nil {
-				errs <- err
-				return
-			}
-			fmt.Printf("TEST: %+v\n", files)
-		}(machine)
-	}
-	logger.Infof("waiting for all salt-master syncs to be completed")
-	wg.Wait()
-	close(errs)
-
-	var err error
-	for err = range errs {
-		logger.Errorf("salt sync error. %+v", err)
-	}
-
-	return err
+	return executor.ExecOutToLog("salt-ssh copy salt", SaltSSHCommand, args)
 }
