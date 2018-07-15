@@ -17,7 +17,7 @@ configure salt-master:
     - group: root
     - mode: 644
     - template: jinja
-    - source: salt://salt-master/master
+    - source: salt://salt-master/etc/salt/master
 
 start salt-master:
   service.running:
