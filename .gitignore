@@ -24,6 +24,6 @@ _testmain.go
 *.prof
 
 dist/
-k8sglue
+/k8sglue
 _output/
 .cache/
