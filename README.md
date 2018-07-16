@@ -26,6 +26,8 @@ Starting point will be that a "MachineList" is already created containing at lea
     1. "Sync" local `salt` directory to each salt-master(s) (to `/srv/salt`).
     1. Wait for all salt-master(s) to be ready.
     1. Trigger high state.
+1. k8sglue use `key accept` mechanism to get all minion fingerprints and accept them on each salt-master(s).
+    1. TODO
 * Result in: salt-master(s) ready for use and "connected to themselves".
 
 > **NOTE** Each new node must connect to the salt-master(s).
