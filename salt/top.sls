@@ -3,16 +3,16 @@ base:
   '*':
     - common
     - salt-minion
-  'roles:kubernetes':
+  'G@roles:kubernetes':
     - kubernetes-basics
 {%- if config.container_runtime == "crio" %}
     - crio
 {%- else %}
     - docker
 {%- endif %}
-  'roles:salt-master':
+  'G@roles:salt-master':
     - salt-master
-  'roles:kubernetes-master':
+  'G@roles:kubernetes-master':
     - kubernetes-master
-  'roles:kubernetes-worker':
+  'G@roles:kubernetes-worker':
     - kubernetes-worker
