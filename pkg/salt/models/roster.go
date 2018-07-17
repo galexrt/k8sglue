@@ -49,6 +49,38 @@ func (r Roster) GetHosts() []string {
 	return hosts
 }
 
+// GetEntriesByRole get all entries that have a certain role
+func (r Roster) GetEntriesByRole(role string) Roster {
+	entries := Roster{}
+	for k, entry := range r {
+		if checkForRole(entry.MinionOpts, role) {
+			entries[k] = entry
+		}
+	}
+	return entries
+}
+
+func checkForRole(minionOpts map[string]interface{}, role string) bool {
+	if _, ok := minionOpts["grains"]; ok {
+		grains, cOk := minionOpts["grains"].(map[string]interface{})
+		if !cOk {
+			return false
+		}
+		if _, ok = grains["roles"]; ok {
+			roles, cOk := grains["roles"].([]string)
+			if !cOk {
+				return false
+			}
+			for _, r := range roles {
+				if r == role {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
 // AddMinionOpts add minion_opts to all RosterData entries
 func (r Roster) AddMinionOpts(opts map[string]interface{}, overwrite bool) error {
 	for k := range r {

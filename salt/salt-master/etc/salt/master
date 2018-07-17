@@ -319,7 +319,7 @@ interface: 0.0.0.0
 
 # Enable passphrase protection of the Master signing_key. This only applies if
 # master_sign_pubkey is set to True.  This is disabled by default.
-# master_sign_pubkey: True
+master_sign_pubkey: True
 # signing_key_pass: sdb://masterkeyring/signing_pass
 
 # Enable "open mode", this mode still maintains encryption, but turns off
