@@ -27,11 +27,16 @@ This project is a total work in progress right now!
 
 ### `k8sglue salt apply`
 
-Apply a given state or highstate using `salt-ssh` from a random chosen salt-master.
+1. k8sglue uses `salt-ssh` to trigger the Salt highstate from one of the salt-master(s).
+* Results in: One of the salt-master(s) having triggered the  Salt highstate on all nodes.
 
 ### `k8sglue salt certs`
 
+1. k8sglue generate SSL certificates with all the DNS names and IPs for the given machines that should be salt-master(s).
+1. k8sglue synces SSL certificates for the salt-master(s) using `salt-ssh`.
+* Results in: salt-master(s) certificates generated and synced to the salt-master(s).
 
+> **NOTE** This needs to be run when new salt-master(s) are added.
 
 ### `k8sglue salt init`
 
@@ -59,23 +64,34 @@ Starting point will be that a "MachineList" is already created containing at lea
 
 ### `k8sglue salt keys accept`
 
-
+1. ks8glue uses `salt-ssh` to get the salt-minion's fingerprint hash of each given machine.
+1. k8sglue uses `salt-ssh` to then accept the machine by name (should be improved in the future).
+    1. Connect to each salt-master(s) and run a simple bash script to check with `salt-key -f MACHINE` if the key is already accepted.
+    1. If the key is not accepted, run `salt-key` to accept it.
+* Results in: The given machine(s)'s salt-minion key(s) are accepted on all salt-master(s).
 
 ### `k8sglue salt keys remove`
 
-
+1. k8sglue uses `salt-ssh` to then accept the machine by name (should be improved in the future).
+    1. Connect to each salt-master(s) and simply run `salt-key -q -y -d MACHINE` to delete the key if it exists.
+* Results in: The given machine(s)'s salt-minion key(s) are removed on all salt-master(s).
 
 ### `k8sglue salt ping`
 
-
+1. k8sglue runs `salt-ssh` on all machines a given pattern matches (takes one flag which is the name pattern given to `salt-ssh`).
+* Results in: Salt `test.ping` being run on every machine
 
 ### `k8sglue salt roster`
 
-
+1. k8sglue generate salt-ssh roster file.
+* Results in: An usable salt roster file which can be used by anyone to connect to the machines as wanted.
 
 ### `k8sglue salt sync`
 
+1. k8sglue uses `salt-ssh state.single file.recurse` to copy the directory to each salt-master(s).
+* Results in: Sync the given Salt states directory to each salt-master(s).
 
+> **NOTE** Look into if it may also be a good thing to sync the pillars and mines between the salt-master(s).
 
 ### `k8sglue machine prepare`
 
