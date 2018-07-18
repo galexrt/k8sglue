@@ -50,11 +50,8 @@ Starting point will be that a "MachineList" is already created containing at lea
     1. The public key is printed out for the user/admin to put on new machines.
 1. k8sglue uses `salt-ssh` to:
     1. "Sync" local `salt` directory to each salt-master(s) (to `/srv/salt`).
-    1. Wait for all salt-master(s) to be ready.
-    1. Trigger high state.
 1. k8sglue uses a `salt key accept` mechanism to get all minion fingerprints and accept them on each salt-master(s).
-    1. Connect to each "new" machine to get the fingerprint.
-    1. Connect to each salt-master(s) and accept that key.
+    1. See `k8sglue machine join`.
 * Results in: salt-master(s) ready for use and "connected to themselves".
 
 > **NOTE** Each new node must connect to the salt-master(s).
@@ -82,10 +79,12 @@ Starting point will be that a "MachineList" is already created containing at lea
 
 ### `k8sglue machine prepare`
 
-1. k8sglue writes a Saltstack Roster file with given roles for the node(s) given specified as `minion_opts`.
+1. k8sglue writes a Saltstack Roster file with given roles for the node(s) given specified as `minion_opts`, but only triggering salt-minion and common state.
 1. k8sglue uses `salt-ssh` to:
-    1. Install `salt-minion` and configure it to use the salt-master(s) from the cluster config.
-1. Wait for one of the salt-master(s) to accept the key.
+    1. Run the base install ( which includes the `common` and `salt-minion` states).
+    * Results in: Configured salt-minion and basic configured machine.
+1. k8sglue uses `salt-ssh` to get the salt-minion public key.
+1. Connect to each salt-master(s) and accept the public key.
 * Results in: One or more nodes to be prepared and joined in the cluster.
 
 ### Automatic machine join to cluster
