@@ -12,18 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-// saltKeysCmd represents the keys command
-var saltKeysCmd = &cobra.Command{
-	Use:   "keys",
+// saltKeysRemoveCmd represents the remove command
+var saltKeysRemoveCmd = &cobra.Command{
+	Use:   "remove",
 	Short: "A brief description of your command",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("remove called")
+
+		return nil
+	},
 }
 
 func init() {
-	saltCmd.AddCommand(saltKeysCmd)
+	saltKeysCmd.AddCommand(saltKeysRemoveCmd)
+	saltKeysRemoveCmd.Flags().StringSlice("hosts", []string{}, "a list of hosts")
+	saltKeysRemoveCmd.MarkFlagRequired("hosts")
+	viper.BindPFlag("hosts", saltKeysRemoveCmd.Flags().Lookup("hosts"))
 }

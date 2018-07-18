@@ -22,13 +22,13 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/executor"
 )
 
-// TODO Copy the actual public key from the host0
-// TODO Look into using a simpler if key exists check
+// TODO Look into better way to do this (e.g. copy whole minion public fingerprint to salt-master(s) directly
 var saltKeyAcceptMagic = `if salt-key --out=pprint -f '%s' | grep -q '%s'; then
 	salt-key --out=json -q -y -a %s
 else
@@ -101,7 +101,25 @@ func KeyAccept(hostname string) error {
 	return executor.ExecOutToLog("salt-ssh salt-key", SaltSSHCommand, args)
 }
 
-// KeyAcceptList parallel loop over a list of machines and running KeyAccept on it
-func KeyAcceptList() error {
-	return nil
+// KeyAcceptList parallel loop over a list of machines and running KeyAccept on them
+func KeyAcceptList(machines []string) error {
+	errs := make(chan error, 1)
+	wg := sync.WaitGroup{}
+	for _, host := range machines {
+		wg.Add(1)
+		go func(host string) {
+			defer wg.Done()
+			if err := KeyAccept(host); err != nil {
+				errs <- err
+			}
+		}(host)
+	}
+	wg.Wait()
+
+	var err error
+	for err = range errs {
+		logger.Errorf("error during key accept. %+v\n", err)
+	}
+
+	return err
 }

@@ -14,25 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+// Package cmd
+// k8sglue cmd package contains all available commands with their subcommands.
 
-import (
-	"fmt"
-
-	"github.com/galexrt/k8sglue/pkg/cmd/salt"
-	"github.com/spf13/cobra"
-)
-
-// saltApplyCmd represents the apply command
-var saltApplyCmd = &cobra.Command{
-	Use:   "apply",
-	Short: "A brief description of your command",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("apply called")
-		return salt.Apply()
-	},
-}
-
-func init() {
-	saltCmd.AddCommand(saltApplyCmd)
-}
+package cmd

@@ -14,23 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package cmd
 
 import (
 	"fmt"
 
+	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
 )
 
-// machinesJoinCmd represents the join command
-var machinesJoinCmd = &cobra.Command{
-	Use:   "join",
+// saltSecretsCmd represents the secrets command
+var saltSecretsCmd = &cobra.Command{
+	Use:   "secrets",
 	Short: "A brief description of your command",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("machines join called")
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("salt certs called")
+		cert, key, err := salt.Secrets()
+		fmt.Printf("Certificate:\n%s\n", cert)
+		fmt.Printf("Key:\n%s\n", key)
+		return err
 	},
 }
 
 func init() {
-	machinesCmd.AddCommand(machinesJoinCmd)
+	saltCmd.AddCommand(saltSecretsCmd)
 }

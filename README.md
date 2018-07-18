@@ -6,7 +6,33 @@ This project is a total work in progress right now!
 * Saltstack (`salt-ssh`)
 * Golang to compile the project (only tested with >= `1.10`)
 
-## Flows
+## k8sglue Commands and Subcommands
+
+* `salt` - Salt master management command
+    * `apply` - Trigger salt high state.
+    * `certs` - Generate and sync certs for the salt-master(s) (if needed and forceable by flag).
+    * `init` - Init the salt-master(s) by installing and configuring them.
+    * `keys` - Salt keys management command.
+        * `accept` - Accept the salt-key of one or more machines on all salt-master(s).
+        * `remove` - Remove the salt-key of one or more machines on all salt-master(s).
+    * `ping` - Run `test.ping` using `salt-ssh`.
+    * `roster` - Print out the generated salt-master(s) roster file by looking at the cluster config file.
+    * `sync` - Sync current (given) `salt` directory to all salt-master(s).
+* `machines` - Machines management command
+    * `prepare` - Prepare one or more nodes by using salt-ssh to run the `base` states (`common` and `salt-minion`). In the end the node's salt-minion must be connected to the salt-master(s).
+* `completion`
+    * `bash` - Output BASH completion
+    * `zsh` - Output ZSH completion
+* `help` - Show help menu.
+
+### `k8sglue salt apply`
+
+Apply a given state or highstate using `salt-ssh` from a random chosen salt-master.
+
+### `k8sglue salt certs`
+
+
+
 ### `k8sglue salt init`
 
 This command has to be run once initially so the nodes get their "deployment" information and get configured for the Kubernetes cluster.
@@ -34,7 +60,27 @@ Starting point will be that a "MachineList" is already created containing at lea
 > **NOTE** Each new node must connect to the salt-master(s).
 > Each node will be "tested" with `salt.runners.manage.safe_accept` and accepted if the fingerprints match.
 
-### `k8sglue machine join`
+### `k8sglue salt keys accept`
+
+
+
+### `k8sglue salt keys remove`
+
+
+
+### `k8sglue salt ping`
+
+
+
+### `k8sglue salt roster`
+
+
+
+### `k8sglue salt sync`
+
+
+
+### `k8sglue machine prepare`
 
 1. k8sglue writes a Saltstack Roster file with given roles for the node(s) given specified as `minion_opts`.
 1. k8sglue uses `salt-ssh` to:
@@ -61,6 +107,10 @@ Starting point will be that a "MachineList" is already created containing at lea
 
 ## Goals
 ### Primary Goals
+
+* Setup salt-master(s) infrastructure.
+    * Deployment and management of nodes.
+    * Used for salt beacons to monitor nodes (though the actual monitoring is secondary).
 * Kubernetes cluster(s) managed with Saltstack.
     * With `kubeadm` under the hood.
 
@@ -77,19 +127,3 @@ Starting point will be that a "MachineList" is already created containing at lea
     * Triggers salt-ssh to install salt-master(s).
 * Saltstack
     * "Actual" configuration of servers.
-
-## k8sglue Commands and Subcommands
-
-* `salt` - Salt master management command
-    * `apply` - Trigger salt high state.
-    * `certs` - Generate and sync certs for the salt-master(s) (if needed and forceable by flag).
-    * `init` - Init the salt-master(s) by installing and configuring them.
-    * `roster` - Print out the generated salt-master(s) roster file by looking at the cluster config file.
-    * `sync` - Sync current (given) `salt` directory to all salt-master(s).
-    * `ping` - Run `test.ping` using `salt-ssh`.
-* `machines` - Machines management command
-    * `join` - Prepare and join one or more nodes to use the salt-master(s).
-* `completion`
-    * `bash` - Output BASH completion
-    * `zsh` - Output ZSH completion
-* `help` - Show help menu.

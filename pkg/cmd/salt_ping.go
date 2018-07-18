@@ -14,25 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package cmd
 
 import (
 	"fmt"
 
-	"github.com/galexrt/k8sglue/pkg/cmd/salt"
+	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
 )
 
-// saltInitCmd represents the init command
-var saltInitCmd = &cobra.Command{
-	Use:   "init",
+// saltPingCmd represents the ping command
+var saltPingCmd = &cobra.Command{
+	Use:   "ping",
 	Short: "A brief description of your command",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("salt init called")
-		return salt.Init()
+		fmt.Println("ping called")
+		return salt.Ping()
 	},
 }
 
 func init() {
-	saltCmd.AddCommand(saltInitCmd)
+	saltCmd.AddCommand(saltPingCmd)
 }

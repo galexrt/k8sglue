@@ -14,29 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package cmd
 
 import (
-	"fmt"
-
-	"github.com/galexrt/k8sglue/pkg/cmd/salt"
+	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
 )
 
-// saltRosterCmd represents the roster command
-var saltRosterCmd = &cobra.Command{
-	Use:   "roster",
+// saltCmd represents the salt command
+var saltCmd = &cobra.Command{
+	Use:   "salt",
 	Short: "A brief description of your command",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		out, err := salt.Roster()
-		if err != nil {
-			return err
-		}
-		fmt.Println(string(out))
-		return nil
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		return salt.PrepareSaltSSH()
 	},
 }
 
 func init() {
-	saltCmd.AddCommand(saltRosterCmd)
+	rootCmd.AddCommand(saltCmd)
 }

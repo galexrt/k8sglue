@@ -14,18 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
-// completionCmd represents the completion command
-var completionCmd = &cobra.Command{
-	Use:   "completion",
-	Short: "Output bash or zsh completion code",
+// machinesPrepareCmd represents the prepare command
+var machinesPrepareCmd = &cobra.Command{
+	Use:   "prepare",
+	Short: "A brief description of your command",
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("machines prepare called")
+	},
 }
 
 func init() {
-	rootCmd.AddCommand(completionCmd)
+	machinesCmd.AddCommand(machinesPrepareCmd)
 }

@@ -14,9 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/*
+package cmd
 
-k8sglue main package contains all available commands with their subcommands.
+import (
+	"os"
 
-*/
-package main
+	"github.com/spf13/cobra"
+)
+
+// completionZshCmd represents the zsh command
+var completionZshCmd = &cobra.Command{
+	Use:   "zsh",
+	Short: "Output zsh completion code",
+	Run: func(cmd *cobra.Command, args []string) {
+		rootCmd.GenZshCompletion(os.Stdout)
+	},
+}
+
+func init() {
+	completionCmd.AddCommand(completionZshCmd)
+}

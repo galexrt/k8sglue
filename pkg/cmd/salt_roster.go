@@ -14,18 +14,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package cmd
 
 import (
+	"fmt"
+
+	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
 )
 
-// machinesCmd represents the machines command
-var machinesCmd = &cobra.Command{
-	Use:   "machines",
+// saltRosterCmd represents the roster command
+var saltRosterCmd = &cobra.Command{
+	Use:   "roster",
 	Short: "A brief description of your command",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		out, err := salt.Roster()
+		if err != nil {
+			return err
+		}
+		fmt.Println(string(out))
+		return nil
+	},
 }
 
 func init() {
-	rootCmd.AddCommand(machinesCmd)
+	saltCmd.AddCommand(saltRosterCmd)
 }

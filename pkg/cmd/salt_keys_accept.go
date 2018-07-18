@@ -12,30 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package cmd
 
 import (
 	"fmt"
 
-	"github.com/galexrt/k8sglue/pkg/cmd/salt"
-	"github.com/galexrt/k8sglue/pkg/config"
+	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-// saltAcceptCmd represents the accept command
-var saltAcceptCmd = &cobra.Command{
+// saltKeysAcceptCmd represents the accept command
+var saltKeysAcceptCmd = &cobra.Command{
 	Use:   "accept",
 	Short: "A brief description of your command",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("accept called")
 
-		for hostname := range config.Cfg.Cluster.Salt.Masters {
-			return salt.KeyAccept(hostname)
-		}
-		return nil
+		return salt.KeyAcceptList(viper.GetStringSlice("host"))
 	},
 }
 
 func init() {
-	saltKeysCmd.AddCommand(saltAcceptCmd)
+	saltKeysCmd.AddCommand(saltKeysAcceptCmd)
+	saltKeysAcceptCmd.Flags().StringSlice("hosts", []string{}, "a list of hosts")
+	saltKeysAcceptCmd.MarkFlagRequired("hosts")
+	viper.BindPFlag("hosts", saltKeysAcceptCmd.Flags().Lookup("hosts"))
 }

@@ -14,23 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package cmd
 
 import (
-	"os"
+	"fmt"
 
+	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
 )
 
-// completionBashCmd represents the bash command
-var completionBashCmd = &cobra.Command{
-	Use:   "bash",
-	Short: "Output bash completion code",
-	Run: func(cmd *cobra.Command, args []string) {
-		rootCmd.GenBashCompletion(os.Stdout)
+// saltApplyCmd represents the apply command
+var saltApplyCmd = &cobra.Command{
+	Use:   "apply",
+	Short: "A brief description of your command",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("apply called")
+		return salt.Apply()
 	},
 }
 
 func init() {
-	completionCmd.AddCommand(completionBashCmd)
+	saltCmd.AddCommand(saltApplyCmd)
 }

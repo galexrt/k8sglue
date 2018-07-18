@@ -14,22 +14,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package salt
 
 import (
-	"github.com/galexrt/k8sglue/pkg/cmd/salt"
-	"github.com/spf13/cobra"
+	"github.com/coreos/pkg/capnslog"
 )
 
-// saltCmd represents the salt command
-var saltCmd = &cobra.Command{
-	Use:   "salt",
-	Short: "A brief description of your command",
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		return salt.PrepareSaltSSH()
-	},
-}
+var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/pkg/salt", "salt")
 
-func init() {
-	rootCmd.AddCommand(saltCmd)
+// Init call steps necessary to init salt-master(s)
+func Init() error {
+	if err := Ping(); err != nil {
+		return err
+	}
+
+	if _, _, err := Secrets(); err != nil {
+		return err
+	}
+
+	if err := Apply(); err != nil {
+		return err
+	}
+
+	if err := Sync(); err != nil {
+		return err
+	}
+
+	return nil
 }
