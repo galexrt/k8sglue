@@ -29,7 +29,6 @@ type Cluster struct {
 
 // Salt will hold all required information for cluster setup.
 type Salt struct {
-	Masters           saltmodels.Roster     `yaml:"masters"`
 	DefaultRosterData saltmodels.RosterData `yaml:"defaultRosterData"`
 }
 

@@ -17,18 +17,22 @@ limitations under the License.
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/models"
+	saltmodels "github.com/galexrt/k8sglue/pkg/salt/models"
 	yaml "gopkg.in/yaml.v2"
 )
 
 // Config holds all the configs and a cluster if loaded
 type Config struct {
 	Cluster  *models.Cluster
+	Machines []saltmodels.Roster
 	LogLevel capnslog.LogLevel
 	StartDir string
 	SaltDir  string
@@ -57,6 +61,7 @@ func Init(appName string) error {
 
 	Cfg = &Config{
 		Cluster:  &models.Cluster{},
+		Machines: []saltmodels.Roster{},
 		LogLevel: capnslog.INFO,
 		SaltDir:  saltDir,
 		TempDir:  tempDir,
@@ -84,6 +89,20 @@ func LoadCluster(configPath string) (*models.Cluster, error) {
 		return nil, err
 	}
 	return cluster, nil
+}
+
+// LoadMachines load all machines files
+func LoadMachines(patternPath string) (*saltmodels.Roster, error) {
+	var machines *saltmodels.Roster
+	paths, err := filepath.Glob(patternPath)
+	if err != nil {
+		return nil, nil
+	}
+	for path := range paths {
+		fmt.Printf("TEST: %+v\n", path)
+	}
+
+	return machines, nil
 }
 
 func loadYAML(configPath string) ([]byte, error) {
