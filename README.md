@@ -25,6 +25,26 @@ This project is a total work in progress right now!
     * `zsh` - Output ZSH completion
 * `help` - Show help menu.
 
+#### Status
+
+| Command            | Status |
+| ------------------ | ------ |
+| `salt apply`       | WIP    |
+| `salt certs`       | WIP    |
+| `salt init`        | WIP    |
+| `salt keys`        | WIP    |
+| `salt keys accept` | WIP    |
+| `salt keys remove` | WIP    |
+| `salt ping`        | WIP    |
+| `salt roster`      | WIP    |
+| `salt sync`        | WIP    |
+| `machines prepare` | WIP    |
+| `completion bash`  | Done¹  |
+| `completion zsh`   | Done¹  |
+| `help`             | Done¹  |
+
+¹ The output of the command is likely to change it's output but is not a "core" component.
+
 ### `k8sglue salt apply`
 
 1. k8sglue uses `salt-ssh` to trigger the Salt highstate from one of the salt-master(s).
