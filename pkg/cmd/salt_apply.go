@@ -21,6 +21,7 @@ import (
 
 	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // saltApplyCmd represents the apply command
@@ -29,10 +30,13 @@ var saltApplyCmd = &cobra.Command{
 	Short: "A brief description of your command",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("apply called")
-		return salt.Apply()
+		return salt.Apply(viper.GetString("sls-files"))
 	},
 }
 
 func init() {
 	saltCmd.AddCommand(saltApplyCmd)
+
+	saltApplyCmd.Flags().StringP("sls-files", "s", "", "Which SLS files to call for state.apply, if none given high state")
+	viper.BindPFlag("sls-files", saltApplyCmd.Flags().Lookup("sls-files"))
 }

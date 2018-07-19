@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -29,13 +30,21 @@ var saltKeysAcceptCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("accept called")
 
-		return salt.KeyAcceptList(viper.GetStringSlice("host"))
+		hosts := viper.GetStringSlice("host")
+		if len(hosts) == 0 && !viper.GetBool("all") {
+			return fmt.Errorf("no all or host flag given")
+		} else if viper.GetBool("all") {
+			hosts = config.Cfg.Machines.GetHosts()
+		}
+
+		return salt.KeyAccept(hosts)
 	},
 }
 
 func init() {
 	saltKeysCmd.AddCommand(saltKeysAcceptCmd)
 	saltKeysAcceptCmd.Flags().StringSlice("hosts", []string{}, "a list of hosts")
-	saltKeysAcceptCmd.MarkFlagRequired("hosts")
+	saltKeysAcceptCmd.Flags().Bool("all", false, "if all hosts in the cluster machines list should be used")
 	viper.BindPFlag("hosts", saltKeysAcceptCmd.Flags().Lookup("hosts"))
+	viper.BindPFlag("all", saltKeysAcceptCmd.Flags().Lookup("all"))
 }

@@ -1,8 +1,15 @@
 ---
-machines:
-  node1:
-    host: 192.168.1.11
-  node2:
-    host: 192.168.1.12
-  node3:
-    host: 192.168.1.13
+node1:
+  host: 192.168.1.11
+  minion_opts:
+    grains:
+      roles:
+       - salt-master
+node2:
+  host: 192.168.1.12
+  minion_opts:
+    grains:
+      roles:
+       - salt-master
+node3:
+  host: 192.168.1.13

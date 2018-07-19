@@ -32,7 +32,7 @@ func Init() error {
 		return err
 	}
 
-	if err := Apply(); err != nil {
+	if err := Apply(HighState); err != nil {
 		return err
 	}
 

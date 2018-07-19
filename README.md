@@ -27,23 +27,24 @@ This project is a total work in progress right now!
 
 #### Status
 
-| Command            | Status |
-| ------------------ | ------ |
-| `salt apply`       | WIP    |
-| `salt certs`       | WIP    |
-| `salt init`        | WIP    |
-| `salt keys`        | WIP    |
-| `salt keys accept` | WIP    |
-| `salt keys remove` | WIP    |
-| `salt ping`        | WIP    |
-| `salt roster`      | WIP    |
-| `salt sync`        | WIP    |
-| `machines prepare` | WIP    |
-| `completion bash`  | Done¹  |
-| `completion zsh`   | Done¹  |
-| `help`             | Done¹  |
+| Command                    | Status |
+| -------------------------- | ------ |
+| `k8sglue salt apply`       | Works² |
+| `k8sglue salt certs`       | TODO   |
+| `k8sglue salt init`        | WIP    |
+| `k8sglue salt keys`        | Done¹  |
+| `k8sglue salt keys accept` | Works² | 
+| `k8sglue salt keys remove` | WIP    |
+| `k8sglue salt ping`        | Works² |
+| `k8sglue salt roster`      | Works² |
+| `k8sglue salt sync`        | WIP    |
+| `k8sglue machines prepare` | WIP    |
+| `k8sglue completion bash`  | Done¹  |
+| `k8sglue completion zsh`   | Done¹  |
+| `k8sglue help`             | Done¹  |
 
-¹ The output of the command is likely to change it's output but is not a "core" component.
+¹ The function of the command (if any) is unlikely to change it's behavior and is not a "core" component.
+² Command is currently "stable" but it's behavior may change in the future.
 
 ### `k8sglue salt apply`
 

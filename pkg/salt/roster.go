@@ -22,15 +22,5 @@ import (
 
 // Roster prints out the master roster file
 func Roster() ([]byte, error) {
-	opts := map[string]interface{}{
-		"grains": map[string]interface{}{
-			"roles": []string{
-				"salt-master",
-			},
-		},
-	}
-	if err := config.Cfg.Cluster.Salt.Masters.AddMinionOpts(opts, true); err != nil {
-		return nil, err
-	}
-	return config.Cfg.Cluster.Salt.Masters.ToByte()
+	return config.Cfg.Machines.ToByte()
 }

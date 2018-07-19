@@ -14,7 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Package cmd
-// k8sglue cmd package contains all available commands with their subcommands.
+package salt
 
-package cmd
+// Certs generate certificates for salt-master(s)
+func Certs() error {
+	// TODO Implement salt.Certs() function
+	return nil
+}

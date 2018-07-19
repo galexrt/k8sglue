@@ -23,27 +23,12 @@ import (
 // Cluster holds special cluster information.
 type Cluster struct {
 	Salt       Salt       `yaml:"salt"`
-	Hostnames  Hostnames  `yaml:"hostnames"`
 	Kubernetes Kubernetes `yaml:"kubernetes"`
 }
 
 // Salt will hold all required information for cluster setup.
 type Salt struct {
 	DefaultRosterData saltmodels.RosterData `yaml:"defaultRosterData"`
-}
-
-// Hostnames holds info about which hostnames/addresses to use for certain services
-type Hostnames struct {
-	Salt       HostnamesSalt       `yaml:"salt"`
-	Kubernetes HostnamesKubernetes `yaml:"kubernetes"`
-}
-
-// HostnamesSalt
-type HostnamesSalt struct {
-}
-
-// HostnamesKubernetes
-type HostnamesKubernetes struct {
 }
 
 // Kubernetes will hold all Kubernetes and kubeadm related settings.

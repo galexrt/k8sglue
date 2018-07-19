@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Package cmd contains the k8sglue commands with their subcommands.
 package cmd
 
 import (
@@ -48,7 +49,7 @@ For more information refer to the README.md and the docs.`,
 		if viper.GetString("cluster") == "" {
 			return fmt.Errorf(`required flag(s) "cluster" not set`)
 		}
-		if err := config.Load(viper.GetString("cluster")); err != nil {
+		if err := config.Load(viper.GetString("cluster"), viper.GetString("machines")); err != nil {
 			return err
 		}
 		SetLogLevel()
@@ -62,8 +63,12 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&logLevelRaw, "log-level", "INFO", "Set log level")
 
-	rootCmd.PersistentFlags().String("cluster", "", "Cluster config file")
+	rootCmd.PersistentFlags().String("cluster", "", "Cluster settings file")
+	rootCmd.PersistentFlags().String("machines", "", "Cluster machines file")
+	rootCmd.PersistentFlags().String("force", "", "Force the actions being run")
+	viper.BindPFlag("force", rootCmd.PersistentFlags().Lookup("force"))
 	viper.BindPFlag("cluster", rootCmd.PersistentFlags().Lookup("cluster"))
+	viper.BindPFlag("machines", rootCmd.PersistentFlags().Lookup("machines"))
 }
 
 // SetLogLevel parses the raw log level and sets it as the global log level

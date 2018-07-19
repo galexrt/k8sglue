@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -27,8 +28,11 @@ var saltKeysRemoveCmd = &cobra.Command{
 	Short: "A brief description of your command",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("remove called")
-
-		return nil
+		hosts := viper.GetStringSlice("host")
+		if len(hosts) == 0 {
+			return fmt.Errorf("no host flag given")
+		}
+		return salt.KeyRemove(hosts)
 	},
 }
 

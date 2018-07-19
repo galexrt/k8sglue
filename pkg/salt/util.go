@@ -24,6 +24,7 @@ import (
 	"path"
 	"text/template"
 
+	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/util"
 )
@@ -33,6 +34,23 @@ const (
 	RosterFileName = "roster-salt-master"
 	// SaltfileName salt-ssh config file name
 	SaltfileName = "Saltfile"
+)
+
+const (
+	// LogLevelCritical Salt log level critical
+	LogLevelCritical = "critical"
+	// LogLevelError Salt log level error
+	LogLevelError = "error"
+	// LogLevelWarning Salt log level warning
+	LogLevelWarning = "warning"
+	// LogLevelInfo Salt log level info
+	LogLevelInfo = "info"
+	// LogLevelDebug Salt log level debug
+	LogLevelDebug = "debug"
+	// LogLevelTrace Salt log level
+	LogLevelTrace = "trace"
+	// DefaultLogLevel Default log level for executed salt commands
+	DefaultLogLevel = LogLevelWarning
 )
 
 var saltfile = `salt-ssh:
@@ -74,13 +92,33 @@ func templateConfigFile(name, in string, additional map[string]interface{}) (str
 	return wr.String(), err
 }
 
+// CapnslogLogLevelToSalt convert capnslog log level to salt equivalent
+func CapnslogLogLevelToSalt(logLevel capnslog.LogLevel) string {
+	switch logLevel {
+	case capnslog.CRITICAL:
+		return LogLevelCritical
+	case capnslog.ERROR:
+		return LogLevelError
+	case capnslog.WARNING:
+		return LogLevelWarning
+	case capnslog.INFO:
+		return LogLevelInfo
+	case capnslog.DEBUG:
+		return LogLevelDebug
+	case capnslog.TRACE:
+		return LogLevelTrace
+	}
+	logger.Warningf("could not convert capnslog log level to salt, defaulting to %s", DefaultLogLevel)
+	return DefaultLogLevel
+}
+
 func getSaltSSHDefaultArgs() []string {
 	return []string{
 		//"-w",
 		fmt.Sprintf("--saltfile=%s", path.Join(config.Cfg.TempDir, SaltfileName)),
 		"--roster=flat",
 		fmt.Sprintf("--roster-file=%s", path.Join(config.Cfg.TempDir, RosterFileName)),
-		"--log-level=info",
+		fmt.Sprintf("--log-level=%s", CapnslogLogLevelToSalt(config.Cfg.LogLevel)),
 		"--ignore-host-keys",
 	}
 }

@@ -17,11 +17,9 @@ limitations under the License.
 package config
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
-	"path/filepath"
 
 	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/models"
@@ -32,7 +30,7 @@ import (
 // Config holds all the configs and a cluster if loaded
 type Config struct {
 	Cluster  *models.Cluster
-	Machines []saltmodels.Roster
+	Machines *saltmodels.Roster
 	LogLevel capnslog.LogLevel
 	StartDir string
 	SaltDir  string
@@ -61,7 +59,7 @@ func Init(appName string) error {
 
 	Cfg = &Config{
 		Cluster:  &models.Cluster{},
-		Machines: []saltmodels.Roster{},
+		Machines: &saltmodels.Roster{},
 		LogLevel: capnslog.INFO,
 		SaltDir:  saltDir,
 		TempDir:  tempDir,
@@ -71,11 +69,21 @@ func Init(appName string) error {
 }
 
 // Load load cluster config into Cfg variable
-func Load(configPath string) error {
+func Load(configPath, machinesPath string) error {
 	cluster, err := LoadCluster(configPath)
+	if err != nil {
+		return err
+	}
 	cluster.Salt.DefaultRosterData.Host = ""
 	Cfg.Cluster = cluster
-	return err
+
+	machines, err := LoadMachines(machinesPath)
+	if err != nil {
+		return err
+	}
+
+	Cfg.Machines = machines
+	return nil
 }
 
 // LoadCluster load a cluster config
@@ -89,20 +97,6 @@ func LoadCluster(configPath string) (*models.Cluster, error) {
 		return nil, err
 	}
 	return cluster, nil
-}
-
-// LoadMachines load all machines files
-func LoadMachines(patternPath string) (*saltmodels.Roster, error) {
-	var machines *saltmodels.Roster
-	paths, err := filepath.Glob(patternPath)
-	if err != nil {
-		return nil, nil
-	}
-	for path := range paths {
-		fmt.Printf("TEST: %+v\n", path)
-	}
-
-	return machines, nil
 }
 
 func loadYAML(configPath string) ([]byte, error) {

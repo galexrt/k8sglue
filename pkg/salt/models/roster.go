@@ -17,6 +17,9 @@ limitations under the License.
 package models
 
 import (
+	"fmt"
+
+	"github.com/galexrt/k8sglue/pkg/util"
 	"github.com/imdario/mergo"
 	"gopkg.in/yaml.v2"
 )
@@ -40,11 +43,22 @@ type RosterData struct {
 	CMDUmask   uint8                  `yaml:"cmd_umask,omitempty"`
 }
 
+// Merge merge Roster together
+func (r Roster) Merge(src Roster) error {
+	for k, v := range src {
+		if _, ok := r[k]; ok {
+			return fmt.Errorf("machine %s already in roster", k)
+		}
+		r[k] = v
+	}
+	return nil
+}
+
 // GetHosts returns all `RosterData.Host` names in a []string
 func (r Roster) GetHosts() []string {
-	hosts := make([]string, len(r))
-	for _, host := range r {
-		hosts = append(hosts, host.Host)
+	hosts := []string{}
+	for host := range r {
+		hosts = append(hosts, host)
 	}
 	return hosts
 }
@@ -62,15 +76,9 @@ func (r Roster) GetEntriesByRole(role string) Roster {
 
 func checkForRole(minionOpts map[string]interface{}, role string) bool {
 	if _, ok := minionOpts["grains"]; ok {
-		grains, cOk := minionOpts["grains"].(map[string]interface{})
-		if !cOk {
-			return false
-		}
+		grains := util.ConvertMapInterfaceToMapStringInterface(minionOpts["grains"].(map[interface{}]interface{}))
 		if _, ok = grains["roles"]; ok {
-			roles, cOk := grains["roles"].([]string)
-			if !cOk {
-				return false
-			}
+			roles := util.ConvertInterfaceSliceToStringSlice(grains["roles"].([]interface{}))
 			for _, r := range roles {
 				if r == role {
 					return true

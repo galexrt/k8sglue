@@ -22,23 +22,36 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
-	"sync"
 
 	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/executor"
 )
 
-// TODO Look into better way to do this (e.g. copy whole minion public fingerprint to salt-master(s) directly
-var saltKeyAcceptMagic = `if salt-key --out=pprint -f '%s' | grep -q '%s'; then
-	salt-key --out=json -q -y -a %s
-else
-	echo "Key not found on this master"
+// TODO Add retry logic for the bash script
+var saltKeyAcceptMagic = `machines=(
+%s
+)
+fingerprints=(
+%s
+)
+ERROR=0
+for (( i = 0; i < ${#machines[@]}; ++i)); do
+	if salt-key --out=pprint -f "${machines[i]}" | grep -q "${fingerprints[i]}"; then
+		echo "Accepting key of ${machines[i]}"
+		salt-key --out=json -q -y -a "${machines[i]}"
+	else
+		echo "Key for minion ${machines[i]} not found on this master."
+		ERROR=1
+	fi
+done
+if [ "${ERROR}" = "1" ]; then
+	echo "At least one minion failed to be found on this master."
 	exit 1
 fi`
 
 // KeyAccept use salt-ssh to get the fingerprint of the minion from **one** server
 // and then accept it on each salt-master(s)
-func KeyAccept(hostname string) error {
+func KeyAccept(machines []string) error {
 	outTempFile, err := ioutil.TempFile(os.TempDir(), "k8sglue")
 	if err != nil {
 		return err
@@ -51,7 +64,8 @@ func KeyAccept(hostname string) error {
 		"--out=json",
 		"--static",
 		fmt.Sprintf("--out-file=%s", outTempFile.Name()),
-		hostname,
+		"--list",
+		strings.Join(machines, ","),
 		"cmd.run",
 		"salt-call --out=json --local key.finger",
 	)
@@ -70,17 +84,28 @@ func KeyAccept(hostname string) error {
 		return err
 	}
 
-	returnParsed := make(map[string]string, 1)
-	if err = json.Unmarshal([]byte(outParsed[hostname]), &returnParsed); err != nil {
-		return err
+	fingerprints := map[string]string{}
+
+	for host, rawReturn := range outParsed {
+		returnParsed := make(map[string]string, 1)
+		if err = json.Unmarshal([]byte(rawReturn), &returnParsed); err != nil {
+			return err
+		}
+		fingerprint := returnParsed["local"]
+		if len(fingerprint) == 0 {
+			return fmt.Errorf("salt-minion on %s did not return key fingerprint", host)
+		}
+		fingerprints[host] = fingerprint
 	}
 
-	fingerprint := returnParsed["local"]
-	if len(fingerprint) == 0 {
-		return fmt.Errorf("salt-minion on %s did not return key fingerprint", hostname)
+	hostsArray := []string{}
+	fingerprintsArray := []string{}
+	for host, fingerprint := range fingerprints {
+		hostsArray = append(hostsArray, host)
+		fingerprintsArray = append(fingerprintsArray, fingerprint)
 	}
 
-	mastersRoster := config.Cfg.Cluster.Salt.Masters.GetEntriesByRole("salt-master")
+	mastersRoster := config.Cfg.Machines.GetEntriesByRole("salt-master")
 	if len(mastersRoster) == 0 {
 		return fmt.Errorf("no nodes with role salt-master found")
 	}
@@ -95,31 +120,14 @@ func KeyAccept(hostname string) error {
 		"-L",
 		masters,
 		"cmd.run",
-		fmt.Sprintf(saltKeyAcceptMagic, hostname, fingerprint, hostname),
+		fmt.Sprintf(saltKeyAcceptMagic, strings.Join(hostsArray, "\n"), strings.Join(fingerprintsArray, "\n")),
 	)
 
 	return executor.ExecOutToLog("salt-ssh salt-key", SaltSSHCommand, args)
 }
 
-// KeyAcceptList parallel loop over a list of machines and running KeyAccept on them
-func KeyAcceptList(machines []string) error {
-	errs := make(chan error, 1)
-	wg := sync.WaitGroup{}
-	for _, host := range machines {
-		wg.Add(1)
-		go func(host string) {
-			defer wg.Done()
-			if err := KeyAccept(host); err != nil {
-				errs <- err
-			}
-		}(host)
-	}
-	wg.Wait()
-
-	var err error
-	for err = range errs {
-		logger.Errorf("error during key accept. %+v\n", err)
-	}
-
-	return err
+// KeyRemove removes minions keys from salt-master(s)
+func KeyRemove(machines []string) error {
+	// TODO Implement functionality
+	return nil
 }

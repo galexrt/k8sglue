@@ -14,24 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package salt
+package cmd
 
 import (
-	"github.com/galexrt/k8sglue/pkg/executor"
+	"fmt"
+
+	"github.com/galexrt/k8sglue/pkg/salt"
+	"github.com/spf13/cobra"
 )
 
-// HighState definition of high state for `state.apply` call here
-const HighState = ""
+// saltCertsCmd represents the certs command
+var saltCertsCmd = &cobra.Command{
+	Use:   "certs",
+	Short: "A brief description of your command",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("certs called")
+		return salt.Certs()
+	},
+}
 
-// Apply trigger Salt highstate using salt-ssh on the salt-master(s)
-func Apply(slsFiles string) error {
-	args := append(getSaltSSHDefaultArgs(),
-		"*",
-		"state.apply",
-	)
-	if slsFiles != "" {
-		args = append(args, slsFiles)
-	}
-
-	return executor.ExecOutToLog("salt-ssh state.apply", SaltSSHCommand, args)
+func init() {
+	saltCmd.AddCommand(saltCertsCmd)
 }
