@@ -5,15 +5,15 @@ docker-ce repo:
     - baseurl: https://download.docker.com/linux/fedora/$releasever/$basearch/stable
     - gpgcheck: 1
     - gpgkey: https://download.docker.com/linux/fedora/gpg
-    - require_in:
-      - pkg: docker-ce
 
 docker-ce package:
   pkg.latest:
     - name: docker-ce
     - refresh: True
     - require:
-      - pkg_repo: docker-ce
+      - pkgrepo: docker-ce
+
+docker service running:
   service.running:
     - require:
       - pkg: docker-ce

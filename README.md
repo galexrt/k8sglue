@@ -31,7 +31,7 @@ This project is a total work in progress right now!
 | -------------------------- | ------ |
 | `k8sglue salt apply`       | Works² |
 | `k8sglue salt certs`       | WIP    |
-| `k8sglue salt init`        | WIP    |
+| `k8sglue salt init`        | Works² |
 | `k8sglue salt keys`        | Done¹  |
 | `k8sglue salt keys accept` | Works² |
 | `k8sglue salt keys remove` | Works² |
