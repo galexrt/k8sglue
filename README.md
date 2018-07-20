@@ -54,7 +54,7 @@ This project is a total work in progress right now!
 ### `k8sglue salt certs`
 
 1. k8sglue generate SSL certificates with all the DNS names and IPs for the given machines that should be salt-master(s).
-1. k8sglue synces SSL certificates for the salt-master(s) using `salt-ssh`.
+1. k8sglue syncs SSL certificates for the salt-master(s) using `salt-ssh`.
 * Results in: salt-master(s) certificates generated and synced to the salt-master(s).
 
 > **NOTE** This needs to be run when new salt-master(s) are added.

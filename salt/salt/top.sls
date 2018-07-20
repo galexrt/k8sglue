@@ -1,11 +1,11 @@
-{% import_yaml "config.yml" as config %}
+{% import_yaml "/srv/salt/config.yml" as config %}
 base:
   '*':
     - common
     - salt-minion
-  'G@roles:kubernetes':
+  'G@roles:kubernetes-*':
     - kubernetes-basics
-{%- if config.container_runtime == "crio" %}
+{%- if config.containerRuntime == "crio" %}
     - crio
 {%- else %}
     - docker

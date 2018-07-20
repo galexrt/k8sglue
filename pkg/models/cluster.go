@@ -22,16 +22,18 @@ import (
 
 // Cluster holds special cluster information.
 type Cluster struct {
-	Salt       Salt       `yaml:"salt"`
+	General    General    `yaml:"general"`
 	Kubernetes Kubernetes `yaml:"kubernetes"`
+	Salt       Salt       `yaml:"salt"`
 }
 
-// Salt will hold all required information for cluster setup.
-type Salt struct {
-	DefaultRosterData saltmodels.RosterData `yaml:"defaultRosterData"`
+// General holds the config file which will be used for the actual salt state applies.
+type General struct {
+	ContainerRuntime string   `yaml:"containerRuntime"`
+	Nameservers      []string `yaml:"nameservers"`
 }
 
-// Kubernetes will hold all Kubernetes and kubeadm related settings.
+// Kubernetes holds all Kubernetes and kubeadm related settings.
 type Kubernetes struct {
 	Kubeadm Kubeadm `yaml:"kubeadm"`
 }
@@ -39,4 +41,9 @@ type Kubernetes struct {
 // Kubeadm contains kubeadm configurations which will be used for the cluster.
 type Kubeadm struct {
 	// TODO Add kubeadm settings, which is used on every node (Kubernetes master and worker)
+}
+
+// Salt holds all required information for cluster setup.
+type Salt struct {
+	DefaultRosterData saltmodels.RosterData `yaml:"defaultRosterData"`
 }

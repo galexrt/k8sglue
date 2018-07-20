@@ -31,7 +31,7 @@ func Sync(masters []string) error {
 		strings.Join(masters, ","),
 		"state.single",
 		"file.recurse",
-		"name=/srv/salt",
+		"name=/srv",
 		fmt.Sprintf("source=salt://%s", config.Cfg.SaltDir),
 		"dir_mode=0750",
 		"user=root",

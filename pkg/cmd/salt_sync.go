@@ -22,16 +22,12 @@ import (
 	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // saltSyncCmd represents the sync command
 var saltSyncCmd = &cobra.Command{
 	Use:   "sync",
 	Short: "Sync current (given) `salt` directory to all salt-master(s).",
-	PreRun: func(cmd *cobra.Command, args []string) {
-		viper.BindPFlag("hosts", cmd.Flags().Lookup("hosts"))
-	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("salt sync called")
 		if err := bootstrapCommand(cmd, true); err != nil {
@@ -48,7 +44,4 @@ var saltSyncCmd = &cobra.Command{
 
 func init() {
 	saltCmd.AddCommand(saltSyncCmd)
-
-	saltSyncCmd.Flags().StringSlice("hosts", []string{}, "a list of hosts")
-	saltSyncCmd.MarkFlagRequired("hosts")
 }

@@ -672,9 +672,9 @@ ssl:
 #     - /srv/salt/prod/services
 #     - /srv/salt/prod/states
 #
-#file_roots:
-#  base:
-#    - /srv/salt
+file_roots:
+  base:
+    - /srv/salt
 #
 
 # The master_roots setting configures a master-only copy of the file_roots dictionary,
@@ -842,9 +842,9 @@ ssl:
 # Pillar is laid out in the same fashion as the file server, with environments,
 # a top file and sls files. However, pillar data does not need to be in the
 # highstate format, and is generally just key/value pairs.
-#pillar_roots:
-#  base:
-#    - /srv/pillar
+pillar_roots:
+  base:
+    - /srv/pillar
 #
 #ext_pillar:
 #  - hiera: /etc/hiera.yaml
