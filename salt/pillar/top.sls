@@ -1,4 +1,5 @@
 ---
-selinux:
-  state: enforcing
-  type: targeted
+base:
+  '*':
+    - common
+    - headers

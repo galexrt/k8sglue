@@ -18,6 +18,7 @@ package util
 
 import (
 	"os"
+	"path/filepath"
 	"strconv"
 )
 
@@ -30,6 +31,24 @@ func CreateDirectory(path string, mode string) error {
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		if err = os.Mkdir(path, os.FileMode(n)); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// ReturnFullPath return full absolute path for a given path
+func ReturnFullPath(path string) (string, error) {
+	return filepath.Abs(path)
+}
+
+// Symlink create a symlink if it does not exist
+func Symlink(oldname, newname string) error {
+	if _, err := os.Stat(oldname); os.IsNotExist(err) {
+		return err
+	}
+	if _, err := os.Stat(newname); os.IsNotExist(err) {
+		if err = os.Symlink(oldname, newname); err != nil {
 			return err
 		}
 	}

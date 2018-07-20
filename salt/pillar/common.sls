@@ -1,3 +1,6 @@
+selinux:
+  state: enforcing
+  type: targeted
 containerRuntime: crio
 nameservers:
   - 1.1.1.1

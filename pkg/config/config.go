@@ -23,6 +23,7 @@ import (
 	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/models"
 	saltmodels "github.com/galexrt/k8sglue/pkg/salt/models"
+	"github.com/galexrt/k8sglue/pkg/util"
 	"github.com/spf13/viper"
 )
 
@@ -46,8 +47,14 @@ func Init(appName string) error {
 		return err
 	}
 
-	tempDir := viper.GetString("temp-dir")
-	saltDir := viper.GetString("salt-dir")
+	tempDir, err := util.ReturnFullPath(viper.GetString("temp-dir"))
+	if err != nil {
+		return err
+	}
+	saltDir, err := util.ReturnFullPath(viper.GetString("salt-dir"))
+	if err != nil {
+		return err
+	}
 
 	Cfg = &Config{
 		Cluster:  &models.Cluster{},

@@ -1,11 +1,12 @@
-{% import_yaml "/srv/salt/config.yml" as config %}
+{% set containerRuntime = pillar.get('containerRuntime', "crio") -%}
 base:
   '*':
     - common
     - salt-minion
+    - sysctl
   'G@roles:kubernetes-*':
     - kubernetes-basics
-{%- if config.containerRuntime == "crio" %}
+{%- if containerRuntime == "crio" %}
     - crio
 {%- else %}
     - docker

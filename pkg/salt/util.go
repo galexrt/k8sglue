@@ -60,8 +60,11 @@ var saltfile = `salt-ssh:
 
 var saltMasterConfig = `file_roots:
   base:
-    - {{ .Config.SaltDir }}
-    - {{ .Config.StartDir }}
+    - {{ .Config.TempDir }}/salt
+
+pillar_roots:
+  base:
+    - {{ .Config.TempDir }}/pillar
 
 root_dir: {{ .Config.TempDir }}
 pidfile: {{ .Config.TempDir }}/run/salt.pid
@@ -179,11 +182,23 @@ func PrepareSaltSSH() error {
 		return err
 	}
 	saltMasterConfigPath := path.Join(config.Cfg.TempDir, "etc", "master")
-	return ioutil.WriteFile(
+	if err = ioutil.WriteFile(
 		saltMasterConfigPath,
 		[]byte(rendered),
 		0640,
-	)
+	); err != nil {
+		return err
+	}
+
+	if err = util.Symlink(path.Join(config.Cfg.SaltDir, "salt"), path.Join(config.Cfg.TempDir, "salt")); err != nil {
+		return err
+	}
+
+	if err = util.Symlink(path.Join(config.Cfg.SaltDir, "pillar"), path.Join(config.Cfg.TempDir, "pillar")); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func generateTargetFlags(machines []string) []string {

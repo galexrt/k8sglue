@@ -3,6 +3,7 @@
     - user: root
     - group: root
     - mode: 755
+    - template: jinja
     - source: salt://common/etc/resolv.conf
 
 /etc/dhcp/dhclient-enter-hooks.d:

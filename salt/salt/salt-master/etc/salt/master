@@ -1,3 +1,4 @@
+{{ pillar['headers']['salt']['file'] }}
 {% raw %}
 ##### Primary configuration settings #####
 ##########################################
