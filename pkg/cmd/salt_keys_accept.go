@@ -27,6 +27,10 @@ import (
 var saltKeysAcceptCmd = &cobra.Command{
 	Use:   "accept",
 	Short: "Accept the salt-key of one or more machines on all salt-master(s).",
+	PreRun: func(cmd *cobra.Command, args []string) {
+		viper.BindPFlag("hosts", cmd.Flags().Lookup("hosts"))
+		viper.BindPFlag("all", cmd.Flags().Lookup("all"))
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("salt keys accept called")
 
@@ -34,7 +38,7 @@ var saltKeysAcceptCmd = &cobra.Command{
 			return err
 		}
 
-		hosts := viper.GetStringSlice("host")
+		hosts := viper.GetStringSlice("hosts")
 		if len(hosts) == 0 && !viper.GetBool("all") {
 			return fmt.Errorf("no all or host flag given")
 		} else if viper.GetBool("all") {
@@ -47,8 +51,7 @@ var saltKeysAcceptCmd = &cobra.Command{
 
 func init() {
 	saltKeysCmd.AddCommand(saltKeysAcceptCmd)
+
 	saltKeysAcceptCmd.Flags().StringSlice("hosts", []string{}, "a list of hosts")
 	saltKeysAcceptCmd.Flags().Bool("all", false, "if all hosts in the cluster machines list should be used")
-	viper.BindPFlag("hosts", saltKeysAcceptCmd.Flags().Lookup("hosts"))
-	viper.BindPFlag("all", saltKeysAcceptCmd.Flags().Lookup("all"))
 }

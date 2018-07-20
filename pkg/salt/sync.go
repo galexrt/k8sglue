@@ -17,17 +17,22 @@ limitations under the License.
 package salt
 
 import (
+	"fmt"
+	"strings"
+
+	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/executor"
 )
 
 // Sync syncs current local `salt/` directory to the salt-master(s).
-func Sync() error {
+func Sync(masters []string) error {
 	args := append(getSaltSSHDefaultArgs(),
-		"*",
+		"-L",
+		strings.Join(masters, ","),
 		"state.single",
 		"file.recurse",
 		"name=/srv/salt",
-		"source=salt://salt",
+		fmt.Sprintf("source=salt://%s", config.Cfg.SaltDir),
 		"dir_mode=0750",
 		"user=root",
 		"group=root",

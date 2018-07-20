@@ -29,13 +29,18 @@ import (
 var saltApplyCmd = &cobra.Command{
 	Use:   "apply",
 	Short: "Trigger salt (high) state.",
+	PreRun: func(cmd *cobra.Command, args []string) {
+		viper.BindPFlag("hosts", cmd.Flags().Lookup("hosts"))
+		viper.BindPFlag("all", cmd.Flags().Lookup("all"))
+		viper.BindPFlag("sls-files", cmd.Flags().Lookup("sls-files"))
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("salt apply called")
 		if err := bootstrapCommand(cmd, true); err != nil {
 			return err
 		}
 
-		hosts := viper.GetStringSlice("host")
+		hosts := viper.GetStringSlice("hosts")
 		if len(hosts) == 0 && !viper.GetBool("all") {
 			return fmt.Errorf("no all or host flag given")
 		} else if viper.GetBool("all") {
@@ -48,10 +53,7 @@ var saltApplyCmd = &cobra.Command{
 func init() {
 	saltCmd.AddCommand(saltApplyCmd)
 
-	saltApplyCmd.Flags().StringSlice("hosts", []string{}, "a list of hosts")
+	saltApplyCmd.Flags().StringSlice("hosts", []string{}, "a list of hosts comma separated")
 	saltApplyCmd.Flags().Bool("all", false, "if all hosts in the cluster machines list should be used")
 	saltApplyCmd.Flags().StringP("sls-files", "s", "", "Which SLS files to call for state.apply, if none given high state")
-	viper.BindPFlag("hosts", saltApplyCmd.Flags().Lookup("hosts"))
-	viper.BindPFlag("all", saltApplyCmd.Flags().Lookup("all"))
-	viper.BindPFlag("sls-files", saltApplyCmd.Flags().Lookup("sls-files"))
 }

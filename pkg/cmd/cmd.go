@@ -24,6 +24,7 @@ import (
 	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/salt"
+	"github.com/galexrt/k8sglue/pkg/util"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -99,6 +100,10 @@ func bootstrapCommand(cmd *cobra.Command, prepareSaltSSH bool) error {
 	SetLogLevel()
 
 	if prepareSaltSSH {
+		if err := util.CreateDirectory(config.Cfg.TempDir, "0750"); err != nil {
+			return err
+		}
+
 		if err := salt.PrepareSaltSSH(); err != nil {
 			return err
 		}

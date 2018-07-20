@@ -34,7 +34,7 @@ This project is a total work in progress right now!
 | `k8sglue salt init`        | WIP    |
 | `k8sglue salt keys`        | Done¹  |
 | `k8sglue salt keys accept` | Works² |
-| `k8sglue salt keys remove` | WIP    |
+| `k8sglue salt keys remove` | Works² |
 | `k8sglue salt ping`        | Works² |
 | `k8sglue salt roster`      | Works² |
 | `k8sglue salt sync`        | WIP    |

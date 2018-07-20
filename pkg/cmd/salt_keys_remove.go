@@ -26,23 +26,22 @@ import (
 var saltKeysRemoveCmd = &cobra.Command{
 	Use:   "remove",
 	Short: "Remove the salt-key of one or more machines on all salt-master(s).",
+	PreRun: func(cmd *cobra.Command, args []string) {
+		viper.BindPFlag("hosts", cmd.Flags().Lookup("hosts"))
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("salt keys remove called")
 		if err := bootstrapCommand(cmd, true); err != nil {
 			return err
 		}
 
-		hosts := viper.GetStringSlice("host")
-		if len(hosts) == 0 {
-			return fmt.Errorf("no host flag given")
-		}
-		return salt.KeyRemove(hosts)
+		return salt.KeyRemove(viper.GetStringSlice("hosts"))
 	},
 }
 
 func init() {
 	saltKeysCmd.AddCommand(saltKeysRemoveCmd)
+
 	saltKeysRemoveCmd.Flags().StringSlice("hosts", []string{}, "a list of hosts")
 	saltKeysRemoveCmd.MarkFlagRequired("hosts")
-	viper.BindPFlag("hosts", saltKeysRemoveCmd.Flags().Lookup("hosts"))
 }

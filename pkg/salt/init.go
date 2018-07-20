@@ -21,21 +21,18 @@ import (
 
 	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/config"
-	"github.com/spf13/viper"
 )
 
 var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/pkg/salt", "salt")
 
 // Init call steps necessary to init salt-master(s)
-func Init(machines []string) error {
-	hosts := viper.GetStringSlice("host")
-	if len(hosts) == 0 && !viper.GetBool("all") {
-		return fmt.Errorf("no all or host flag given")
-	} else if viper.GetBool("all") {
-		hosts = config.Cfg.Machines.GetHosts()
+func Init() error {
+	masters := config.Cfg.Machines.GetEntriesByRole("salt-master").GetHosts()
+	if len(masters) == 0 {
+		return fmt.Errorf("no nodes with role salt-master found")
 	}
 
-	if err := Ping(hosts); err != nil {
+	if err := Ping(masters); err != nil {
 		return err
 	}
 
@@ -43,11 +40,11 @@ func Init(machines []string) error {
 		return err
 	}
 
-	if err := Apply([]string{}, HighState); err != nil {
+	if err := Sync(masters); err != nil {
 		return err
 	}
 
-	if err := Sync(); err != nil {
+	if err := Apply(masters, HighState); err != nil {
 		return err
 	}
 
