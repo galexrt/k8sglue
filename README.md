@@ -30,14 +30,14 @@ This project is a total work in progress right now!
 | Command                    | Status |
 | -------------------------- | ------ |
 | `k8sglue salt apply`       | Works² |
-| `k8sglue salt certs`       | TODO   |
+| `k8sglue salt certs`       | WIP    |
 | `k8sglue salt init`        | WIP    |
 | `k8sglue salt keys`        | Done¹  |
 | `k8sglue salt keys accept` | Works² |
 | `k8sglue salt keys remove` | Works² |
 | `k8sglue salt ping`        | Works² |
 | `k8sglue salt roster`      | Works² |
-| `k8sglue salt sync`        | WIP    |
+| `k8sglue salt sync`        | Works² |
 | `k8sglue machines prepare` | WIP    |
 | `k8sglue completion bash`  | Done¹  |
 | `k8sglue completion zsh`   | Done¹  |

@@ -36,7 +36,7 @@ func Init() error {
 		return err
 	}
 
-	if _, _, err := Secrets(); err != nil {
+	if _, _, err := Certs(); err != nil {
 		return err
 	}
 

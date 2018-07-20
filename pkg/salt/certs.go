@@ -17,7 +17,7 @@ limitations under the License.
 package salt
 
 // Certs generate certificates for salt-master(s)
-func Certs() error {
+func Certs() ([]byte, []byte, error) {
 	// TODO Implement salt.Certs() function
-	return nil
+	return nil, nil, nil
 }
