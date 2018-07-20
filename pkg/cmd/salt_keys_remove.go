@@ -25,9 +25,13 @@ import (
 // saltKeysRemoveCmd represents the remove command
 var saltKeysRemoveCmd = &cobra.Command{
 	Use:   "remove",
-	Short: "A brief description of your command",
+	Short: "Remove the salt-key of one or more machines on all salt-master(s).",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("remove called")
+		fmt.Println("salt keys remove called")
+		if err := bootstrapCommand(cmd, true); err != nil {
+			return err
+		}
+
 		hosts := viper.GetStringSlice("host")
 		if len(hosts) == 0 {
 			return fmt.Errorf("no host flag given")

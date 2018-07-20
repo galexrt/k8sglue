@@ -105,29 +105,17 @@ func KeyAccept(machines []string) error {
 		fingerprintsArray = append(fingerprintsArray, fingerprint)
 	}
 
-	mastersRoster := config.Cfg.Machines.GetEntriesByRole("salt-master")
-	if len(mastersRoster) == 0 {
+	masters := config.Cfg.Machines.GetEntriesByRole("salt-master").GetHosts()
+	if len(masters) == 0 {
 		return fmt.Errorf("no nodes with role salt-master found")
 	}
 
-	var masters string
-	for master := range mastersRoster {
-		masters += master + ","
-	}
-	masters = strings.TrimRight(masters, ",")
-
 	args = append(getSaltSSHDefaultArgs(),
 		"-L",
-		masters,
+		strings.Join(masters, ","),
 		"cmd.run",
 		fmt.Sprintf(saltKeyAcceptMagic, strings.Join(hostsArray, "\n"), strings.Join(fingerprintsArray, "\n")),
 	)
 
 	return executor.ExecOutToLog("salt-ssh salt-key", SaltSSHCommand, args)
-}
-
-// KeyRemove removes minions keys from salt-master(s)
-func KeyRemove(machines []string) error {
-	// TODO Implement functionality
-	return nil
 }

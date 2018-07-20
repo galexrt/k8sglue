@@ -26,9 +26,13 @@ import (
 // saltSyncCmd represents the sync command
 var saltSyncCmd = &cobra.Command{
 	Use:   "sync",
-	Short: "A brief description of your command",
+	Short: "Sync current (given) `salt` directory to all salt-master(s).",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("salt sync called")
+		if err := bootstrapCommand(cmd, true); err != nil {
+			return err
+		}
+
 		return salt.Sync()
 	},
 }

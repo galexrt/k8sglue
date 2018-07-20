@@ -17,21 +17,36 @@ limitations under the License.
 package salt
 
 import (
+	"fmt"
+	"strings"
+
+	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/executor"
 )
 
-// HighState definition of high state for `state.apply` call here
-const HighState = ""
+// TODO Implement functionality
+var saltKeyRemoveMagic = `
+machines=(
+%s
+)
+for (( i = 0; i < ${#machines[@]}; ++i)); do
+	salt-key --out=json -q -y -d "${machines[i]}"
+	echo "Removed key for minion ${machines[i]}"
+done`
 
-// Apply trigger Salt highstate using salt-ssh on the salt-master(s)
-func Apply(machines []string, slsFiles string) error {
-	args := append(getSaltSSHDefaultArgs(),
-		generateTargetFlags(machines)...,
-	)
-	args = append(args, "state.apply")
-	if slsFiles != "" {
-		args = append(args, slsFiles)
+// KeyRemove removes minions keys from salt-master(s)
+func KeyRemove(machines []string) error {
+	masters := config.Cfg.Machines.GetEntriesByRole("salt-master").GetHosts()
+	if len(masters) == 0 {
+		return fmt.Errorf("no nodes with role salt-master found")
 	}
 
-	return executor.ExecOutToLog("salt-ssh state.apply", SaltSSHCommand, args)
+	args := append(getSaltSSHDefaultArgs(),
+		"-L",
+		strings.Join(masters, ","),
+		"cmd.run",
+		fmt.Sprintf(saltKeyRemoveMagic, strings.Join(machines, "\n")),
+	)
+
+	return executor.ExecOutToLog("salt-ssh salt-key", SaltSSHCommand, args)
 }

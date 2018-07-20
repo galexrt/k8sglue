@@ -14,18 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package cmd
+package config
 
 import (
-	"github.com/spf13/cobra"
+	"github.com/galexrt/k8sglue/pkg/models"
+	yaml "gopkg.in/yaml.v2"
 )
 
-// machinesCmd represents the machines command
-var machinesCmd = &cobra.Command{
-	Use:   "machines",
-	Short: "Machines management commands.",
-}
-
-func init() {
-	rootCmd.AddCommand(machinesCmd)
+// LoadCluster load a cluster config
+func LoadCluster(configPath string) (*models.Cluster, error) {
+	out, err := loadYAML(configPath)
+	if err != nil {
+		return nil, err
+	}
+	cluster := &models.Cluster{}
+	if err := yaml.Unmarshal(out, cluster); err != nil {
+		return nil, err
+	}
+	return cluster, nil
 }

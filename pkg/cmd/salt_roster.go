@@ -26,8 +26,15 @@ import (
 // saltRosterCmd represents the roster command
 var saltRosterCmd = &cobra.Command{
 	Use:   "roster",
-	Short: "A brief description of your command",
+	Short: "Print out the generated salt-master(s) roster file.",
+	Long: `Print out the generated salt-master(s) roster file.
+That is done by looking at the machines file given through the flag.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("salt roster called")
+		if err := bootstrapCommand(cmd, true); err != nil {
+			return err
+		}
+
 		out, err := salt.Roster()
 		if err != nil {
 			return err

@@ -17,17 +17,13 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
 )
 
 // saltCmd represents the salt command
 var saltCmd = &cobra.Command{
 	Use:   "salt",
-	Short: "A brief description of your command",
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		return salt.PrepareSaltSSH()
-	},
+	Short: "Salt master management command",
 }
 
 func init() {

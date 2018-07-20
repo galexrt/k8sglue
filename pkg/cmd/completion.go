@@ -23,7 +23,7 @@ import (
 // completionCmd represents the completion command
 var completionCmd = &cobra.Command{
 	Use:   "completion",
-	Short: "Output bash or zsh completion code",
+	Short: "Shell command completion",
 }
 
 func init() {

@@ -19,12 +19,11 @@ package config
 import (
 	"io/ioutil"
 	"os"
-	"path"
 
 	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/models"
 	saltmodels "github.com/galexrt/k8sglue/pkg/salt/models"
-	yaml "gopkg.in/yaml.v2"
+	"github.com/spf13/viper"
 )
 
 // Config holds all the configs and a cluster if loaded
@@ -42,28 +41,21 @@ var Cfg *Config
 
 // Init creates a new empty Config and "saves" it to Cfg
 func Init(appName string) error {
-	/* TODO Uncomment when testing is done
-	tempDir, err := ioutil.TempDir(os.TempDir(), appName)
-	if err != nil {
-		return nil
-	}*/
-	tempDir := "/tmp/k8sglue"
-
 	startDir, err := os.Getwd()
 	if err != nil {
 		return err
 	}
 
-	// TODO make configurable by flag
-	saltDir := path.Join(startDir, "salt")
+	tempDir := viper.GetString("temp-dir")
+	saltDir := viper.GetString("salt-dir")
 
 	Cfg = &Config{
 		Cluster:  &models.Cluster{},
 		Machines: &saltmodels.Roster{},
 		LogLevel: capnslog.INFO,
+		StartDir: startDir,
 		SaltDir:  saltDir,
 		TempDir:  tempDir,
-		StartDir: startDir,
 	}
 	return nil
 }
@@ -84,19 +76,6 @@ func Load(configPath, machinesPath string) error {
 
 	Cfg.Machines = machines
 	return nil
-}
-
-// LoadCluster load a cluster config
-func LoadCluster(configPath string) (*models.Cluster, error) {
-	out, err := loadYAML(configPath)
-	if err != nil {
-		return nil, err
-	}
-	cluster := &models.Cluster{}
-	if err := yaml.Unmarshal(out, cluster); err != nil {
-		return nil, err
-	}
-	return cluster, nil
 }
 
 func loadYAML(configPath string) ([]byte, error) {

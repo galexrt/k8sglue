@@ -19,11 +19,11 @@ package salt
 import "github.com/galexrt/k8sglue/pkg/executor"
 
 // Ping runs `salt-ssh` `test.ping` on all salt-master(s).
-func Ping() error {
+func Ping(machines []string) error {
 	args := append(getSaltSSHDefaultArgs(),
-		"*",
-		"test.ping",
+		generateTargetFlags(machines)...,
 	)
+	args = append(args, "test.ping")
 
 	return executor.ExecOutToLog("salt-ssh test.ping", SaltSSHCommand, args)
 }

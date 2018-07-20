@@ -26,9 +26,13 @@ import (
 // saltKeysAcceptCmd represents the accept command
 var saltKeysAcceptCmd = &cobra.Command{
 	Use:   "accept",
-	Short: "A brief description of your command",
+	Short: "Accept the salt-key of one or more machines on all salt-master(s).",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("accept called")
+		fmt.Println("salt keys accept called")
+
+		if err := bootstrapCommand(cmd, true); err != nil {
+			return err
+		}
 
 		hosts := viper.GetStringSlice("host")
 		if len(hosts) == 0 && !viper.GetBool("all") {

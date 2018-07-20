@@ -19,20 +19,37 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // saltPingCmd represents the ping command
 var saltPingCmd = &cobra.Command{
 	Use:   "ping",
-	Short: "A brief description of your command",
+	Short: "Run `test.ping` using `salt-ssh`.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("ping called")
-		return salt.Ping()
+		fmt.Println("salt ping called")
+		if err := bootstrapCommand(cmd, true); err != nil {
+			return err
+		}
+
+		hosts := viper.GetStringSlice("host")
+		if len(hosts) == 0 && !viper.GetBool("all") {
+			return fmt.Errorf("no all or host flag given")
+		} else if viper.GetBool("all") {
+			hosts = config.Cfg.Machines.GetHosts()
+		}
+		return salt.Ping(hosts)
 	},
 }
 
 func init() {
 	saltCmd.AddCommand(saltPingCmd)
+
+	saltPingCmd.Flags().StringSlice("hosts", []string{}, "a list of hosts")
+	saltPingCmd.Flags().Bool("all", false, "if all hosts in the cluster machines list should be used")
+	viper.BindPFlag("hosts", saltPingCmd.Flags().Lookup("hosts"))
+	viper.BindPFlag("all", saltPingCmd.Flags().Lookup("all"))
 }

@@ -17,14 +17,25 @@ limitations under the License.
 package salt
 
 import (
+	"fmt"
+
 	"github.com/coreos/pkg/capnslog"
+	"github.com/galexrt/k8sglue/pkg/config"
+	"github.com/spf13/viper"
 )
 
 var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/pkg/salt", "salt")
 
 // Init call steps necessary to init salt-master(s)
-func Init() error {
-	if err := Ping(); err != nil {
+func Init(machines []string) error {
+	hosts := viper.GetStringSlice("host")
+	if len(hosts) == 0 && !viper.GetBool("all") {
+		return fmt.Errorf("no all or host flag given")
+	} else if viper.GetBool("all") {
+		hosts = config.Cfg.Machines.GetHosts()
+	}
+
+	if err := Ping(hosts); err != nil {
 		return err
 	}
 
@@ -32,7 +43,7 @@ func Init() error {
 		return err
 	}
 
-	if err := Apply(HighState); err != nil {
+	if err := Apply([]string{}, HighState); err != nil {
 		return err
 	}
 

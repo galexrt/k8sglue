@@ -8,21 +8,21 @@ This project is a total work in progress right now!
 
 ## k8sglue Commands and Subcommands
 
-* `salt` - Salt master management command
-    * `apply` - Trigger salt high state.
-    * `certs` - Generate and sync certs for the salt-master(s) (if needed and forceable by flag).
+* `salt` - Salt master management commands.
+    * `apply` - Trigger salt (high) state.
+    * `certs` - Generate and sync certs for the salt-master(s) (if needed and force-able by flag).
     * `init` - Init the salt-master(s) by installing and configuring them.
-    * `keys` - Salt keys management command.
+    * `keys` - Salt keys management commands.
         * `accept` - Accept the salt-key of one or more machines on all salt-master(s).
         * `remove` - Remove the salt-key of one or more machines on all salt-master(s).
     * `ping` - Run `test.ping` using `salt-ssh`.
-    * `roster` - Print out the generated salt-master(s) roster file by looking at the cluster config file.
+    * `roster` - Print out the generated salt-master(s) roster file. That is done by looking at the machines file given through the flag.
     * `sync` - Sync current (given) `salt` directory to all salt-master(s).
-* `machines` - Machines management command
+* `machines` - Machines management commands.
     * `prepare` - Prepare one or more nodes by using salt-ssh to run the `base` states (`common` and `salt-minion`). In the end the node's salt-minion must be connected to the salt-master(s).
-* `completion`
-    * `bash` - Output BASH completion
-    * `zsh` - Output ZSH completion
+* `completion` - Shell command completion.
+    * `bash` - Output BASH completion.
+    * `zsh` - Output ZSH completion.
 * `help` - Show help menu.
 
 #### Status
@@ -33,7 +33,7 @@ This project is a total work in progress right now!
 | `k8sglue salt certs`       | TODO   |
 | `k8sglue salt init`        | WIP    |
 | `k8sglue salt keys`        | Done¹  |
-| `k8sglue salt keys accept` | Works² | 
+| `k8sglue salt keys accept` | Works² |
 | `k8sglue salt keys remove` | WIP    |
 | `k8sglue salt ping`        | Works² |
 | `k8sglue salt roster`      | Works² |

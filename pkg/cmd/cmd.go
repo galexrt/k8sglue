@@ -23,6 +23,7 @@ import (
 
 	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/config"
+	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -43,18 +44,6 @@ But with some magic allowing for simple integration into any server deployment
 that in the end is able to spit out a list of machines to use.
 
 For more information refer to the README.md and the docs.`,
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		config.Init("k8sglue")
-		// TODO Remove the conditional flag check when https://github.com/spf13/cobra/issues/655 has been resolved
-		if viper.GetString("cluster") == "" {
-			return fmt.Errorf(`required flag(s) "cluster" not set`)
-		}
-		if err := config.Load(viper.GetString("cluster"), viper.GetString("machines")); err != nil {
-			return err
-		}
-		SetLogLevel()
-		return nil
-	},
 }
 
 func init() {
@@ -66,9 +55,14 @@ func init() {
 	rootCmd.PersistentFlags().String("cluster", "", "Cluster settings file")
 	rootCmd.PersistentFlags().String("machines", "", "Cluster machines file")
 	rootCmd.PersistentFlags().String("force", "", "Force the actions being run")
-	viper.BindPFlag("force", rootCmd.PersistentFlags().Lookup("force"))
+	rootCmd.PersistentFlags().String("temp-dir", "/tmp/k8sglue", "Temp directory for temporary files")
+	rootCmd.PersistentFlags().String("salt-dir", "salt/", "Path to the salt files containing directory (will be appended to the current work dir by default")
+
 	viper.BindPFlag("cluster", rootCmd.PersistentFlags().Lookup("cluster"))
 	viper.BindPFlag("machines", rootCmd.PersistentFlags().Lookup("machines"))
+	viper.BindPFlag("force", rootCmd.PersistentFlags().Lookup("force"))
+	viper.BindPFlag("temp-dir", rootCmd.PersistentFlags().Lookup("temp-dir"))
+	viper.BindPFlag("salt-dir", rootCmd.PersistentFlags().Lookup("salt-dir"))
 }
 
 // SetLogLevel parses the raw log level and sets it as the global log level
@@ -89,4 +83,25 @@ func Execute() {
 		logger.Fatal(err)
 		os.Exit(1)
 	}
+}
+
+func bootstrapCommand(cmd *cobra.Command, prepareSaltSSH bool) error {
+	config.Init("k8sglue")
+	if cmd.Name() != "help" {
+		// TODO Remove the conditional flag check when https://github.com/spf13/cobra/issues/655 has been resolved
+		if viper.GetString("cluster") == "" {
+			return fmt.Errorf(`required flag(s) "cluster" not set`)
+		}
+		if err := config.Load(viper.GetString("cluster"), viper.GetString("machines")); err != nil {
+			return err
+		}
+	}
+	SetLogLevel()
+
+	if prepareSaltSSH {
+		if err := salt.PrepareSaltSSH(); err != nil {
+			return err
+		}
+	}
+	return nil
 }

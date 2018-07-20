@@ -26,8 +26,8 @@ import (
 var completionBashCmd = &cobra.Command{
 	Use:   "bash",
 	Short: "Output bash completion code",
-	Run: func(cmd *cobra.Command, args []string) {
-		rootCmd.GenBashCompletion(os.Stdout)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return rootCmd.GenBashCompletion(os.Stdout)
 	},
 }
 

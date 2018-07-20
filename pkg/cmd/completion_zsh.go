@@ -26,8 +26,8 @@ import (
 var completionZshCmd = &cobra.Command{
 	Use:   "zsh",
 	Short: "Output zsh completion code",
-	Run: func(cmd *cobra.Command, args []string) {
-		rootCmd.GenZshCompletion(os.Stdout)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return rootCmd.GenZshCompletion(os.Stdout)
 	},
 }
 

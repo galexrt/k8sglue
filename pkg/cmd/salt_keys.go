@@ -21,7 +21,7 @@ import (
 // saltKeysCmd represents the keys command
 var saltKeysCmd = &cobra.Command{
 	Use:   "keys",
-	Short: "A brief description of your command",
+	Short: "Salt keys management commands.",
 }
 
 func init() {

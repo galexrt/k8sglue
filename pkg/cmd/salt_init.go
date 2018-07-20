@@ -19,20 +19,37 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // saltInitCmd represents the init command
 var saltInitCmd = &cobra.Command{
 	Use:   "init",
-	Short: "A brief description of your command",
+	Short: "Init the salt-master(s) by installing and configuring them.",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("salt init called")
-		return salt.Init()
+		if err := bootstrapCommand(cmd, true); err != nil {
+			return err
+		}
+
+		hosts := viper.GetStringSlice("host")
+		if len(hosts) == 0 && !viper.GetBool("all") {
+			return fmt.Errorf("no all or host flag given")
+		} else if viper.GetBool("all") {
+			hosts = config.Cfg.Machines.GetHosts()
+		}
+		return salt.Init(hosts)
 	},
 }
 
 func init() {
 	saltCmd.AddCommand(saltInitCmd)
+
+	saltInitCmd.Flags().StringSlice("hosts", []string{}, "a list of hosts")
+	saltInitCmd.Flags().Bool("all", false, "if all hosts in the cluster machines list should be used")
+	viper.BindPFlag("hosts", saltInitCmd.Flags().Lookup("hosts"))
+	viper.BindPFlag("all", saltInitCmd.Flags().Lookup("all"))
 }

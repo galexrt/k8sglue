@@ -26,9 +26,13 @@ import (
 // saltCertsCmd represents the certs command
 var saltCertsCmd = &cobra.Command{
 	Use:   "certs",
-	Short: "A brief description of your command",
+	Short: "Generate and sync certs for the salt-master(s) (if needed and force-able by flag).",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("certs called")
+		fmt.Println("salt certs called")
+		if err := bootstrapCommand(cmd, true); err != nil {
+			return err
+		}
+
 		return salt.Certs()
 	},
 }

@@ -25,9 +25,16 @@ import (
 // machinesPrepareCmd represents the prepare command
 var machinesPrepareCmd = &cobra.Command{
 	Use:   "prepare",
-	Short: "A brief description of your command",
-	Run: func(cmd *cobra.Command, args []string) {
+	Short: "Prepare one or more nodes by using salt-ssh.",
+	Long: `Prepare one or more nodes by using salt-ssh to run the "base" states ("common" and "salt-minion").
+In the end the node's salt-minion must be connected to the salt-master(s).`,
+	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("machines prepare called")
+		if err := bootstrapCommand(cmd, true); err != nil {
+			return err
+		}
+
+		return errCommandNotImplemented
 	},
 }
 

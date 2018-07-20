@@ -22,6 +22,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 	"text/template"
 
 	"github.com/coreos/pkg/capnslog"
@@ -183,4 +184,13 @@ func PrepareSaltSSH() error {
 		[]byte(rendered),
 		0640,
 	)
+}
+
+func generateTargetFlags(machines []string) []string {
+	if len(machines) == 0 {
+		return []string{
+			"*",
+		}
+	}
+	return append([]string{"-L", strings.Join(machines, ",")})
 }
