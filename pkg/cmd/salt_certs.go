@@ -33,7 +33,8 @@ var saltCertsCmd = &cobra.Command{
 			return err
 		}
 
-		return salt.Certs()
+		_, _, err := salt.Certs()
+		return err
 	},
 }
 
