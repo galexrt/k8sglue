@@ -28,7 +28,7 @@ func Apply(machines []string, slsFiles string) error {
 	args := append(getSaltSSHDefaultArgs(),
 		generateTargetFlags(machines)...,
 	)
-	args = append(args, "state.apply")
+	args = append(args, "-w", "--refresh", "state.apply")
 	if slsFiles != "" {
 		args = append(args, slsFiles)
 	}

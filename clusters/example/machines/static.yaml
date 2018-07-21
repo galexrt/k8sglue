@@ -6,6 +6,7 @@ node1:
       roles:
        - salt-master
        - kubernetes-master
+       - kubernetes-master-init
 node2:
   host: 192.168.1.12
   minion_opts:

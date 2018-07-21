@@ -1,4 +1,3 @@
-# TODO Add Kubernetes repo and install kubelet, kubeadm and kubectl (?)
 kubernetes repo:
   pkgrepo.managed:
     - name: kubernetes
@@ -17,6 +16,13 @@ kubelet package:
 kubeadm package:
   pkg.latest:
     - name: kubeadm
+    - refresh: True
+    - require:
+      - pkgrepo: kubernetes
+
+kubectl package:
+  pkg.latest:
+    - name: kubectl
     - refresh: True
     - require:
       - pkgrepo: kubernetes

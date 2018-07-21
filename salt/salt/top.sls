@@ -2,8 +2,11 @@
 base:
   '*':
     - common
-    - salt-minion
     - sysctl
+    - system-maintenance
+    - salt-minion
+  'G@roles:salt-master':
+    - salt-master
   'G@roles:kubernetes-*':
     - kubernetes-basics
 {%- if containerRuntime == "crio" %}
@@ -11,9 +14,5 @@ base:
 {%- else %}
     - docker
 {%- endif %}
-  'G@roles:salt-master':
-    - salt-master
   'G@roles:kubernetes-master':
-    - kubernetes-master
   'G@roles:kubernetes-worker':
-    - kubernetes-worker

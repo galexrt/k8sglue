@@ -1,5 +1,6 @@
 base:
   '*':
     - common
-    - salt-minion
     - sysctl
+    - system-maintenance
+    - salt-minion

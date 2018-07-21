@@ -26,6 +26,7 @@ import (
 // Sync syncs current local `salt/` directory to the salt-master(s).
 func Sync(masters []string) error {
 	args := append(getSaltSSHDefaultArgs(),
+		"-w",
 		"-L",
 		strings.Join(masters, ","),
 		"state.single",

@@ -28,10 +28,10 @@ master: 192.168.1.11
 # the load of many minions executing salt-call requests, for example, from a cron job.
 # If only one master is listed, this setting is ignored and a warning will be logged.
 # NOTE: If master_type is set to failover, use master_shuffle instead.
-#random_master: True
+random_master: True
 
 # Use if master_type is set to failover.
-master_shuffle: True
+#master_shuffle: True
 
 # Minions can connect to multiple masters simultaneously (all masters
 # are "hot"), or can be configured to failover if a master becomes
@@ -41,7 +41,7 @@ master_shuffle: True
 # using failover.
 # Setting master_type to 'disable' let's you have a running minion (with engines and
 # beacons) without a master connection
-master_type: failover
+master_type: str
 
 # Poll interval in seconds for checking if the master is still there.  Only
 # respected if master_type above is "failover". To disable the interval entirely,
@@ -121,7 +121,7 @@ master_type: failover
 grains:
   roles:
 {%- for role in grains['roles'] %}
-  - {{ role}}
+  - {{ role }}
 {%- endfor %}
 
 # Where cache data goes.
