@@ -1,7 +1,20 @@
 selinux:
-  state: enforcing
+  state: disabled
   type: targeted
 containerRuntime: crio
+kmods:
+  br_netfilter:
+    load: true
+  ip_vs:
+    load: true
+  ip_vs_rr:
+    load: true
+  ip_vs_wrr:
+    load: true
+  ip_vs_sh:
+    load: true
+  nf_conntrack_ipv4:
+    load: true
 nameservers:
   - 1.1.1.1
   - 8.8.8.8

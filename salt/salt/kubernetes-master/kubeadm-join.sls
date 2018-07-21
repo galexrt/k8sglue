@@ -1,7 +1,7 @@
+{% set containerRuntime = pillar.get('containerRuntime', "crio") -%}
 enable kubelet service:
   service.enabled:
-    - require:
-      - pkg: kubelet
+    - name: kubelet
     - enable: True
 
 run command:
