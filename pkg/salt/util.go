@@ -60,11 +60,12 @@ var saltfile = `salt-ssh:
 
 var saltMasterConfig = `file_roots:
   base:
-    - {{ .Config.TempDir }}/salt
+    - {{ .Config.TempDir }}/srv/salt
+    - {{ .Config.TempDir }}/data
 
 pillar_roots:
   base:
-    - {{ .Config.TempDir }}/pillar
+    - {{ .Config.TempDir }}/srv/pillar
 
 root_dir: {{ .Config.TempDir }}
 pidfile: {{ .Config.TempDir }}/run/salt.pid
@@ -77,11 +78,6 @@ state_verbose: False
 roster_defaults:
 {{ .Additional.RosterDefaults }}
 `
-
-// GoToSaltDir chdirs into the given salt directory
-func GoToSaltDir() error {
-	return os.Chdir(config.Cfg.SaltDir)
-}
 
 func templateConfigFile(name, in string, additional map[string]interface{}) (string, error) {
 	tmpl, err := template.New(name).Parse(in)
@@ -129,7 +125,7 @@ func getSaltSSHDefaultArgs() []string {
 
 // PrepareSaltSSH preparse a temp directory with all info, data and config required for `salt-ssh`
 func PrepareSaltSSH() error {
-	if err := GoToSaltDir(); err != nil {
+	if err := os.Chdir(config.Cfg.SaltDir); err != nil {
 		return err
 	}
 
@@ -164,6 +160,7 @@ func PrepareSaltSSH() error {
 		"etc",
 		"logs",
 		"run",
+		"data",
 	} {
 		if err = util.CreateDirectory(path.Join(config.Cfg.TempDir, dir), "0750"); err != nil {
 			return err
@@ -190,11 +187,11 @@ func PrepareSaltSSH() error {
 		return err
 	}
 
-	if err = util.Symlink(path.Join(config.Cfg.SaltDir, "salt"), path.Join(config.Cfg.TempDir, "salt")); err != nil {
+	if err = util.Symlink(path.Join(config.Cfg.SaltDir), path.Join(config.Cfg.TempDir, "srv")); err != nil {
 		return err
 	}
 
-	if err = util.Symlink(path.Join(config.Cfg.SaltDir, "pillar"), path.Join(config.Cfg.TempDir, "pillar")); err != nil {
+	if err = util.Symlink(path.Join(config.Cfg.SaltDir), path.Join(config.Cfg.TempDir, "data", "k8sglue-salt")); err != nil {
 		return err
 	}
 

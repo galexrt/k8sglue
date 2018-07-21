@@ -1,6 +1,5 @@
-{% set selinux  = pillar.get('selinux', {}) -%}
-
 {% if grains['os_family'] == 'RedHat' %}
+{% set selinux = pillar.get('selinux', {}) -%}
 selinux:
   pkg.installed:
     - pkgs:

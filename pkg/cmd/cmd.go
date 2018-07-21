@@ -99,11 +99,11 @@ func bootstrapCommand(cmd *cobra.Command, prepareSaltSSH bool) error {
 	}
 	SetLogLevel()
 
-	if prepareSaltSSH {
-		if err := util.CreateDirectory(config.Cfg.TempDir, "0750"); err != nil {
-			return err
-		}
+	if err := util.CreateDirectory(config.Cfg.TempDir, "0750"); err != nil {
+		return err
+	}
 
+	if prepareSaltSSH {
 		if err := salt.PrepareSaltSSH(); err != nil {
 			return err
 		}

@@ -20,7 +20,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/executor"
 )
 
@@ -32,7 +31,7 @@ func Sync(masters []string) error {
 		"state.single",
 		"file.recurse",
 		"name=/srv",
-		fmt.Sprintf("source=salt://%s", config.Cfg.SaltDir),
+		fmt.Sprintf("source=salt://k8sglue-salt"),
 		"dir_mode=0750",
 		"user=root",
 		"group=root",

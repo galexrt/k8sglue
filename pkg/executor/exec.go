@@ -55,13 +55,8 @@ func ExecOutToLog(logPrefix, cmdName string, args []string) error {
 		return fmt.Errorf("error creating StderrPipe for cmd, %+v", err)
 	}
 
-	cmdReader := io.MultiReader(stdout, stderr)
-	scanner := bufio.NewScanner(cmdReader)
-	go func(prefix string) {
-		for scanner.Scan() {
-			logger.Infof("%s | %s", prefix, scanner.Text())
-		}
-	}(logPrefix)
+	go readerToLog(stdout, logPrefix)
+	go readerToLog(stderr, logPrefix)
 
 	err = cmd.Start()
 	if err != nil {
@@ -73,4 +68,12 @@ func ExecOutToLog(logPrefix, cmdName string, args []string) error {
 		return fmt.Errorf("error waiting for cmd, %+v", err)
 	}
 	return nil
+}
+
+func readerToLog(r io.ReadCloser, prefix string) {
+	sc := bufio.NewScanner(r)
+	for sc.Scan() {
+		logger.Infof("%s | %s", prefix, sc.Text())
+	}
+	r.Close()
 }
