@@ -34,6 +34,8 @@ In the end the node's salt-minion must be connected to the salt-master(s).`,
 			return err
 		}
 
+		// TODO run salt-ssh over state file `base`
+
 		return errCommandNotImplemented
 	},
 }
