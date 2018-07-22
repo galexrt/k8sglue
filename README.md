@@ -18,6 +18,9 @@ This project is a total work in progress right now!
 * `salt` - Salt master management commands.
     * `apply` - Trigger salt (high) state.
     * `certs` - Generate and sync certs for the salt-master(s) (if needed and force-able by flag).
+        * `check` - Check the certificates on the salt-master(s).
+        * `generate` - Generate certificates for salt-master(s).
+        * `sync` - Sync certificates for salt-master(s).
     * `init` - Init the salt-master(s) by installing and configuring them.
     * `keys` - Salt keys management commands.
         * `accept` - Accept the salt-key of one or more machines on all salt-master(s).
@@ -29,25 +32,28 @@ This project is a total work in progress right now!
 
 #### Status
 
-| Command                    | Status |
-| -------------------------- | ------ |
-| `k8sglue cluster`          | Done¹  |
-| `k8sglue cluster deploy`   | WIP    |
-| `k8sglue completion bash`  | Done¹  |
-| `k8sglue completion zsh`   | Done¹  |
-| `k8sglue machines prepare` | WIP    |
-| `k8sglue salt`             | Done¹  |
-| `k8sglue salt certs`       | WIP    |
-| `k8sglue salt keys`        | Done¹  |
-| `k8sglue salt keys accept` | Works² |
-| `k8sglue salt keys remove` | Works² |
-| `k8sglue salt ping`        | Works² |
-| `k8sglue salt roster`      | Works² |
-| `k8sglue salt run`         | Works² |
-| `k8sglue salt ssh`         | Done¹  |
-| `k8sglue salt ssh apply`   | Works² |
-| `k8sglue salt sync`        | Works² |
-| `k8sglue help`             | Done¹  |
+| Command                       | Status |
+| ----------------------------- | ------ |
+| `k8sglue cluster`             | Done¹  |
+| `k8sglue cluster deploy`      | WIP    |
+| `k8sglue completion bash`     | Done¹  |
+| `k8sglue completion zsh`      | Done¹  |
+| `k8sglue machines prepare`    | WIP    |
+| `k8sglue salt`                | Done¹  |
+| `k8sglue salt certs`          | WIP    |
+| `k8sglue salt certs check`    | WIP    |
+| `k8sglue salt certs generate` | WIP    |
+| `k8sglue salt certs sync`     | WIP    |
+| `k8sglue salt keys`           | Done¹  |
+| `k8sglue salt keys accept`    | Works² |
+| `k8sglue salt keys remove`    | Works² |
+| `k8sglue salt ping`           | Works² |
+| `k8sglue salt roster`         | Works² |
+| `k8sglue salt run`            | Works² |
+| `k8sglue salt ssh`            | Done¹  |
+| `k8sglue salt ssh apply`      | Works² |
+| `k8sglue salt sync`           | Works² |
+| `k8sglue help`                | Done¹  |
 
 ¹ The function of the command (if any) is unlikely to change it's behavior and is not a "core" component.
 ² Command is currently "stable" but it's behavior may change in the future.

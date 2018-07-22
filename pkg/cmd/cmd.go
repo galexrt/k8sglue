@@ -55,7 +55,7 @@ func init() {
 
 	rootCmd.PersistentFlags().String("cluster", "", "Cluster settings file")
 	rootCmd.PersistentFlags().String("machines", "", "Cluster machines file")
-	rootCmd.PersistentFlags().String("force", "", "Force the actions being run")
+	rootCmd.PersistentFlags().Bool("force", false, "Force the actions being run")
 	rootCmd.PersistentFlags().String("temp-dir", "/tmp/k8sglue", "Temp directory for temporary files")
 	rootCmd.PersistentFlags().String("salt-dir", "salt/", "Path to the salt files containing directory (will be appended to the current work dir by default")
 

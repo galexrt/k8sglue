@@ -56,6 +56,7 @@ const (
 
 var saltfile = `salt-ssh:
   config_dir: {{ .Config.TempDir }}/etc
+  no_host_keys: True
 `
 
 var saltMasterConfig = `file_roots:
@@ -75,6 +76,8 @@ ssh_log_file: {{ .Config.TempDir }}/logs/ssh.log
 log_file: {{ .Config.TempDir }}/logs/salt.log
 state_verbose: False
 
+roster: flat
+roster_file: {{ .Config.TempDir }}/roster-salt-master
 roster_defaults:
 {{ .Additional.RosterDefaults }}
 `
@@ -114,12 +117,9 @@ func CapnslogLogLevelToSalt(logLevel capnslog.LogLevel) string {
 
 func getSaltSSHDefaultArgs() []string {
 	return []string{
-		//"-w",
+		"-w",
 		fmt.Sprintf("--saltfile=%s", path.Join(config.Cfg.TempDir, SaltfileName)),
-		"--roster=flat",
-		fmt.Sprintf("--roster-file=%s", path.Join(config.Cfg.TempDir, RosterFileName)),
 		fmt.Sprintf("--log-level=%s", CapnslogLogLevelToSalt(config.Cfg.LogLevel)),
-		"--ignore-host-keys",
 	}
 }
 
@@ -188,10 +188,6 @@ func PrepareSaltSSH() error {
 	}
 
 	if err = util.Symlink(path.Join(config.Cfg.SaltDir), path.Join(config.Cfg.TempDir, "srv")); err != nil {
-		return err
-	}
-
-	if err = util.Symlink(path.Join(config.Cfg.SaltDir), path.Join(config.Cfg.TempDir, "data", "k8sglue-salt")); err != nil {
 		return err
 	}
 

@@ -17,21 +17,12 @@ limitations under the License.
 package salt
 
 import (
-	"github.com/galexrt/k8sglue/pkg/executor"
+	"time"
 )
 
-// HighState definition of high state for `state.apply` call here
-const HighState = ""
+// CertsCheck checks how long the certificates are still valid and for who they are valid
+func CertsCheck(targets []string) ([]string, time.Time, error) {
+	// TODO Use salt state `tls.valid_certificate` if working as needed
 
-// SSHApply trigger salt-ssh highstate using salt-ssh on the salt-master(s)
-func SSHApply(machines []string, slsFiles string) error {
-	args := append(getSaltSSHDefaultArgs(),
-		generateTargetFlags(machines)...,
-	)
-	args = append(args, "--refresh", "state.apply")
-	if slsFiles != "" {
-		args = append(args, slsFiles)
-	}
-
-	return executor.ExecOutToLog("salt-ssh state.apply", SaltSSHCommand, args)
+	return []string{}, time.Now(), nil
 }

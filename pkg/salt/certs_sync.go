@@ -17,33 +17,52 @@ limitations under the License.
 package salt
 
 import (
+	"fmt"
+	"io/ioutil"
 	"os"
 	"path"
 
 	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/executor"
-	"github.com/galexrt/k8sglue/pkg/util"
 )
 
-// Sync syncs current local `salt/` directory to the salt-master(s).
-func Sync(masters []string) error {
-	if err := util.Symlink(path.Join(config.Cfg.SaltDir), path.Join(config.Cfg.TempDir, "data", "k8sglue-salt")); err != nil {
-		return err
+// CertsSync sync cert and key to the salt-master(s)
+func CertsSync(masters []string, cert, key []byte) error {
+	for name, content := range map[string][]byte{
+		"salt-master.crt": cert,
+		"salt-master.key": key,
+	} {
+		if err := ioutil.WriteFile(path.Join(config.Cfg.TempDir, "data", name), content, 0600); err != nil {
+			return err
+		}
 	}
-	defer os.Remove(path.Join(config.Cfg.TempDir, "data", "k8sglue-salt"))
 
 	args := append(getSaltSSHDefaultArgs(),
 		generateTargetFlags(masters)...,
 	)
 	args = append(args,
 		"state.single",
-		"file.recurse",
-		"name=/srv",
-		"source=salt://k8sglue-salt",
-		"dir_mode=0750",
+		"file.managed",
+		"makedirs=True",
+		"mode=0600",
 		"user=root",
 		"group=root",
+		"subdir=True",
+		"hide_output=True",
 	)
 
-	return executor.ExecOutToLog("salt-ssh copy salt", SaltSSHCommand, args)
+	for _, file := range []string{"salt-master.crt", "salt-master.key"} {
+		cmdArgs := append(args,
+			fmt.Sprintf("name=%s", path.Join("/etc/salt/ssl", file)),
+			fmt.Sprintf("source=salt://%s", file),
+		)
+		if err := executor.ExecOutToLog("salt-ssh copy certs", SaltSSHCommand, cmdArgs); err != nil {
+			return err
+		}
+		if err := os.Remove(path.Join(config.Cfg.TempDir, "data", file)); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

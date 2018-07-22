@@ -33,6 +33,19 @@ import (
 	"time"
 )
 
+const (
+	// ECDSACurveRSA
+	ECDSACurveRSA = "RSA"
+	// ECDSACurveP224
+	ECDSACurveP224 = "P224"
+	// ECDSACurveP256
+	ECDSACurveP256 = "P256"
+	// ECDSACurveP384
+	ECDSACurveP384 = "P384"
+	// ECDSACurveP521
+	ECDSACurveP521 = "P521"
+)
+
 func publicKey(priv interface{}) interface{} {
 	switch k := priv.(type) {
 	case *rsa.PrivateKey:
@@ -72,15 +85,15 @@ func Generate(hosts []string, validFrom string, validFor time.Duration, isCA boo
 	switch ecdsaCurve {
 	case "":
 		fallthrough
-	case "RSA":
+	case ECDSACurveRSA:
 		priv, err = rsa.GenerateKey(rand.Reader, rsaBits)
-	case "P224":
+	case ECDSACurveP224:
 		priv, err = ecdsa.GenerateKey(elliptic.P224(), rand.Reader)
-	case "P256":
+	case ECDSACurveP256:
 		priv, err = ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	case "P384":
+	case ECDSACurveP384:
 		priv, err = ecdsa.GenerateKey(elliptic.P384(), rand.Reader)
-	case "P521":
+	case ECDSACurveP521:
 		priv, err = ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
 	default:
 		return nil, nil, fmt.Errorf("unrecognized elliptic curve: %q", ecdsaCurve)

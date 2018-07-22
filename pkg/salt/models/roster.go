@@ -54,11 +54,20 @@ func (r Roster) Merge(src Roster) error {
 	return nil
 }
 
-// GetHosts returns all `RosterData.Host` names in a []string
+// GetNames returns all machine names
+func (r Roster) GetNames() []string {
+	names := []string{}
+	for name := range r {
+		names = append(names, name)
+	}
+	return names
+}
+
+// GetHosts return a list of all machines' `Host` field
 func (r Roster) GetHosts() []string {
 	hosts := []string{}
-	for host := range r {
-		hosts = append(hosts, host)
+	for _, v := range r {
+		hosts = append(hosts, v.Host)
 	}
 	return hosts
 }

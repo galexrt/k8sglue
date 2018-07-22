@@ -17,21 +17,12 @@ limitations under the License.
 package salt
 
 import (
-	"github.com/galexrt/k8sglue/pkg/executor"
+	"time"
+
+	"github.com/galexrt/k8sglue/pkg/cert"
 )
 
-// HighState definition of high state for `state.apply` call here
-const HighState = ""
-
-// SSHApply trigger salt-ssh highstate using salt-ssh on the salt-master(s)
-func SSHApply(machines []string, slsFiles string) error {
-	args := append(getSaltSSHDefaultArgs(),
-		generateTargetFlags(machines)...,
-	)
-	args = append(args, "--refresh", "state.apply")
-	if slsFiles != "" {
-		args = append(args, slsFiles)
-	}
-
-	return executor.ExecOutToLog("salt-ssh state.apply", SaltSSHCommand, args)
+// CertsGenerate generate certificates for salt-master(s).
+func CertsGenerate(names []string, validFor time.Duration) ([]byte, []byte, error) {
+	return cert.Generate(names, "", validFor, false, 4096, cert.ECDSACurveRSA)
 }

@@ -43,7 +43,7 @@ var saltPingCmd = &cobra.Command{
 		if len(hosts) == 0 && !viper.GetBool("all") {
 			return fmt.Errorf("no all or host flag given")
 		} else if viper.GetBool("all") {
-			hosts = config.Cfg.Machines.GetHosts()
+			hosts = config.Cfg.Machines.GetNames()
 		}
 		return salt.Ping(hosts)
 	},

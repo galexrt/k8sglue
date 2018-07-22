@@ -16,8 +16,25 @@ limitations under the License.
 
 package salt
 
-// Certs generate certificates for salt-master(s)
-func Certs() ([]byte, []byte, error) {
-	// TODO Implement salt.Certs() function
-	return nil, nil, nil
+import (
+	"time"
+)
+
+// Certs run all commands necessary to either renew or create new certificates for the salt-master(s) + sync them.
+func Certs(targets, names []string, validFor time.Duration, renewTime time.Duration, dryrun bool) error {
+	_, _, err := CertsCheck(targets)
+	if err != nil {
+		return err
+	}
+
+	cert, key, err := CertsGenerate(names, validFor)
+	if err != nil {
+		return err
+	}
+
+	if err = CertsSync(targets, cert, key); err != nil {
+		return err
+	}
+
+	return nil
 }

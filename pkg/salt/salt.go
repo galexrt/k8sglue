@@ -17,4 +17,6 @@ limitations under the License.
 package salt
 
 // SaltSSHCommand holds the name of salt-ssh binary
-var SaltSSHCommand = "salt-ssh"
+const (
+	SaltSSHCommand = "salt-ssh"
+)

@@ -22,14 +22,15 @@ import (
 	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-// saltSyncCmd represents the sync command
-var saltSyncCmd = &cobra.Command{
-	Use:   "sync",
-	Short: "Sync current (given) `salt` directory to all salt-master(s).",
+// saltCertsSyncmd represents the generate command
+var saltCertsSyncmd = &cobra.Command{
+	Use:   "check",
+	Short: "Check the certificates on the salt-master(s).",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("salt sync called")
+		fmt.Println("salt certs sync called")
 		if err := bootstrapCommand(cmd, true); err != nil {
 			return err
 		}
@@ -38,10 +39,25 @@ var saltSyncCmd = &cobra.Command{
 		if len(masters) == 0 {
 			return fmt.Errorf("no nodes with role salt-master found")
 		}
-		return salt.Sync(masters)
+
+		// TODO Load cert and key from file
+		err := salt.CertsSync(masters, []byte{}, []byte{})
+		if err != nil {
+			return err
+		}
+
+		return errCommandNotImplemented
 	},
 }
 
 func init() {
-	saltCmd.AddCommand(saltSyncCmd)
+	saltCertsCmd.AddCommand(saltCertsSyncmd)
+
+	saltCertsSyncmd.Flags().String("cert", "", "Path to certificate to sync")
+	saltCertsSyncmd.Flags().String("key", "", "Path to key to sync")
+	saltCertsSyncmd.MarkFlagRequired("cert")
+	saltCertsSyncmd.MarkFlagRequired("key")
+
+	viper.BindPFlag("cert", saltCertsSyncmd.Flags().Lookup("cert"))
+	viper.BindPFlag("key", saltCertsSyncmd.Flags().Lookup("key"))
 }
