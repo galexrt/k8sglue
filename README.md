@@ -8,6 +8,13 @@ This project is a total work in progress right now!
 
 ## k8sglue Commands and Subcommands
 
+* `cluster` - Cluster management commands.
+    * `deploy` - Trigger the orchestrated salt-run for the Kubernetes installation.
+* `completion` - Shell command completion.
+    * `bash` - Output BASH completion.
+    * `zsh` - Output ZSH completion.
+* `machines` - Machines management commands.
+    * `prepare` - Prepare one or more nodes by using salt-ssh to run the `base` states (`common` and `salt-minion`). In the end the node's salt-minion must be connected to the salt-master(s).
 * `salt` - Salt master management commands.
     * `apply` - Trigger salt (high) state.
     * `certs` - Generate and sync certs for the salt-master(s) (if needed and force-able by flag).
@@ -18,34 +25,63 @@ This project is a total work in progress right now!
     * `ping` - Run `test.ping` using `salt-ssh`.
     * `roster` - Print out the generated salt-master(s) roster file. That is done by looking at the machines file given through the flag.
     * `sync` - Sync current (given) `salt` directory to all salt-master(s).
-* `machines` - Machines management commands.
-    * `prepare` - Prepare one or more nodes by using salt-ssh to run the `base` states (`common` and `salt-minion`). In the end the node's salt-minion must be connected to the salt-master(s).
-* `completion` - Shell command completion.
-    * `bash` - Output BASH completion.
-    * `zsh` - Output ZSH completion.
 * `help` - Show help menu.
 
 #### Status
 
 | Command                    | Status |
 | -------------------------- | ------ |
+| `k8sglue cluster`          | Done¹  |
+| `k8sglue cluster deploy`   | WIP    |
+| `k8sglue completion bash`  | Done¹  |
+| `k8sglue completion zsh`   | Done¹  |
+| `k8sglue machines prepare` | WIP    |
+| `k8sglue salt`             | Done¹  |
 | `k8sglue salt certs`       | WIP    |
-| `k8sglue salt runs`        | Works² |
 | `k8sglue salt keys`        | Done¹  |
 | `k8sglue salt keys accept` | Works² |
 | `k8sglue salt keys remove` | Works² |
 | `k8sglue salt ping`        | Works² |
 | `k8sglue salt roster`      | Works² |
+| `k8sglue salt run`         | Works² |
 | `k8sglue salt ssh`         | Done¹  |
 | `k8sglue salt ssh apply`   | Works² |
 | `k8sglue salt sync`        | Works² |
-| `k8sglue machines prepare` | WIP    |
-| `k8sglue completion bash`  | Done¹  |
-| `k8sglue completion zsh`   | Done¹  |
 | `k8sglue help`             | Done¹  |
 
 ¹ The function of the command (if any) is unlikely to change it's behavior and is not a "core" component.
 ² Command is currently "stable" but it's behavior may change in the future.
+
+### `k8sglue cluster deploy`
+
+1. TODO
+
+### `k8sglue machines prepare`
+
+1. k8sglue writes a Saltstack Roster file with given roles for the node(s) given specified as `minion_opts`, but only triggering salt-minion and common state.
+1. k8sglue uses `salt-ssh` to:
+    1. Run the base install ( which includes the `common` and `salt-minion` states).
+    * Results in: Configured salt-minion and basic configured machine.
+1. k8sglue uses `salt-ssh` to get the salt-minion public key.
+1. Connect to each salt-master(s) and accept the public key.
+* Results in: One or more nodes to be prepared and joined in the cluster.
+
+#### Automatic machine join to cluster
+
+**Requirements for a machine**
+
+* `salt-minion` installed and configured to use the salt-master(s) of the cluster.
+
+Please note that one can also simply use the `k8sglue machines prepare` command, which sets up the `salt-minion` and some other stuff.
+
+#### Instructions
+
+1. The machine must have `salt-minion` installed which is already configured to go to one of the salt-master(s).
+    1. One can use `k8sglue machine join` or (when written) `salt-ssh` to trigger the configuration.
+1. Machine's salt-minion connects to salt-master(s), an event will trigger and cause the salt-master to run `salt-run salt.runners.manage.safe_accept` for that machine.
+    1. On success, a high state will be triggered for that machine.
+    1. On connection failure, it was probably a "bad" machine that tried to connect to the salt-master(s).
+* Results in: a new machine added to the cluster.
 
 ### `k8sglue salt apply`
 
@@ -60,7 +96,7 @@ This project is a total work in progress right now!
 
 > **NOTE** This needs to be run when new salt-master(s) are added.
 
-### `k8sglue salt init`
+### `k8sglue salt run`
 
 This command has to be run once initially so the nodes get their "deployment" information and get configured for the Kubernetes cluster.
 
@@ -80,9 +116,6 @@ Starting point will be that a "MachineList" is already created containing at lea
 1. k8sglue uses a `salt key accept` mechanism to get all minion fingerprints and accept them on each salt-master(s).
     1. See `k8sglue machine join`.
 * Results in: salt-master(s) ready for use and "connected to themselves".
-
-> **NOTE** Each new node must connect to the salt-master(s).
-> Each node will be "tested" with `salt.runners.manage.safe_accept` and accepted if the fingerprints match.
 
 ### `k8sglue salt keys accept`
 
@@ -114,33 +147,6 @@ Starting point will be that a "MachineList" is already created containing at lea
 * Results in: Sync the given Salt states directory to each salt-master(s).
 
 > **NOTE** Look into if it may also be a good thing to sync the pillars and mines between the salt-master(s).
-
-### `k8sglue machine prepare`
-
-1. k8sglue writes a Saltstack Roster file with given roles for the node(s) given specified as `minion_opts`, but only triggering salt-minion and common state.
-1. k8sglue uses `salt-ssh` to:
-    1. Run the base install ( which includes the `common` and `salt-minion` states).
-    * Results in: Configured salt-minion and basic configured machine.
-1. k8sglue uses `salt-ssh` to get the salt-minion public key.
-1. Connect to each salt-master(s) and accept the public key.
-* Results in: One or more nodes to be prepared and joined in the cluster.
-
-### Automatic machine join to cluster
-
-#### Requirements for a machine
-
-* `salt-minion` installed and configured to use the salt-master(s) of the cluster.
-* Must have the Salt SSH deploy public key allowed to connect as `root` or other user that can do passwordless `sudo`.
-    * **NOTE**: This is needed so the salt-master(s) can verify the salt-minion's public key.
-
-#### Instructions
-
-1. The machine must have `salt-minion` installed which is already configured to go to one of the salt-master(s).
-    1. One can use `k8sglue machine join` or (when written) `salt-ssh` to trigger the configuration.
-1. Machine's salt-minion connects to salt-master(s), an event will trigger and cause the salt-master to run `salt-run salt.runners.manage.safe_accept` for that machine.
-    1. On success, a high state will be triggered for that machine.
-    1. On connection failure, it was probably a "bad" machine that tried to connect to the salt-master(s).
-* Results in: a new machine added to the cluster.
 
 ## Goals
 ### Primary Goals
