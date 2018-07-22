@@ -11,12 +11,14 @@ setup kubernetes master:
     - tgt_type: grain
     - sls:
       - kubernetes-master.kubeadm-join
+    - require:
+      - salt: setup first kubernetes master
 
 setup kubernetes worker:
   salt.state:
     - tgt: 'roles:kubernetes-worker'
     - tgt_type: grain
     - require:
-      - salt: setup_kubernetes_master
+      - salt: setup kubernetes master
     - sls:
       - kubernetes-worker.kubeadm-join

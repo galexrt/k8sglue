@@ -1,13 +1,13 @@
-{% set containerRuntime = pillar.get('containerRuntime', "crio") -%}
 enable kubelet service:
   service.enabled:
     - name: kubelet
     - enable: True
 
 kubeadm init:
-  cmd.run:
-    - name: kubeadm init --pod-network-cidr=100.64.0.0/13 --service-cidr=100.72.0.0/16{% if containerRuntime == "crio" %} --cri-socket=/var/run/crio/crio.sock{% endif %}
-    - unless: 'test ! -f /etc/kubernetes/manifests/kube-apiserver.yaml'
+  cmd.script:
+    - source: salt://kubernetes-master/scripts/kubeadm-init.sh
+    - template: jinja
+    - creates: /etc/kubernetes/manifests/kube-apiserver.yaml
     - require:
       - service: kubelet
 

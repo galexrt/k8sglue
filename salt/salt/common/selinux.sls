@@ -19,6 +19,6 @@ selinux-config:
 
 selinux-state:
     cmd.run:
-      - name: setenforce {% if selinux.state == 'disabled' %}0{% else %}{{ selinux.state|default('enforcing') }}{% endif %}
-      - unless: if [ "$(sestatus | awk '/Current mode/ { print $3 }')" = {{ selinux.state|default('enforcing') }} ]; then /bin/true; else /bin/false; fi
+      - name: setenforce {{ selinux.state|default('enforcing') }}
+      - unless: if [ "$(sestatus | awk '/Current mode/ { print $3 }')" = enforcing ]; then /bin/true; else /bin/false; fi
 {% endif %}

@@ -23,20 +23,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// saltInitCmd represents the init command
-var saltInitCmd = &cobra.Command{
-	Use:   "init",
-	Short: "Init the salt-master(s) by installing and configuring them.",
+// saltRunCmd represents the run command
+var saltRunCmd = &cobra.Command{
+	Use:   "run",
+	Short: "Run everything needed for the salt-master(s) to be ready.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("salt init called")
+		fmt.Println("salt run called")
 		if err := bootstrapCommand(cmd, true); err != nil {
 			return err
 		}
 
-		return salt.Init()
+		return salt.Run()
 	},
 }
 
 func init() {
-	saltCmd.AddCommand(saltInitCmd)
+	saltCmd.AddCommand(saltRunCmd)
 }

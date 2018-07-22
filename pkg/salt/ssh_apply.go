@@ -23,8 +23,8 @@ import (
 // HighState definition of high state for `state.apply` call here
 const HighState = ""
 
-// Apply trigger Salt highstate using salt-ssh on the salt-master(s)
-func Apply(machines []string, slsFiles string) error {
+// SSHApply trigger salt-ssh highstate using salt-ssh on the salt-master(s)
+func SSHApply(machines []string, slsFiles string) error {
 	args := append(getSaltSSHDefaultArgs(),
 		generateTargetFlags(machines)...,
 	)

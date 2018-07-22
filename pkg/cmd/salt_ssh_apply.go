@@ -25,10 +25,10 @@ import (
 	"github.com/spf13/viper"
 )
 
-// saltApplyCmd represents the apply command
-var saltApplyCmd = &cobra.Command{
+// saltSSHApplyCmd represents the apply command
+var saltSSHApplyCmd = &cobra.Command{
 	Use:   "apply",
-	Short: "Trigger salt (high) state.",
+	Short: "Trigger salt (high) state over ssh.",
 	PreRun: func(cmd *cobra.Command, args []string) {
 		viper.BindPFlag("hosts", cmd.Flags().Lookup("hosts"))
 		viper.BindPFlag("all", cmd.Flags().Lookup("all"))
@@ -46,14 +46,14 @@ var saltApplyCmd = &cobra.Command{
 		} else if viper.GetBool("all") {
 			hosts = config.Cfg.Machines.GetHosts()
 		}
-		return salt.Apply(hosts, viper.GetString("sls-files"))
+		return salt.SSHApply(hosts, viper.GetString("sls-files"))
 	},
 }
 
 func init() {
-	saltCmd.AddCommand(saltApplyCmd)
+	saltSSHCmd.AddCommand(saltSSHApplyCmd)
 
-	saltApplyCmd.Flags().StringSlice("hosts", []string{}, "a list of hosts comma separated")
-	saltApplyCmd.Flags().Bool("all", false, "if all hosts in the cluster machines list should be used")
-	saltApplyCmd.Flags().StringP("sls-files", "s", "", "Which SLS files to call for state.apply, if none given high state")
+	saltSSHApplyCmd.Flags().StringSlice("hosts", []string{}, "a list of hosts comma separated")
+	saltSSHApplyCmd.Flags().Bool("all", false, "if all hosts in the cluster machines list should be used")
+	saltSSHApplyCmd.Flags().StringP("sls-files", "s", "", "Which SLS files to call for state.apply, if none given high state")
 }

@@ -6,5 +6,5 @@ enable kubelet service:
 
 kubeadm join:
   cmd.run:
-    - name: echo kubeadm join {% if containerRuntime == "crio" %} --cri-socket=/var/run/crio/crio.sock{% endif %} > /opt/test
-    - unless: test -f /etc/kubernetes/manifests/kube-apiserver.yaml
+    - name: kubeadm join --feature-gates=DynamicKubeletConfig {% if containerRuntime == "crio" %} --cri-socket=/var/run/crio/crio.sock{% endif %} > /opt/test
+    - creates: /etc/kubernetes/manifests/kube-apiserver.yaml

@@ -1,22 +1,29 @@
 ---
-node1:
-  host: 192.168.1.11
-  minion_opts:
-    grains:
-      roles:
-       - salt-master
-       - kubernetes-master
-       - kubernetes-master-init
-node2:
-  host: 192.168.1.12
-  minion_opts:
-    grains:
-      roles:
-       - salt-master
-       - kubernetes-worker
-node3:
-  host: 192.168.1.13
-  minion_opts:
-    grains:
-      roles:
-       - kubernetes-worker
+# host will always be "nulled" and not considered
+defaultRosterData:
+  port: 22
+  user: vagrant
+  sudo: true
+  priv: ~/.ssh/id_rsa
+roster:
+  node1:
+    host: 192.168.1.11
+    minion_opts:
+      grains:
+        roles:
+         - salt-master
+         - kubernetes-master
+         - kubernetes-master-init
+  node2:
+    host: 192.168.1.12
+    minion_opts:
+      grains:
+        roles:
+         - salt-master
+         - kubernetes-worker
+  node3:
+    host: 192.168.1.13
+    minion_opts:
+      grains:
+        roles:
+         - kubernetes-worker

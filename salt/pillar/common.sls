@@ -1,5 +1,5 @@
 selinux:
-  state: disabled
+  state: permissive
   type: targeted
 containerRuntime: crio
 kmods:

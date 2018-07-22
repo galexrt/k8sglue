@@ -118,3 +118,18 @@ func (r Roster) ToByte() ([]byte, error) {
 func (rd RosterData) ToByte() ([]byte, error) {
 	return yaml.Marshal(rd)
 }
+
+// Merge merge Roster together
+func (rd RosterData) Merge(src RosterData) error {
+	return mergo.MergeWithOverwrite(&rd, src)
+}
+
+// SetDefaultRosterData sets these defaults on all machines if not set
+func (r Roster) SetDefaultRosterData(src RosterData) error {
+	for k := range r {
+		if err := mergo.MergeWithOverwrite(r[k], src); err != nil {
+			return err
+		}
+	}
+	return nil
+}

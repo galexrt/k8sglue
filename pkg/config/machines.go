@@ -25,7 +25,8 @@ import (
 
 // Machines holds all the machines from the machines config files and has some nice functions for that
 type Machines struct {
-	Roster saltmodels.Roster
+	DefaultRosterData saltmodels.RosterData `yaml:"defaultRosterData"`
+	Roster            saltmodels.Roster     `yaml:"roster"`
 }
 
 // LoadMachines load all machines files
@@ -36,17 +37,22 @@ func LoadMachines(globPath string) (*saltmodels.Roster, error) {
 		return nil, nil
 	}
 	for _, file := range paths {
+		// load yaml
 		out, err := loadYAML(file)
 		if err != nil {
 			return nil, err
 		}
-		roster := saltmodels.Roster{}
-		if err = yaml.Unmarshal(out, &roster); err != nil {
+		loaded := Machines{}
+		if err = yaml.Unmarshal(out, &loaded); err != nil {
 			return nil, err
 		}
-		if err = machines.Merge(roster); err != nil {
+
+		loaded.DefaultRosterData.Host = ""
+		if err = loaded.Roster.SetDefaultRosterData(loaded.DefaultRosterData); err != nil {
 			return nil, err
 		}
+
+		machines.Merge(loaded.Roster)
 	}
 
 	return machines, nil

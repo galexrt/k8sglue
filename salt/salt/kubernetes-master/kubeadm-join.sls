@@ -6,4 +6,4 @@ enable kubelet service:
 
 run command:
   cmd.run:
-    - name: echo kubeadm join master > /opt/test
+    - name: echo kubeadm join --master --feature-gates=DynamicKubeletConfig > /opt/test

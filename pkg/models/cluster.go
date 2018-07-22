@@ -24,7 +24,7 @@ import (
 type Cluster struct {
 	General    General    `yaml:"general"`
 	Kubernetes Kubernetes `yaml:"kubernetes"`
-	Salt       Salt       `yaml:"salt"`
+	Salt       Salt       `yaml:"salt,omitempty"`
 }
 
 // General holds the config file which will be used for the actual salt state applies.
