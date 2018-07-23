@@ -24,7 +24,6 @@ import (
 	"github.com/galexrt/k8sglue/pkg/executor"
 )
 
-// TODO Implement functionality
 var saltKeyRemoveMagic = `
 machines=(
 %s
