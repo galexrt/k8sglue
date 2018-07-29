@@ -120,7 +120,7 @@ master_type: str
 # the 'roles' grain having two values that can be matched against.
 grains:
   roles:
-{%- for role in grains['roles'] %}
+{%- for role in salt['grains.get']('roles', []) %}
   - {{ role }}
 {%- endfor %}
 
@@ -517,7 +517,7 @@ grains:
 # 'highstate' -- Execute state.highstate
 # 'sls' -- Read in the sls_list option and execute the named sls files
 # 'top' -- Read top_file option and execute based on that file on the Master
-#startup_states: ''
+startup_states: 'highstate'
 #
 # List of states to run when the minion starts up if startup_states is 'sls':
 #sls_list:

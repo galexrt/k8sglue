@@ -1,10 +1,10 @@
-{% if grains['os_family'] == 'RedHat' %}
+{% if salt['grains.get']('os_family', 'N/A') == 'RedHat' %}
 {% set selinux = pillar.get('selinux', {}) -%}
 selinux:
   pkg.installed:
     - pkgs:
       - policycoreutils-python
-{%- if grains['osmajorrelease'] == '7' %}
+{%- if salt['grains.get']('osmajorrelease', '0') == '7' %}
       - policycoreutils-devel
 {%- endif %}
 

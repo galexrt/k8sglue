@@ -478,10 +478,10 @@ ssl:
 #####     Salt-SSH Configuration     #####
 ##########################################
 # Define the default salt-ssh roster module to use
-#roster: flat
+roster: flat
 
 # Pass in an alternative location for the salt-ssh `flat` roster file
-#roster_file: /etc/salt/roster
+roster_file: /etc/salt/roster
 
 # Define locations for `flat` roster files so they can be chosen when using Salt API.
 # An administrator can place roster files into these locations. Then when
@@ -498,16 +498,16 @@ ssl:
 #ssh_passwd: ''
 
 #The target system's ssh port number.
-#ssh_port: 22
+ssh_port: '22'
 
 # Comma-separated list of ports to scan.
-#ssh_scan_ports: 22
+#ssh_scan_ports: 22,1122,2222
 
 # Scanning socket timeout for salt-ssh.
-#ssh_scan_timeout: 0.01
+ssh_scan_timeout: 0.02
 
 # Boolean to run command via sudo.
-#ssh_sudo: False
+ssh_sudo: False
 
 # Number of seconds to wait for a response when establishing an SSH connection.
 #ssh_timeout: 60
@@ -1029,7 +1029,11 @@ pillar_roots:
 ######        Reactor Settings        #####
 ###########################################
 # Define a salt reactor. See https://docs.saltstack.com/en/latest/topics/reactor/
-#reactor: []
+reactor:
+  - 'salt/minion/*/start':
+    - /srv/reactor/minion-reactor.sls
+  - 'foo':
+    - /srv/reactor/minion-reactor.sls
 
 #Set the TTL for the cache of the reactor configuration.
 #reactor_refresh_interval: 60

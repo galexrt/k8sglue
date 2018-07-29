@@ -81,7 +81,7 @@ func KeyAccept(machines []string) error {
 
 	outParsed := make(map[string]string, 1)
 	if err = json.Unmarshal(out, &outParsed); err != nil {
-		return err
+		return fmt.Errorf("%+v. JSON: %s", err, out)
 	}
 
 	fingerprints := map[string]string{}
@@ -89,7 +89,7 @@ func KeyAccept(machines []string) error {
 	for host, rawReturn := range outParsed {
 		returnParsed := make(map[string]string, 1)
 		if err = json.Unmarshal([]byte(rawReturn), &returnParsed); err != nil {
-			return err
+			return fmt.Errorf("%+v. JSON: %s", err, returnParsed)
 		}
 		fingerprint := returnParsed["local"]
 		if len(fingerprint) == 0 {
