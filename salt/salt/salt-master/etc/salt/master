@@ -1031,9 +1031,15 @@ pillar_roots:
 # Define a salt reactor. See https://docs.saltstack.com/en/latest/topics/reactor/
 reactor:
   - 'salt/minion/*/start':
-    - /srv/reactor/minion-reactor.sls
-  - 'foo':
-    - /srv/reactor/minion-reactor.sls
+    - /srv/reactor/minion/started.sls
+  - 'custom/salt/minion/key/accepted':
+    - /srv/reactor/minion/accepted.sls
+  - 'custom/kubernetes/kubeadm/token':
+    - /srv/reactor/kubernetes/kubeadm/token.sls
+  - 'custom/kubernetes/kubeadm/join':
+    - /srv/reactor/kubernetes/kubeadm/join.sls
+  - 'custom/kubernetes/kubeadm/joined':
+    - /srv/reactor/kubernetes/kubeadm/joined.sls
 
 #Set the TTL for the cache of the reactor configuration.
 #reactor_refresh_interval: 60

@@ -8,11 +8,9 @@ base:
   'G@roles:salt-master':
     - salt-master
   'G@roles:kubernetes-*':
-    - kubernetes-basics
+    - kubernetes-kubeadm.basics
 {%- if containerRuntime == "crio" %}
     - crio
 {%- else %}
     - docker
 {%- endif %}
-  'G@roles:kubernetes-master':
-  'G@roles:kubernetes-worker':

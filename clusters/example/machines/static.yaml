@@ -7,7 +7,7 @@ defaultRosterData:
   priv: ~/.ssh/id_rsa
   minion_opts:
     grains:
-      default_interface: eth1
+      defaultInterface: eth1
 roster:
   node1:
     host: 192.168.1.11

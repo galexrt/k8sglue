@@ -366,11 +366,10 @@ grains:
 # Example functions that can be run via the mine facility
 # NO mine functions are established by default.
 # Note these can be defined in the minion's pillar as well.
-#mine_functions:
-#  test.ping: []
-#  network.ip_addrs:
-#    interface: eth0
-#    cidr: '10.0.0.0/8'
+
+mine_functions:
+  network.ip_addrs:
+    interface: "{{ defaultInterface }}"
 
 # The number of minutes between mine updates.
 #mine_interval: 60
