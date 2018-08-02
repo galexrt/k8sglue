@@ -1030,21 +1030,26 @@ pillar_roots:
 ###########################################
 # Define a salt reactor. See https://docs.saltstack.com/en/latest/topics/reactor/
 reactor:
+  # Minion has started
   - 'salt/minion/*/start':
-    # Trigger salt key check
-    - /srv/reactor/minion/started.sls
+    # Trigger salt key check if the minion isn't already in the list of accepted minions
+    - /srv/reactor/minion/ssh_key_acceptor.sls
+  # Minion key has been accepted
   - 'custom/salt/minion/key/accepted':
     # Run highstate on minion
-    - /srv/reactor/minion/accepted.sls
+    - /srv/reactor/minion/highstate.sls
+  # A node that wants to join the Kubernetes node sends this signal
   - 'custom/kubernetes/kubeadm/want-to-join':
     # Generate a kubeadm token for a node that wants to join the cluster
     - /srv/reactor/kubernetes/kubeadm/token-generate.sls
+  # A token has been generated
   - 'custom/kubernetes/kubeadm/token-generated':
     # Join the node using the generated token
     - /srv/reactor/kubernetes/kubeadm/join-node.sls
+  # A Kubernetes node has joined the Kubernetes cluster
   - 'custom/kubernetes/kubeadm/joined':
-    # "Last" signal when the node has joined the cluster
-    - /srv/reactor/kubernetes/kubeadm/joined.sls
+    # "Last" signal when a node has joined the cluster
+    - /srv/reactor/kubernetes/kubeadm/node-joined.sls
 
 #Set the TTL for the cache of the reactor configuration.
 #reactor_refresh_interval: 60
