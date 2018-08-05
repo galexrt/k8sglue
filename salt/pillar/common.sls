@@ -1,3 +1,6 @@
+salt:
+  master:
+    - 192.168.1.11
 selinux:
   state: permissive
   type: targeted
