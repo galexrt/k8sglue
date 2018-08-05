@@ -483,6 +483,14 @@ roster: flat
 # Pass in an alternative location for the salt-ssh `flat` roster file
 roster_file: /etc/salt/roster
 
+# Roster file default
+roster_defaults:
+#  user: daniel
+#  sudo: True
+#  priv: /root/.ssh/id_rsa
+#  tty: True
+  priv: /etc/salt/ssh/id_rsa
+
 # Define locations for `flat` roster files so they can be chosen when using Salt API.
 # An administrator can place roster files into these locations. Then when
 # calling Salt API, parameter 'roster_file' should contain a relative path to
@@ -490,30 +498,30 @@ roster_file: /etc/salt/roster
 # "/etc/salt/roster.d/foo/roster" etc. This feature prevents passing insecure
 # custom rosters through the Salt API.
 #
-#rosters:
-# - /etc/salt/roster.d
+rosters:
+ - /etc/salt/roster.d
 # - /opt/salt/some/more/rosters
 
 # The ssh password to log in with.
 #ssh_passwd: ''
 
 #The target system's ssh port number.
-ssh_port: '22'
+ssh_port: 22
 
 # Comma-separated list of ports to scan.
-#ssh_scan_ports: 22,1122,2222
+ssh_scan_ports: 22,1122,2222
 
 # Scanning socket timeout for salt-ssh.
 ssh_scan_timeout: 0.02
 
 # Boolean to run command via sudo.
-ssh_sudo: False
+ssh_sudo: True
 
 # Number of seconds to wait for a response when establishing an SSH connection.
-#ssh_timeout: 60
+ssh_timeout: 60
 
 # The user to log in as.
-#ssh_user: root
+ssh_user: root
 
 # The log file of the salt-ssh command:
 #ssh_log_file: /var/log/salt/ssh
@@ -542,7 +550,7 @@ ssh_sudo: False
 
 # salt-ssh has the ability to update the flat roster file if a minion is not
 # found in the roster.  Set this to True to enable it.
-#ssh_update_roster: False
+ssh_update_roster: True
 
 #####    Master Module Management    #####
 ##########################################

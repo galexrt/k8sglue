@@ -1,3 +1,5 @@
+{% set roles = salt['grains.get']('roles', []) -%}
+{% if "kubernetes-master" in roles or "kubernetes-worker" in roles %}
 include:
 - kubernetes-kubeadm.kubelet-service
 
@@ -19,4 +21,5 @@ copy kubeconfig to /root/.kube:
     - group: root
     - require:
       - cmd: 'kubeadm join'
-{%- endif %}
+{% endif %}
+{% endif %}

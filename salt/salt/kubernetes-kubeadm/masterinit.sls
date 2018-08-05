@@ -1,3 +1,5 @@
+{% set roles = salt['grains.get']('roles', []) -%}
+{% if "kubernetes-master-init" in roles %}
 include:
 - kubernetes-kubeadm.kubelet-service
 
@@ -5,7 +7,7 @@ kubeadm init:
   cmd.script:
     - source: salt://kubernetes-kubeadm/templates/scripts/kubeadm-init.sh
     - template: jinja
-    - creates: /etc/kubernetes/manifests/kube-apiserver.yaml
+    - creates: /etc/kubernetes/pki/ca.crt
     - require:
       - service: kubelet
 
@@ -18,3 +20,4 @@ copy kubeconfig to /root/.kube:
     - group: root
     - require:
       - cmd: 'kubeadm init'
+{% endif %}

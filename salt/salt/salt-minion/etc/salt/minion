@@ -14,7 +14,10 @@
 
 # Set the location of the salt master server. If the master server cannot be
 # resolved, then the minion will fail to start.
-master: 192.168.1.11
+master:
+{% for ip in salt['pillar.get']('salt').get('master') %}
+  - {{ ip }}
+{% endfor %}
 
 # Set http proxy information for the minion when doing requests
 #proxy_host:
@@ -367,6 +370,7 @@ grains:
 # NO mine functions are established by default.
 # Note these can be defined in the minion's pillar as well.
 
+{% set defaultInterface = salt['grains.get']('defaultInterface', 'eth0') %}
 mine_functions:
   network.ip_addrs:
     interface: "{{ defaultInterface }}"

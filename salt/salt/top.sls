@@ -14,3 +14,5 @@ base:
 {%- else %}
     - docker
 {%- endif %}
+  'G@roles:kubernetes-master-init':
+    - kubernetes-kubeadm.masterinit
