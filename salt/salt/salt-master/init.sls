@@ -1,17 +1,9 @@
-install salt-master package:
+{% for package in ['salt-master', 'salt-api', 'salt-ssh'] %}
+install {{ package }} package:
   pkg.latest:
-    - name: salt-master
+    - name: {{ package }}
     - refresh: True
-
-install salt-ssh package:
-  pkg.latest:
-    - name: salt-ssh
-    - refresh: True
-
-install salt-api package:
-  pkg.latest:
-    - name: salt-api
-    - refresh: True
+{% endfor %}
 
 configure salt-master:
   file.recurse:

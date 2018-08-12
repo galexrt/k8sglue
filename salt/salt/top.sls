@@ -7,6 +7,7 @@ base:
     - salt-minion
   'G@roles:salt-master':
     - salt-master
+    - salt-cloud
   'G@roles:kubernetes-*':
     - kubernetes-kubeadm.basics
 {%- if containerRuntime == "crio" %}

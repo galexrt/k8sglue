@@ -4,7 +4,7 @@ include:
 
 send kubeadm token created event:
   event.send:
-    - name: custom/kubernetes/kubeadm/token-generated
+    - name: custom/kubernetes/token-generated
     - require:
       - service: kubelet
     - data:
