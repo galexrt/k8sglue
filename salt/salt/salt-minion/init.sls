@@ -3,16 +3,17 @@ install salt-minion package:
     - name: salt-minion
     - refresh: True
 
-# TODO use replace to simply change `master` (and `ssl`?) config in minion config file
-# no matter what OS and/or changes happen to this file
 configure salt-minion:
-  file.managed:
-    - name: /etc/salt/minion
+  file.recurse:
+    - name: /etc/salt/minion.d
+    - source: salt://salt-minion/templates/etc/salt/minion.d
     - user: root
     - group: root
-    - mode: 644
+    - dir_mode: 640
+    - file_mode: 750
+    - replace: True
+    - clean: True
     - template: jinja
-    - source: salt://salt-minion/etc/salt/minion
 
 start salt-minion:
   service.running:
@@ -20,5 +21,5 @@ start salt-minion:
     - require:
       - pkg: salt-minion
     - watch:
-      - file: /etc/salt/minion
+      - file: 'configure salt-minion'
     - enable: True

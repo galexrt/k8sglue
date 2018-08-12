@@ -4,7 +4,7 @@
     - group: root
     - mode: 755
     - template: jinja
-    - source: salt://common/etc/resolv.conf
+    - source: salt://common/templates/etc/resolv.conf
 
 /etc/dhcp/dhclient-enter-hooks.d:
   file.directory:
@@ -20,6 +20,6 @@
     - group: root
     - mode: 755
     - template: jinja
-    - source: salt://common/etc/dhcp/dhclient-enter-hooks.d/00-nodnsupdate
+    - source: salt://common/templates/etc/dhcp/dhclient-enter-hooks.d/00-nodnsupdate
     - require:
       - file: /etc/dhcp/dhclient-enter-hooks.d

@@ -8,14 +8,22 @@ install salt-ssh package:
     - name: salt-ssh
     - refresh: True
 
+install salt-api package:
+  pkg.latest:
+    - name: salt-api
+    - refresh: True
+
 configure salt-master:
-  file.managed:
-    - name: /etc/salt/master
+  file.recurse:
+    - name: /etc/salt/master.d
+    - source: salt://salt-master/templates/etc/salt/master.d
     - user: root
     - group: root
-    - mode: 644
+    - dir_mode: 640
+    - file_mode: 750
+    - replace: True
+    - clean: True
     - template: jinja
-    - source: salt://salt-master/etc/salt/master
 
 {% for dir in ['/etc/salt/roster.d', '/etc/salt/ssh'] %}
 create {{ dir }} directory for salt-master:
@@ -39,5 +47,14 @@ start salt-master:
     - require:
       - pkg: salt-master
     - watch:
-      - file: /etc/salt/master
+      - file: 'configure salt-master'
+    - enable: True
+
+start salt-api:
+  service.running:
+    - name: salt-api
+    - require:
+      - pkg: salt-api
+    - watch:
+      - file: 'configure salt-master'
     - enable: True

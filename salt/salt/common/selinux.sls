@@ -14,7 +14,7 @@ selinux-config:
     - user: root
     - group: root
     - mode: 600
-    - source: salt://common/etc/selinux/config
+    - source: salt://common/templates/etc/selinux/config
     - template: jinja
 
 selinux-state:

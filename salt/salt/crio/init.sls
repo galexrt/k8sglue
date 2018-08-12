@@ -29,4 +29,5 @@ enabled and start crio service:
     - enable: True
     - require:
       - file: /etc/crio/crio.conf
+      - file: /etc/crictl.yaml
       - pkg: cri-o

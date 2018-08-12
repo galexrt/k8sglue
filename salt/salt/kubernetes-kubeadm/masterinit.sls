@@ -1,6 +1,7 @@
 {% set roles = salt['grains.get']('roles', []) -%}
 {% if "kubernetes-master-init" in roles %}
 include:
+- kubernetes-kubeadm.init
 - kubernetes-kubeadm.kubelet-service
 
 kubeadm init:

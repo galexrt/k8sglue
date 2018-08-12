@@ -1,5 +1,5 @@
 {% for key, value in pillar.get('sysctl', {}).items() %}
-'sysctl set {{ key }} to {{ value }}':
+'sysctl set {{ key }}':
   sysctl.present:
     - name: "{{ key }}"
     - value: "{{ value }}"

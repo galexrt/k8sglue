@@ -1,4 +1,5 @@
 include:
+- kubernetes-kubeadm.init
 - kubernetes-kubeadm.kubelet-service
 
 send kubeadm token created event:
