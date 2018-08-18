@@ -5,7 +5,7 @@
 {% set containerRuntime = salt['pillar.get']('containerRuntime', "crio") %}
 {% set roles = salt['grains.get']('roles', []) %}
 {% set containerRuntime = pillar.get('containerRuntime', "crio") %}
-{% set host = salt['grains.get']('host', 'default') %}
+{% set host = salt['grains.get']('host') %}
 {% set master_ca_cert_hash = salt['mine.get']('roles:kubernetes-master-init', 'kubernetes-master-ca-cert-hash', tgt_type='grain').values()[0] %}
 {% set join_token = salt['pillar.get']('join-token', None) %}
 

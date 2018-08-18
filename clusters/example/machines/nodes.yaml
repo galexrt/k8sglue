@@ -10,22 +10,19 @@ defaultRosterData:
       defaultInterface: eth1
 roster:
   node1:
-    host: 192.168.1.11
+    host: 192.168.2.11
     minion_opts:
       grains:
         roles:
-         - salt-master
-         - kubernetes-master
-         - kubernetes-master-init
+         - kubernetes-worker
   node2:
-    host: 192.168.1.12
+    host: 192.168.2.12
     minion_opts:
       grains:
         roles:
-         - salt-master
          - kubernetes-worker
   node3:
-    host: 192.168.1.13
+    host: 192.168.2.13
     minion_opts:
       grains:
         roles:

@@ -3,7 +3,7 @@
 {% set defaultInterface = salt['grains.get']('defaultInterface', 'eth0') %}
 {% set ipAddress = salt['grains.get']('ip_interfaces')[defaultInterface][0] %}
 {% set containerRuntime = salt['pillar.get']('containerRuntime', "crio") %}
-{% set host = salt['grains.get']('host', 'default') %}
+{% set host = salt['grains.get']('host') %}
 
 kubeadm init \
     --apiserver-advertise-address={{ ipAddress }} \

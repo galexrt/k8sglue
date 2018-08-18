@@ -1,5 +1,5 @@
 include:
-- kubernetes-kubeadm.init
+- kubernetes-kubeadm
 - kubernetes-kubeadm.kubelet-service
 
 send kubeadm token created event:
@@ -9,4 +9,4 @@ send kubeadm token created event:
       - service: kubelet
     - data:
         token: {{ salt['cmd.script'](name='salt://kubernetes-kubeadm/templates/scripts/kubeadm-token.sh', template='jinja') }}
-        target: {{ salt['pillar.get']('new_node') }}
+        target: {{ salt['pillar.get']('node') }}
