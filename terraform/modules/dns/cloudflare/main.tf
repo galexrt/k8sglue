@@ -1,5 +1,5 @@
 resource "cloudflare_record" "dns_v4" {
-  count   = "${length(var.names)}"
+  count   = "${length(var.addresses_ipv4)}"
   domain  = "${var.domain}"
   value   = "${element(var.addresses_ipv4, count.index)}"
   name    = "${element(var.names, count.index)}"
@@ -8,7 +8,7 @@ resource "cloudflare_record" "dns_v4" {
 }
 
 resource "cloudflare_record" "dns_v6" {
-  count   = "${length(var.names)}"
+  count   = "${length(var.addresses_ipv6)}"
   domain  = "${var.domain}"
   value   = "${element(var.addresses_ipv6, count.index)}"
   name    = "${element(var.names, count.index)}"

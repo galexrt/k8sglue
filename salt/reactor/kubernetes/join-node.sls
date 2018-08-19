@@ -4,6 +4,7 @@ kubeadm join node {{ data['id'] }}:
   local.state.apply:
     - tgt: '{{ data['id'] }}'
     - tgt_type: list
+    - sync_mods: all
     - args:
       - mods: kubernetes-kubeadm.join
       - pillar:

@@ -24,7 +24,7 @@ resource "hcloud_server" "servers" {
 }
 
 module "servers_dns" {
-  source = "./../../dns/cloudflare"
+  source = "./../../../modules/dns/cloudflare"
 
   cf_email       = "${var.cf_email}"
   cf_token       = "${var.cf_token}"

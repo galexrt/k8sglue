@@ -15,10 +15,7 @@ resource "hcloud_server" "servers" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo dnf -y install python curl salt-master salt-minion",
-      "sudo salt-key --gen-keys=${self.name} --gen-keys-dir=/etc/salt/pki/minion --keysize=4096",
-      "sudo mv /etc/salt/pki/minion/${self.name}.pem /etc/salt/pki/minion/minion.pem",
-      "sudo mv /etc/salt/pki/minion/${self.name}.pub /etc/salt/pki/minion/minion.pub",
+      "sudo dnf -y install python",
     ]
   }
 }
