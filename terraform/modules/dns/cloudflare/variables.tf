@@ -6,6 +6,10 @@ variable "domain" {
   default = "example.com"
 }
 
+variable "record_count" {
+  type = "string"
+}
+
 variable "names" {
   type = "list"
 }

@@ -33,3 +33,13 @@ variable "instance_type" {
 variable "cf_email" {}
 
 variable "cf_token" {}
+
+variable "script" {
+  type = "string"
+  default = "echo OKAY"
+}
+
+variable "cloud_config" {
+  default = ""
+  type    = "string"
+}

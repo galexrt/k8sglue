@@ -14,8 +14,4 @@ resource "null_resource" "kubernetes" {
     user        = "root"
     private_key = "${file(var.ssh_key_private)}"
   }
-
-  provisioner "remote-exec" {
-    inline = ["sudo salt-call --local test.ping"]
-  }
 }

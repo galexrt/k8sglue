@@ -6,6 +6,7 @@ resource "hcloud_server" "servers" {
   datacenter  = "fsn1-dc8"
   ssh_keys    = ["${var.ssh_key_name}"]
   keep_disk   = false
+  user_data   = "${var.cloud_config}"
 
   connection {
     type        = "ssh"
@@ -15,10 +16,7 @@ resource "hcloud_server" "servers" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo dnf -y install python curl salt-master salt-minion",
-      "sudo salt-key --gen-keys=${self.name} --gen-keys-dir=/etc/salt/pki/minion --keysize=4096",
-      "sudo mv /etc/salt/pki/minion/${self.name}.pem /etc/salt/pki/minion/minion.pem",
-      "sudo mv /etc/salt/pki/minion/${self.name}.pub /etc/salt/pki/minion/minion.pub",
+      "${var.script}",
     ]
   }
 }
@@ -26,6 +24,7 @@ resource "hcloud_server" "servers" {
 module "servers_dns" {
   source = "./../../../modules/dns/cloudflare"
 
+  record_count   = "${var.server_count}"
   cf_email       = "${var.cf_email}"
   cf_token       = "${var.cf_token}"
   domain         = "${var.dns_domain}"

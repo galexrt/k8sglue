@@ -20,6 +20,19 @@ module "hcloud_kubernetes_masters" {
   hostname_pattern = "${var.hostname_kubernetes_master}"
   server_count     = "${var.master_count}"
   instance_type    = "${var.hcloud_master_instance_type}"
+  script           = "dnf update -y && (sleep 2 && reboot) &"
+  cloud_config     = <<EOF
+#cloud-config
+write_files:
+- path: /etc/salt/master.d/grains.conf
+  owner: root:root
+  permissions: '0640'
+  content: |
+    grains:
+      roles:
+      - salt-master
+      - kubernetes-master
+EOF
 }
 
 module "hcloud_kubernetes_workers" {
@@ -35,11 +48,24 @@ module "hcloud_kubernetes_workers" {
   hostname_pattern = "${var.hostname_kubernetes_worker}"
   server_count     = "${var.worker_count}"
   instance_type    = "${var.hcloud_worker_instance_type}"
+  script           = "dnf update -y && (sleep 2 && reboot) &"
+  cloud_config     = <<EOF
+#cloud-config
+write_files:
+- path: /etc/salt/master.d/grains.conf
+  owner: root:root
+  permissions: '0640'
+  content: |
+    grains:
+      roles:
+      - kubernetes-worker
+EOF
 }
 
 module "kubernetes_masters_dns" {
   source = "./modules/dns/cloudflare"
 
+  record_count   = "${var.master_count}"
   cf_email       = "${var.cf_email}"
   cf_token       = "${var.cf_token}"
   domain         = "${var.dns_domain}"
