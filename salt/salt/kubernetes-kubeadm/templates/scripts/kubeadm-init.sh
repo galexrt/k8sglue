@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
 {% set defaultInterface = salt['grains.get']('defaultInterface', 'eth0') %}
-{% set ipAddress = salt['grains.get']('ip_interfaces')[defaultInterface][0] %}
+{% set ipAddress = salt['grains.get']('ip_interfaces')[defaultInterface]|first %}
 {% set containerRuntime = salt['pillar.get']('containerRuntime', "crio") %}
 {% set host = salt['grains.get']('host') %}
+
+set -e
+set -o pipefail
 
 kubeadm init \
     --apiserver-advertise-address={{ ipAddress }} \

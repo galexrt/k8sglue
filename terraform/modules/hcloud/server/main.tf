@@ -15,7 +15,7 @@ resource "hcloud_server" "servers" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo dnf -y install python",
+      "sudo dnf -y install python python2-futures",
     ]
   }
 }

@@ -1,12 +1,12 @@
-{% set roles = salt['grains.get']('roles', []) -%}
-{% if "kubernetes-master" in roles or "kubernetes-worker" in roles %}
-kubeadm join node {{ data['id'] }}:
+{%- set node = data['data']['node'] %}
+{%- set token = data['data']['token'] %}
+kubeadm join node {{ node }}:
   local.state.apply:
-    - tgt: '{{ data['id'] }}'
+    - tgt: '{{ node }}'
     - tgt_type: list
     - sync_mods: all
     - args:
       - mods: kubernetes-kubeadm.join
       - pillar:
-          node: {{ data['id'] }}
-{% endif %}
+          node: '{{ node }}'
+          token: '{{ token }}'

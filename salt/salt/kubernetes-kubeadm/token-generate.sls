@@ -8,5 +8,5 @@ send kubeadm token created event:
     - require:
       - service: kubelet
     - data:
-        token: {{ salt['cmd.script'](name='salt://kubernetes-kubeadm/templates/scripts/kubeadm-token.sh', template='jinja') }}
-        target: {{ salt['pillar.get']('node') }}
+        token: '{{ salt['cmd.script']('salt://kubernetes-kubeadm/templates/scripts/kubeadm-token.sh', template='jinja')['stdout'] }}'
+        node: '{{ salt['pillar.get']('node') }}'

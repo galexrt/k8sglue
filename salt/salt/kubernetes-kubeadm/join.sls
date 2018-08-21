@@ -1,4 +1,4 @@
-{% set roles = salt['grains.get']('roles', []) -%}
+{%- set roles = salt['grains.get']('roles', []) %}
 {% if "kubernetes-master" in roles or "kubernetes-worker" in roles %}
 include:
 - kubernetes-kubeadm
@@ -8,6 +8,8 @@ kubeadm join:
   cmd.script:
     - source: salt://kubernetes-kubeadm/templates/scripts/kubeadm-join.sh
     - template: jinja
+    - env:
+      - KUBEADM_JOIN_TOKEN: '{{ salt['pillar.get']('token') }}'
     - creates: /etc/kubernetes/pki/ca.crt
     - require:
       - service: kubelet

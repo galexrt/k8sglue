@@ -2,4 +2,7 @@
 
 {% set ttl = salt['pillar.get']('kubernetes').get('kubeadm').get('token').get('ttl', '10m') %}
 
-kubeadm token create --ttl {{ ttl }}
+set -e
+set -o pipefail
+
+kubeadm token create --kubeconfig /etc/kubernetes/admin.conf --ttl {{ ttl }}
