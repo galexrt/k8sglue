@@ -4,6 +4,7 @@ base:
     - common
     - sysctl
     - system-maintenance
+    - wireguard
     - salt-minion
   'G@roles:salt-master':
     - salt-master
