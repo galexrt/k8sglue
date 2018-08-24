@@ -105,7 +105,7 @@ func KeyAccept(machines []string) error {
 		fingerprintsArray = append(fingerprintsArray, fingerprint)
 	}
 
-	masters := config.Cfg.Machines.GetEntriesByRole("salt-master").GetNames()
+	masters := config.Cfg.Cluster.Salt.Roster.GetEntriesByRole("salt-master").GetNames()
 	if len(masters) == 0 {
 		return fmt.Errorf("no nodes with role salt-master found")
 	}

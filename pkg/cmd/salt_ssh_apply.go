@@ -30,8 +30,6 @@ var saltSSHApplyCmd = &cobra.Command{
 	Use:   "apply",
 	Short: "Trigger salt (high) state over ssh.",
 	PreRun: func(cmd *cobra.Command, args []string) {
-		viper.BindPFlag("hosts", cmd.Flags().Lookup("hosts"))
-		viper.BindPFlag("all", cmd.Flags().Lookup("all"))
 		viper.BindPFlag("sls-files", cmd.Flags().Lookup("sls-files"))
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -39,21 +37,12 @@ var saltSSHApplyCmd = &cobra.Command{
 		if err := bootstrapCommand(cmd, true); err != nil {
 			return err
 		}
-
-		hosts := viper.GetStringSlice("hosts")
-		if len(hosts) == 0 && !viper.GetBool("all") {
-			return fmt.Errorf("no all or host flag given")
-		} else if viper.GetBool("all") {
-			hosts = config.Cfg.Machines.GetNames()
-		}
-		return salt.SSHApply(hosts, viper.GetString("sls-files"))
+		return salt.SSHApply(config.Cfg.Cluster.Salt.Roster.GetNames(), viper.GetString("sls-files"))
 	},
 }
 
 func init() {
 	saltSSHCmd.AddCommand(saltSSHApplyCmd)
 
-	saltSSHApplyCmd.Flags().StringSlice("hosts", []string{}, "a list of hosts comma separated")
-	saltSSHApplyCmd.Flags().Bool("all", false, "if all hosts in the cluster machines list should be used")
 	saltSSHApplyCmd.Flags().StringP("sls-files", "s", "", "Which SLS files to call for state.apply, if none given high state")
 }

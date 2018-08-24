@@ -22,7 +22,6 @@ import (
 
 	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/models"
-	saltmodels "github.com/galexrt/k8sglue/pkg/salt/models"
 	"github.com/galexrt/k8sglue/pkg/util"
 	"github.com/spf13/viper"
 )
@@ -30,7 +29,6 @@ import (
 // Config holds all the configs and a cluster if loaded
 type Config struct {
 	Cluster  *models.Cluster
-	Machines *saltmodels.Roster
 	LogLevel capnslog.LogLevel
 	StartDir string
 	SaltDir  string
@@ -58,7 +56,6 @@ func Init(appName string) error {
 
 	Cfg = &Config{
 		Cluster:  &models.Cluster{},
-		Machines: &saltmodels.Roster{},
 		LogLevel: capnslog.INFO,
 		StartDir: startDir,
 		SaltDir:  saltDir,
@@ -76,12 +73,6 @@ func Load(configPath, machinesPath string) error {
 	cluster.Salt.DefaultRosterData.Host = ""
 	Cfg.Cluster = cluster
 
-	machines, err := LoadMachines(machinesPath)
-	if err != nil {
-		return err
-	}
-
-	Cfg.Machines = machines
 	return nil
 }
 
