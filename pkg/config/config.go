@@ -65,7 +65,7 @@ func Init(appName string) error {
 }
 
 // Load load cluster config into Cfg variable
-func Load(configPath, machinesPath string) error {
+func Load(configPath string) error {
 	cluster, err := LoadCluster(configPath)
 	if err != nil {
 		return err

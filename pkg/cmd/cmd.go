@@ -54,13 +54,11 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&logLevelRaw, "log-level", "INFO", "Set log level")
 
 	rootCmd.PersistentFlags().String("cluster", "", "Cluster settings file")
-	rootCmd.PersistentFlags().String("machines", "", "Cluster machines file")
 	rootCmd.PersistentFlags().Bool("force", false, "Force the actions being run")
 	rootCmd.PersistentFlags().String("temp-dir", "/tmp/k8sglue", "Temp directory for temporary files")
 	rootCmd.PersistentFlags().String("salt-dir", "salt/", "Path to the salt files containing directory (will be appended to the current work dir by default")
 
 	viper.BindPFlag("cluster", rootCmd.PersistentFlags().Lookup("cluster"))
-	viper.BindPFlag("machines", rootCmd.PersistentFlags().Lookup("machines"))
 	viper.BindPFlag("force", rootCmd.PersistentFlags().Lookup("force"))
 	viper.BindPFlag("temp-dir", rootCmd.PersistentFlags().Lookup("temp-dir"))
 	viper.BindPFlag("salt-dir", rootCmd.PersistentFlags().Lookup("salt-dir"))
@@ -93,7 +91,7 @@ func bootstrapCommand(cmd *cobra.Command, prepareSaltSSH bool) error {
 		if viper.GetString("cluster") == "" {
 			return fmt.Errorf(`required flag(s) "cluster" not set`)
 		}
-		if err := config.Load(viper.GetString("cluster"), viper.GetString("machines")); err != nil {
+		if err := config.Load(viper.GetString("cluster")); err != nil {
 			return err
 		}
 	}
