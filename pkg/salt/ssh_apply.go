@@ -28,7 +28,7 @@ func SSHApply(machines []string, slsFiles string) error {
 	args := append(getSaltSSHDefaultArgs(),
 		generateTargetFlags(machines)...,
 	)
-	args = append(args, "--refresh", "state.apply")
+	args = append(args, "--state-verbose=false", "--refresh", "state.apply")
 	if slsFiles != "" {
 		args = append(args, slsFiles)
 	}

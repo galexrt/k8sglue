@@ -19,9 +19,3 @@ copy kubeconfig to /root/.kube:
     - group: root
     - require:
       - cmd: 'kubeadm init'
-
-ready to accept kubernetes nodes:
-  event.send:
-    - name: custom/kubernetes/masterinit-is-ready
-    - require:
-      - file: 'copy kubeconfig to /root/.kube'
