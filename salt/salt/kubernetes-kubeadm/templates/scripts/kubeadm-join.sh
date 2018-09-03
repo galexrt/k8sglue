@@ -7,9 +7,9 @@
 {%- set host = salt['grains.get']('host') %}
 {# TODO Change from master-init to master #}
 {%- set kubernetes_master_ca_cert_hash = salt['mine.get']('roles:kubernetes-master-init', 'kubernetes_master_ca_cert_hash', tgt_type='grain').values()|first %}
-{%- set kubernetes_master_address = salt['pillar.get']('kubernetes:kubeadm:master_address') %}
-{%- if kubernetes_master_address is none %}
-{%-  set kubernetes_master_address = salt['mine.get']('roles:kubernetes-master-init', 'ip_address', tgt_type='grain').values()|random|first %}
+{%- set kubernetes_master_address = salt['mine.get']('roles:kubernetes-master-init', 'ip_address', tgt_type='grain').values()|random|first %}
+{%- if kubernetes_master_address is none or kubernetes_master_address == "" %}
+{%-  set kubernetes_master_address = salt['pillar.get']('kubernetes:kubeadm:master_address') %}
 {%- endif %}
 {%- if kubernetes_master_address is none %}
 {%-  set kubernetes_master_address = '127.0.0.1:6443' %}

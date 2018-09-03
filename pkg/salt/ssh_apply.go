@@ -28,6 +28,13 @@ func SSHApply(machines []string, slsFiles string) error {
 	args := append(getSaltSSHDefaultArgs(),
 		generateTargetFlags(machines)...,
 	)
+
+	// TODO Apply salt state on first master
+
+	// TODO Run `salt-key --gen-signature` on the first master
+
+	// TODO Copy `/etc/salt/pki/master/master_sign.*` to the other masters
+
 	args = append(args, "--state-verbose=false", "--refresh", "state.apply")
 	if slsFiles != "" {
 		args = append(args, slsFiles)
@@ -51,5 +58,9 @@ func SSHApply(machines []string, slsFiles string) error {
 		"group=root",
 	)
 
-	return executor.ExecOutToLog("salt-ssh copy ssh key", SaltSSHCommand, args)
+	if err := executor.ExecOutToLog("salt-ssh copy ssh key", SaltSSHCommand, args); err != nil {
+		return err
+	}
+
+	return Sync(machines)
 }

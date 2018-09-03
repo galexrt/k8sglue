@@ -25,6 +25,7 @@ salt:
         grains:
           roles:
            - salt-master
+           - salt-master-init
            - kubernetes-master
            - kubernetes-master-init
     master2:
