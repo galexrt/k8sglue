@@ -46,6 +46,7 @@ func SSHApply(machines []string, slsFiles string) error {
 		"name=/etc/salt/ssh/id_rsa",
 		"source=salt://ssh_id_rsa",
 		"dir_mode=0600",
+		"mode=600",
 		"user=root",
 		"group=root",
 	)

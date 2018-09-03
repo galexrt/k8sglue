@@ -191,7 +191,7 @@ func PrepareSaltSSH() error {
 		return err
 	}
 
-	if err = util.Symlink(path.Clean(config.Cfg.Cluster.SSHKey), path.Join(config.Cfg.SaltDir, "data/ssh_id_rsa")); err != nil {
+	if err = util.Symlink(path.Clean(config.Cfg.Cluster.SSHKey), path.Join(config.Cfg.TempDir, "data/ssh_id_rsa")); err != nil {
 		return err
 	}
 

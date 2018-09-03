@@ -5,8 +5,8 @@
 {%- set containerRuntime = salt['pillar.get']('containerRuntime', 'crio') %}
 {%- set roles = salt['grains.get']('roles') %}
 {%- set host = salt['grains.get']('host') %}
-{%- set kubernetes_master_ca_cert_hash = salt['mine.get']('roles:kubernetes-master-init', 'kubernetes_master_ca_cert_hash', tgt_type='grain').values()|first %}
 {# TODO Change from master-init to master #}
+{%- set kubernetes_master_ca_cert_hash = salt['mine.get']('roles:kubernetes-master-init', 'kubernetes_master_ca_cert_hash', tgt_type='grain').values()|first %}
 {%- set kubernetes_master_address = salt['pillar.get']('kubernetes:kubeadm:master_address') %}
 {%- if kubernetes_master_address is none %}
 {%-  set kubernetes_master_address = salt['mine.get']('roles:kubernetes-master-init', 'ip_address', tgt_type='grain').values()|random|first %}

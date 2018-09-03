@@ -8,7 +8,7 @@ Vagrant.configure('2') do |config|
         subconfig.vm.provision "shell", inline: "systemctl stop firewalld;systemctl disable firewalld; systemctl mask firewalld"
         subconfig.vm.provision "file", source: "~/.ssh/id_rsa", destination: "/home/vagrant/.ssh/id_rsa"
         subconfig.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "/home/vagrant/.ssh/id_rsa.pub"
-        subconfig.vm.provision "shell", inline: "mkdir -p /root/.ssh /etc/salt/ssh && cp /home/vagrant/.ssh/id_rsa* /root/.ssh && cp /home/vagrant/.ssh/id_rsa* /etc/salt/ssh && cat /home/vagrant/.ssh/id_rsa.pub | tee /root/.ssh/authorized_keys"
+        subconfig.vm.provision "shell", inline: "mkdir -p /root/.ssh /etc/salt/ssh && chmod 600 /home/vagrant/.ssh/id_rsa && cp -a /home/vagrant/.ssh/id_rsa* /root/.ssh && cp -a /home/vagrant/.ssh/id_rsa* /etc/salt/ssh && cat /home/vagrant/.ssh/id_rsa.pub | tee /root/.ssh/authorized_keys"
         subconfig.vm.provision "shell", inline: "dnf install -y python2-futures"
       end
     end
