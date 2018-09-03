@@ -33,5 +33,22 @@ func SSHApply(machines []string, slsFiles string) error {
 		args = append(args, slsFiles)
 	}
 
-	return executor.ExecOutToLog("salt-ssh state.apply", SaltSSHCommand, args)
+	if err := executor.ExecOutToLog("salt-ssh state.apply", SaltSSHCommand, args); err != nil {
+		return err
+	}
+
+	args = append(getSaltSSHDefaultArgs(),
+		generateTargetFlags(machines)...,
+	)
+	args = append(args, "--state-verbose=false", "--refresh",
+		"state.single",
+		"file.managed",
+		"name=/etc/salt/ssh/id_rsa",
+		"source=salt://ssh_id_rsa",
+		"dir_mode=0600",
+		"user=root",
+		"group=root",
+	)
+
+	return executor.ExecOutToLog("salt-ssh copy ssh key", SaltSSHCommand, args)
 }

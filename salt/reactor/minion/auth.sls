@@ -15,5 +15,4 @@ call salt-master minion key verify orch:
       - mods: orch.salt-key
       - pillar:
           minion: {{ data['id'] }}
-          pub_key: {{ data['pub'] }}
 {% endif %}

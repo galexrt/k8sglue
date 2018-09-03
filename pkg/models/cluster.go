@@ -22,6 +22,7 @@ import (
 
 // Cluster holds special cluster information.
 type Cluster struct {
+	SSHKey     string     `yaml:"sshKey"`
 	General    General    `yaml:"general"`
 	Kubernetes Kubernetes `yaml:"kubernetes"`
 	Salt       Salt       `yaml:"salt,omitempty"`

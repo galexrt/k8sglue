@@ -12,9 +12,9 @@ salt:
   # In defaultRosterData `host` field will always be "nulled" and not considered
   defaultRosterData:
     port: 22
-    user: vagrant
+    user: root
     sudo: true
-    priv: ~/.ssh/id_rsa
+    priv: /home/atrost/.ssh/id_rsa
     minion_opts:
       grains:
         defaultInterface: eth1

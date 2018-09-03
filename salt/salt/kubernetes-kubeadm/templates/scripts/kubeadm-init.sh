@@ -17,3 +17,13 @@ kubeadm init \
     --pod-network-cidr=100.64.0.0/13 \
     --service-cidr=100.72.0.0/16 | \
     tee /var/log/kubeadm-init.log
+
+
+TOKEN=$(kubeadm token list | tail -n +2 | head -n -1 | awk '{print $1}') || echo "Error getting kubeadm token list from master server. Out: '$TOKEN', Ret: $?"
+if [ -n "${TOKEN}" ]; then
+    kubeadm token delete "${TOKEN}"
+else
+    echo "No kubeadm token to delete."
+fi
+
+exit 0
