@@ -1,4 +1,4 @@
-{%- for kmod, opts in pillar.get('kmods', {}).items() %}
+{%- for kmod, opts in salt['pillar.get']('kmods', {}).items() %}
 'add and load {{ kmod }}':
 {%- if opts.load|default(true) %}
   kmod.present:

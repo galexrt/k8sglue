@@ -17,21 +17,11 @@ limitations under the License.
 package salt
 
 import (
-	"os"
-	"path"
-
-	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/executor"
-	"github.com/galexrt/k8sglue/pkg/util"
 )
 
 // Sync syncs current local `salt/` directory to the salt-master(s).
 func Sync(masters []string) error {
-	if err := util.Symlink(path.Join(config.Cfg.SaltDir), path.Join(config.Cfg.TempDir, "data", "k8sglue-salt")); err != nil {
-		return err
-	}
-	defer os.Remove(path.Join(config.Cfg.TempDir, "data", "k8sglue-salt"))
-
 	args := append(getSaltSSHDefaultArgs(),
 		generateTargetFlags(masters)...,
 	)

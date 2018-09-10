@@ -195,6 +195,10 @@ func PrepareSaltSSH() error {
 		return err
 	}
 
+	if err := util.Symlink(path.Join(config.Cfg.SaltDir), path.Join(config.Cfg.TempDir, "data", "k8sglue-salt")); err != nil {
+		return err
+	}
+
 	return nil
 }
 

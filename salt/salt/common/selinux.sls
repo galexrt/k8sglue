@@ -1,5 +1,5 @@
 {% if salt['grains.get']('os_family', 'N/A') == 'RedHat' %}
-{% set selinux = pillar.get('selinux', {}) -%}
+{% set selinux = salt['pillar.get']('selinux', {}) -%}
 selinux:
   pkg.installed:
     - pkgs:

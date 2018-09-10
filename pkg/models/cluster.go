@@ -22,10 +22,10 @@ import (
 
 // Cluster holds special cluster information.
 type Cluster struct {
-	SSHKey     string     `yaml:"sshKey"`
 	General    General    `yaml:"general"`
 	Kubernetes Kubernetes `yaml:"kubernetes"`
 	Salt       Salt       `yaml:"salt,omitempty"`
+	SSHKey     string     `yaml:"sshKey"`
 }
 
 // General holds the config file which will be used for the actual salt state applies.

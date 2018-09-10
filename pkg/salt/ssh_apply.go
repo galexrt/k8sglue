@@ -17,6 +17,14 @@ limitations under the License.
 package salt
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"path"
+	"path/filepath"
+	"strings"
+
+	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/executor"
 )
 
@@ -26,20 +34,64 @@ const HighState = ""
 // SSHApply trigger salt-ssh highstate using salt-ssh on the salt-master(s)
 func SSHApply(machines []string, slsFiles string) error {
 	args := append(getSaltSSHDefaultArgs(),
-		generateTargetFlags(machines)...,
+		generateTargetFlags(machines[0:0])...,
 	)
-
-	// TODO Apply salt state on first master
-
-	// TODO Run `salt-key --gen-signature` on the first master
-
-	// TODO Copy `/etc/salt/pki/master/master_sign.*` to the other masters
-
 	args = append(args, "--state-verbose=false", "--refresh", "state.apply")
-	if slsFiles != "" {
-		args = append(args, slsFiles)
+	if err := executor.ExecOutToLog("salt-ssh state.apply first master", SaltSSHCommand, args); err != nil {
+		return err
 	}
 
+	// TODO Copy `/etc/salt/pki/master/master_sign.*` to the other masters
+	files := []string{
+		"/etc/salt/pki/master/master_sign.pem",
+		"/etc/salt/pki/master/master_sign.pub",
+	}
+	for _, file := range files {
+		args = append(getSaltSSHDefaultArgs(),
+			generateTargetFlags(machines)...,
+		)
+		args = append(args, "--state-verbose=false", "--refresh", "--static", "--out=json", "cp.get_file_str", file)
+		out, err := executor.ExecStdoutByte(SaltSSHCommand, args)
+		if err != nil {
+			return err
+		}
+		var parsed map[string]string
+		if err = json.Unmarshal(out, &parsed); err != nil {
+			return err
+		}
+
+		if err = ioutil.WriteFile(
+			path.Join(config.Cfg.TempDir, "data", filepath.Base(file)),
+			[]byte(parsed[machines[0]]),
+			0600,
+		); err != nil {
+			return err
+		}
+	}
+
+	for _, file := range files {
+		args = append(getSaltSSHDefaultArgs(),
+			generateTargetFlags(machines)...,
+		)
+		args = append(args, "--state-verbose=false", "--refresh",
+			"state.single",
+			"file.managed",
+			fmt.Sprintf("name=%s", strings.Replace(file, "master", "minion", 1)),
+			fmt.Sprintf("source=salt://%s", filepath.Base(file)),
+			"dir_mode=0700",
+			"mode=0600",
+			"user=root",
+			"group=root",
+		)
+		if err := executor.ExecOutToLog("salt-ssh copy master sign files", SaltSSHCommand, args); err != nil {
+			return err
+		}
+	}
+
+	args = append(getSaltSSHDefaultArgs(),
+		generateTargetFlags(machines)...,
+	)
+	args = append(args, "--state-verbose=false", "--refresh", "state.apply")
 	if err := executor.ExecOutToLog("salt-ssh state.apply", SaltSSHCommand, args); err != nil {
 		return err
 	}
@@ -62,5 +114,18 @@ func SSHApply(machines []string, slsFiles string) error {
 		return err
 	}
 
-	return Sync(machines)
+	if err := Sync(machines); err != nil {
+		return err
+	}
+
+	args = append(getSaltSSHDefaultArgs(),
+		generateTargetFlags(machines)...,
+	)
+	args = append(args, "--state-verbose=false", "--refresh",
+		"state.single",
+		"cmd.run",
+		"name=systemctl restart salt-master salt-minion",
+	)
+
+	return executor.ExecOutToLog("salt-ssh restart salt-minion", SaltSSHCommand, args)
 }

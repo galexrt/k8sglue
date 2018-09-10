@@ -1,3 +1,6 @@
+include:
+- salt-minion
+
 {% for package in ['salt-master', 'salt-api', 'salt-ssh'] %}
 install {{ package }} package:
   pkg.latest:
@@ -33,11 +36,56 @@ create {{ dir }} directory for salt-master:
       - pkg: salt-master
 {% endfor %}
 
+generate master signing signature:
+  cmd.run:
+    - name: |
+        set -e
+        salt-key --auto-create --gen-keys=master --gen-keys-dir=/etc/salt/pki/master/
+        salt-key --gen-signature --auto-create
+    - creates:
+      - /etc/salt/pki/master/master.pem
+      - /etc/salt/pki/master/master.pub
+      - /etc/salt/pki/master/master_pubkey_signature
+      - /etc/salt/pki/master/master_sign.pem
+      - /etc/salt/pki/master/master_sign.pub
+    - require:
+      - pkg: salt-master
+    - require_in:
+      - service: 'start salt-master'
+
+generate salt-master minion keys:
+  cmd.run:
+    - name: |
+        set -e
+        salt-key --auto-create --gen-keys=minion --gen-keys-dir=/etc/salt/pki/minion/
+    - creates:
+      - /etc/salt/pki/minion/minion.pem
+      - /etc/salt/pki/minion/minion.pub
+    - require:
+      - pkg: salt-master
+      - pkg: salt-minion
+    - require_in:
+      - service: 'start salt-master'
+      - service: 'start salt-minion'
+
+copy master minion key to accepted:
+  file.symlink:
+    - name: '/etc/salt/pki/master/minions/{{ salt['grains.get']('fqdn') }}'
+    - target: /etc/salt/pki/minion/minion.pub
+    - makedirs: True
+    - require:
+      - pkg: salt-master
+      - pkg: salt-minion
+    - require_in:
+      - service: 'start salt-minion'
+      - service: 'start salt-master'
+
 start salt-master:
   service.running:
     - name: salt-master
     - require:
       - pkg: salt-master
+      - cmd: 'generate master signing signature'
     - watch:
       - file: 'configure salt-master'
     - enable: True
@@ -47,6 +95,7 @@ start salt-api:
     - name: salt-api
     - require:
       - pkg: salt-api
+      - service: 'start salt-master'
     - watch:
       - file: 'configure salt-master'
     - enable: True

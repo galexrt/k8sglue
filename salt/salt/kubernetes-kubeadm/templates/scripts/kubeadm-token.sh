@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-{% set ttl = salt['pillar.get']('kubernetes').get('kubeadm').get('token').get('ttl', '10m') %}
+{%- set ttl = salt['pillar.get']('kubernetes:kubeadm:token:ttl', '10m') %}
 
 set -e
 set -o pipefail

@@ -23,6 +23,7 @@ salt:
       host: 192.168.1.11
       minion_opts:
         grains:
+          defaultInterface: eth1
           roles:
            - salt-master
            - salt-master-init
@@ -32,6 +33,7 @@ salt:
       host: 192.168.1.12
       minion_opts:
         grains:
+          defaultInterface: eth1
           roles:
            - salt-master
            - kubernetes-master
@@ -39,6 +41,8 @@ salt:
       host: 192.168.1.13
       minion_opts:
         grains:
+          defaultInterface: eth1
           roles:
            - salt-master
            - kubernetes-master
+sshKey: /home/atrost/.ssh/id_rsa

@@ -12,7 +12,7 @@ configure salt-minion:
     - dir_mode: 640
     - file_mode: 750
     - replace: True
-    - clean: True
+    - clean: False
     - template: jinja
 
 start salt-minion:

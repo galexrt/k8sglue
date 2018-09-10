@@ -3,7 +3,7 @@ make_resolv_conf(){
     rscf="$(mktemp "${TMPDIR:-/tmp}/XXXXXX")"
     [[ -z "${rscf}" ]] && return
     cat << EOF > "${rscf}"
-{%- for ns in pillar.get('nameservers', ["1.1.1.1", "8.8.8.8"]) %}
+{%- for ns in salt['pillar.get']('nameservers', ["1.1.1.1", "8.8.8.8"]) %}
 nameserver {{ ns }}
 {%- endfor %}
 EOF

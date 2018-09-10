@@ -1,5 +1,5 @@
 {{ pillar['headers']['salt']['file'] }}
-{% set selinux = pillar.get('selinux', {}) -%}
+{%- set selinux = salt['pillar.get']('selinux', {}) -%}
 # This file controls the state of SELinux on the system.
 # SELINUX= can take one of these three values:
 #     enforcing - SELinux security policy is enforced.

@@ -3,6 +3,8 @@ base:
   '*':
     - headers
     - common
-    - salt
     - network
+{%- if salt['file.file_exists']('/srv/pillar/salt.sls') %}
+    - salt
+{%- endif %}
     - kubernetes-kubeadm

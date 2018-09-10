@@ -17,6 +17,7 @@ limitations under the License.
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -72,6 +73,10 @@ func Load(configPath string) error {
 	}
 	cluster.Salt.DefaultRosterData.Host = ""
 	Cfg.Cluster = cluster
+
+	if Cfg.Cluster.SSHKey == "" {
+		return fmt.Errorf("no sshKey given in cluster yaml")
+	}
 
 	return nil
 }
