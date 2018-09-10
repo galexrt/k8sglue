@@ -46,6 +46,7 @@ type Kubeadm struct {
 
 // Salt holds all required information for cluster setup.
 type Salt struct {
-	DefaultRosterData saltmodels.RosterData `yaml:"defaultRosterData"`
-	Roster            *saltmodels.Roster    `yaml:"roster"`
+	DefaultRosterDataAsBase bool                  `yaml:"defaultRosterDataAsBase"`
+	DefaultRosterData       saltmodels.RosterData `yaml:"defaultRosterData"`
+	Roster                  *saltmodels.Roster    `yaml:"roster"`
 }

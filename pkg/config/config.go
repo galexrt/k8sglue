@@ -72,6 +72,11 @@ func Load(configPath string) error {
 		return err
 	}
 	cluster.Salt.DefaultRosterData.Host = ""
+	if cluster.Salt.DefaultRosterDataAsBase {
+		if err := cluster.Salt.Roster.SetDefaultRosterData(cluster.Salt.DefaultRosterData); err != nil {
+			return err
+		}
+	}
 	Cfg.Cluster = cluster
 
 	if Cfg.Cluster.SSHKey == "" {

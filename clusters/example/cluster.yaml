@@ -6,9 +6,12 @@ general:
     - 8.8.8.8
     - 1.0.0.1
     - 8.4.4.8
+sshKey: /home/atrost/.ssh/id_rsa
 kubernetes:
   kubeadm:
 salt:
+  # always merge the defaultRosterData into the roster data of each node
+  defaultRosterDataAsBase: true
   # In defaultRosterData `host` field will always be "nulled" and not considered
   defaultRosterData:
     port: 22
@@ -45,4 +48,3 @@ salt:
           roles:
            - salt-master
            - kubernetes-master
-sshKey: /home/atrost/.ssh/id_rsa
