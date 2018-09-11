@@ -22,6 +22,7 @@ import (
 	"io/ioutil"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/galexrt/k8sglue/pkg/config"
@@ -33,22 +34,75 @@ const HighState = ""
 
 // SSHApply trigger salt-ssh highstate using salt-ssh on the salt-master(s)
 func SSHApply(machines []string, slsFiles string) error {
+	sort.Strings(machines)
 	args := append(getSaltSSHDefaultArgs(),
-		generateTargetFlags(machines[0:0])...,
+		generateTargetFlags(machines)...,
 	)
 	args = append(args, "--state-verbose=false", "--refresh", "state.apply")
-	if err := executor.ExecOutToLog("salt-ssh state.apply first master", SaltSSHCommand, args); err != nil {
+	if err := executor.ExecOutToLog("salt-ssh state.apply all master", SaltSSHCommand, args); err != nil {
 		return err
 	}
 
-	// TODO Copy `/etc/salt/pki/master/master_sign.*` to the other masters
+	for _, machine := range machines {
+		args = append(getSaltSSHDefaultArgs(),
+			generateTargetFlags([]string{machine})...,
+		)
+		args = append(args, "--state-verbose=false", "--refresh", "--static", "--out=json", "cp.get_file_str", "/etc/salt/pki/minion/minion.pub")
+		out, err := executor.ExecStdoutByte(SaltSSHCommand, args)
+		if err != nil {
+			return err
+		}
+		var parsed map[string]string
+		if err = json.Unmarshal(out, &parsed); err != nil {
+			return err
+		}
+		if err = ioutil.WriteFile(
+			path.Join(config.Cfg.TempDir, "data", fmt.Sprintf("pub-%s", machine)),
+			[]byte(parsed[machine]),
+			0600,
+		); err != nil {
+			return err
+		}
+	}
+
+	for _, machine := range machines {
+		args = append(getSaltSSHDefaultArgs(),
+			generateTargetFlags(machines)...,
+		)
+		args = append(args, "--state-verbose=false", "--refresh",
+			"state.single",
+			"file.managed",
+			fmt.Sprintf("name=%s", path.Join("/etc/salt/pki/master/minions", machine)),
+			fmt.Sprintf("source=salt://pub-%s", machine),
+			"dir_mode=0700",
+			"mode=0600",
+			"user=root",
+			"group=root",
+		)
+		if err := executor.ExecOutToLog("salt-ssh copy master minion pub keys", SaltSSHCommand, args); err != nil {
+			return err
+		}
+
+		args = append(getSaltSSHDefaultArgs(),
+			generateTargetFlags(machines)...,
+		)
+		args = append(args, "--state-verbose=false", "--refresh",
+			"state.single",
+			"cmd.run",
+			fmt.Sprintf("name=rm -f /etc/salt/pki/master/minions_pre/%s", machine),
+		)
+		if err := executor.ExecOutToLog("salt-ssh remove master pre acc keys", SaltSSHCommand, args); err != nil {
+			return err
+		}
+	}
+
 	files := []string{
 		"/etc/salt/pki/master/master_sign.pem",
 		"/etc/salt/pki/master/master_sign.pub",
 	}
 	for _, file := range files {
 		args = append(getSaltSSHDefaultArgs(),
-			generateTargetFlags(machines)...,
+			generateTargetFlags(machines[0:0])...,
 		)
 		args = append(args, "--state-verbose=false", "--refresh", "--static", "--out=json", "cp.get_file_str", file)
 		out, err := executor.ExecStdoutByte(SaltSSHCommand, args)
@@ -91,21 +145,13 @@ func SSHApply(machines []string, slsFiles string) error {
 	args = append(getSaltSSHDefaultArgs(),
 		generateTargetFlags(machines)...,
 	)
-	args = append(args, "--state-verbose=false", "--refresh", "state.apply")
-	if err := executor.ExecOutToLog("salt-ssh state.apply", SaltSSHCommand, args); err != nil {
-		return err
-	}
-
-	args = append(getSaltSSHDefaultArgs(),
-		generateTargetFlags(machines)...,
-	)
 	args = append(args, "--state-verbose=false", "--refresh",
 		"state.single",
 		"file.managed",
 		"name=/etc/salt/ssh/id_rsa",
 		"source=salt://ssh_id_rsa",
 		"dir_mode=0600",
-		"mode=600",
+		"mode=0600",
 		"user=root",
 		"group=root",
 	)
@@ -115,6 +161,32 @@ func SSHApply(machines []string, slsFiles string) error {
 	}
 
 	if err := Sync(machines); err != nil {
+		return err
+	}
+
+	args = append(getSaltSSHDefaultArgs(),
+		generateTargetFlags(machines)...,
+	)
+	args = append(args, "--state-verbose=false", "--refresh",
+		"state.single",
+		"file.managed",
+		"name=/srv/pillar/salt_master_addresses.yaml",
+		"source=salt://salt_master_addresses.yaml",
+		"dir_mode=0600",
+		"mode=0600",
+		"user=root",
+		"group=root",
+	)
+
+	if err := executor.ExecOutToLog("salt-ssh copy salt_master_addresses.yaml", SaltSSHCommand, args); err != nil {
+		return err
+	}
+
+	args = append(getSaltSSHDefaultArgs(),
+		generateTargetFlags(machines)...,
+	)
+	args = append(args, "--state-verbose=false", "--refresh", "state.apply")
+	if err := executor.ExecOutToLog("salt-ssh state.apply all master", SaltSSHCommand, args); err != nil {
 		return err
 	}
 

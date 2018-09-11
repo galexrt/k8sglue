@@ -36,15 +36,25 @@ create {{ dir }} directory for salt-master:
       - pkg: salt-master
 {% endfor %}
 
-generate master signing signature:
+generate master key:
   cmd.run:
     - name: |
         set -e
         salt-key --auto-create --gen-keys=master --gen-keys-dir=/etc/salt/pki/master/
-        salt-key --gen-signature --auto-create
     - creates:
       - /etc/salt/pki/master/master.pem
       - /etc/salt/pki/master/master.pub
+    - require:
+      - pkg: salt-master
+    - require_in:
+      - service: 'start salt-master'
+
+generate master signing signature:
+  cmd.run:
+    - name: |
+        set -e
+        salt-key --gen-signature --auto-create
+    - creates:
       - /etc/salt/pki/master/master_pubkey_signature
       - /etc/salt/pki/master/master_sign.pem
       - /etc/salt/pki/master/master_sign.pub

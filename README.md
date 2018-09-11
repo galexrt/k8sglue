@@ -8,8 +8,6 @@ This project is a total work in progress right now!
 
 ## k8sglue Commands and Subcommands
 
-* `cluster` - Cluster management commands.
-    * `deploy` - Trigger the orchestrated salt-run for the Kubernetes installation.
 * `completion` - Shell command completion.
     * `bash` - Output BASH completion.
     * `zsh` - Output ZSH completion.
@@ -35,7 +33,6 @@ This project is a total work in progress right now!
 | Command                       | Status |
 | ----------------------------- | ------ |
 | `k8sglue cluster`             | Done¹  |
-| `k8sglue cluster deploy`      | WIP    |
 | `k8sglue completion bash`     | Done¹  |
 | `k8sglue completion zsh`      | Done¹  |
 | `k8sglue machines prepare`    | WIP    |
@@ -57,10 +54,6 @@ This project is a total work in progress right now!
 
 ¹ The function of the command (if any) is unlikely to change it's behavior and is not a "core" component.
 ² Command is currently "stable" but it's behavior may change in the future.
-
-### `k8sglue cluster deploy`
-
-1. TODO
 
 ### `k8sglue machines prepare`
 

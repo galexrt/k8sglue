@@ -17,4 +17,4 @@ run minion ssh key verify:
     - pillar:
         minion_to_check: {{ minion_to_check }}
     - require:
-      - state: 'copy master sign pub key to minion'
+      - salt: 'copy master sign pub key to minion'

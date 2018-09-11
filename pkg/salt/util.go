@@ -67,6 +67,7 @@ var saltMasterConfig = `file_roots:
 pillar_roots:
   base:
     - {{ .Config.TempDir }}/srv/pillar
+    - {{ .Config.TempDir }}/pillar
 
 root_dir: {{ .Config.TempDir }}
 pidfile: {{ .Config.TempDir }}/run/salt.pid
@@ -81,6 +82,11 @@ roster_file: {{ .Config.TempDir }}/roster-salt-master
 roster_defaults:
 {{ .Additional.RosterDefaults }}
 `
+
+var saltMasterAddressesConfig = `salt:
+  master:
+    addresses:
+{{ .Additional.MasterAddresses }}`
 
 func templateConfigFile(name, in string, additional map[string]interface{}) (string, error) {
 	tmpl, err := template.New(name).Parse(in)
@@ -161,6 +167,7 @@ func PrepareSaltSSH() error {
 		"logs",
 		"run",
 		"data",
+		"pillar",
 	} {
 		if err = util.CreateDirectory(path.Join(config.Cfg.TempDir, dir), "0750"); err != nil {
 			return err
@@ -178,12 +185,34 @@ func PrepareSaltSSH() error {
 	if err != nil {
 		return err
 	}
-	saltMasterConfigPath := path.Join(config.Cfg.TempDir, "etc", "master")
 	if err = ioutil.WriteFile(
-		saltMasterConfigPath,
+		path.Join(config.Cfg.TempDir, "etc", "master"),
 		[]byte(rendered),
 		0640,
 	); err != nil {
+		return err
+	}
+
+	masterAddresses := ""
+	for _, machine := range config.Cfg.Cluster.Salt.Roster.GetEntriesByRole("salt-master").GetNames() {
+		masterAddresses += fmt.Sprintf("- %s\n", machine)
+	}
+
+	rendered, err = templateConfigFile("saltmasteraddressesconfig", saltMasterAddressesConfig, map[string]interface{}{
+		"MasterAddresses": util.TemplateIndent(masterAddresses, 6),
+	})
+	if err != nil {
+		return err
+	}
+	if err = ioutil.WriteFile(
+		path.Join(config.Cfg.TempDir, "data", "salt_master_addresses.yaml"),
+		[]byte(rendered),
+		0640,
+	); err != nil {
+		return err
+	}
+
+	if err = util.Symlink(path.Join(config.Cfg.TempDir, "data", "salt_master_addresses.yaml"), path.Join(config.Cfg.TempDir, "pillar", "salt_master_addresses.yaml")); err != nil {
 		return err
 	}
 
