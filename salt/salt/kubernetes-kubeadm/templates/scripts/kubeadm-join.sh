@@ -5,7 +5,7 @@
 {%- set containerRuntime = salt['pillar.get']('containerRuntime', 'crio') %}
 {%- set roles = salt['grains.get']('roles') %}
 {%- set host = salt['grains.get']('host') %}
-{# TODO Change from master-init to master #}
+{# TODO Change from kubernetes-master-init to kubernetes-master #}
 {%- set kubernetes_master_ca_cert_hash = salt['mine.get']('roles:kubernetes-master-init', 'kubernetes_master_ca_cert_hash', tgt_type='grain').values()|first %}
 {%- set kubernetes_master_address = salt['mine.get']('roles:kubernetes-master-init', 'ip_address', tgt_type='grain').values()|random|first %}
 {%- if kubernetes_master_address is none or kubernetes_master_address == "" %}
@@ -24,11 +24,11 @@ if [ -z "${KUBEADM_JOIN_TOKEN}" ]; then
 fi
 
 echo "$KUBEADM_JOIN_TOKEN"
-
-kubeadm join \
+{# Move after `kubeadm join` line #}
 {%- if "kubernetes-master" in roles %}
-    --master \
+#    --master \
 {%- endif %}
+kubeadm join \
     --feature-gates=DynamicKubeletConfig=true \
 {%- if containerRuntime == "crio" %}
     --cri-socket=/var/run/crio/crio.sock \

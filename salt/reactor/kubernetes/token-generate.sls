@@ -1,6 +1,4 @@
-{%- set hosts = salt['saltutil.runner']('manage.up', ['roles:kubernetes-master', 'grain']) %}
-{%- set kubernetes_master = hosts|random %}
-{%- set kubernetes_master = "master1" %}
+{%- set kubernetes_master = salt['saltutil.runner']('manage.up', ['roles:kubernetes-master-init', 'grain'])|random %}
 {%- set node = data['id'] %}
 
 'kubeadm generate token for {{ node }}':
