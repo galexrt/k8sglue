@@ -97,6 +97,8 @@ func SSHApply(machines []string, slsFiles string) error {
 	}
 
 	files := []string{
+		"/etc/salt/pki/master/master.pem",
+		"/etc/salt/pki/master/master.pub",
 		"/etc/salt/pki/master/master_sign.pem",
 		"/etc/salt/pki/master/master_sign.pub",
 		"/etc/salt/pki/master/master_pubkey_signature",
@@ -142,23 +144,21 @@ func SSHApply(machines []string, slsFiles string) error {
 			return err
 		}
 	}
-	for _, file := range files {
-		args = append(getSaltSSHDefaultArgs(),
-			generateTargetFlags(machines)...,
-		)
-		args = append(args, "--state-verbose=false", "--refresh",
-			"state.single",
-			"file.managed",
-			fmt.Sprintf("name=%s", strings.Replace(file, "master", "minion", 1)),
-			fmt.Sprintf("source=salt://%s", filepath.Base(file)),
-			"dir_mode=0700",
-			"mode=0600",
-			"user=root",
-			"group=root",
-		)
-		if err := executor.ExecOutToLog("salt-ssh copy master sign files", SaltSSHCommand, args); err != nil {
-			return err
-		}
+	args = append(getSaltSSHDefaultArgs(),
+		generateTargetFlags(machines)...,
+	)
+	args = append(args, "--state-verbose=false", "--refresh",
+		"state.single",
+		"file.managed",
+		fmt.Sprintf("name=%s", strings.Replace("/etc/salt/pki/master/master_sign.pub", "master", "minion", 1)),
+		fmt.Sprintf("source=salt://%s", filepath.Base("/etc/salt/pki/master/master_sign.pub")),
+		"dir_mode=0700",
+		"mode=0600",
+		"user=root",
+		"group=root",
+	)
+	if err := executor.ExecOutToLog("salt-ssh copy master sign files", SaltSSHCommand, args); err != nil {
+		return err
 	}
 
 	args = append(getSaltSSHDefaultArgs(),
