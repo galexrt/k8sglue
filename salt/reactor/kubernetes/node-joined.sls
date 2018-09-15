@@ -1,4 +1,2 @@
-saltutil update mine:
-  local.saltutil.runner:
-    - name: mine.update
-    - tgt: '*'
+include:
+- minion.sync_all

@@ -1,3 +1,4 @@
+{%- set minion_to_join = salt['pillar.get']('minion_to_join') %}
 include:
 - kubernetes-kubeadm
 - kubernetes-kubeadm.kubelet-service
@@ -9,4 +10,4 @@ send kubeadm token created event:
       - service: kubelet
     - data:
         token: '{{ salt['cmd.script']('salt://kubernetes-kubeadm/templates/scripts/kubeadm-token.sh', template='jinja')['stdout'] }}'
-        node: '{{ salt['pillar.get']('node') }}'
+        minion_to_join: '{{ minion_to_join }}'

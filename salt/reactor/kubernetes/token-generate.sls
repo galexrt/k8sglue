@@ -1,7 +1,12 @@
-{%- set kubernetes_master = salt['saltutil.runner']('manage.up', ['roles:kubernetes-master-init', 'grain'])|random %}
-{%- set node = data['id'] %}
+{%- set kubernetes_master = salt['mine.get']('roles:kubernetes-master-init', 'ip_address', tgt_type='grain').values() %}
+{%- set minion_to_join = data['minion_to_join'] %}
 
-'kubeadm generate token for {{ node }}':
+TEST {{ kubernetes_master }}
+{{ salt['mine.get']('roles:kubernetes-master-init', 'ip_address', tgt_type='grain') }}
+
+TEST2 {{ salt[''] }}
+
+'kubeadm generate token for {{ minion_to_join }}':
   local.state.apply:
     - tgt: '{{ kubernetes_master }}'
     - tgt_type: list
@@ -9,4 +14,4 @@
     - args:
       - mods: kubernetes-kubeadm.token-generate
       - pillar:
-          node: {{ node }}
+          minion_to_join: '{{ minion_to_join }}'

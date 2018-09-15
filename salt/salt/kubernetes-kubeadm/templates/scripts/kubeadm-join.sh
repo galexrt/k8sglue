@@ -23,7 +23,6 @@ if [ -z "${KUBEADM_JOIN_TOKEN}" ]; then
     exit 1
 fi
 
-echo "$KUBEADM_JOIN_TOKEN"
 {# Move after `kubeadm join` line #}
 {%- if "kubernetes-master" in roles %}
 #    --master \

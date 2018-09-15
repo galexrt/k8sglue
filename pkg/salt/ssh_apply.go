@@ -89,7 +89,7 @@ func SSHApply(machines []string, slsFiles string) error {
 		args = append(args, "--state-verbose=false", "--refresh",
 			"state.single",
 			"cmd.run",
-			fmt.Sprintf("name=rm -f /etc/salt/pki/master/minions_pre/%s", machine),
+			fmt.Sprintf("name=rm -f /etc/salt/pki/minion/minion_master.pub /etc/salt/pki/master/minions_pre/%s", machine),
 		)
 		if err := executor.ExecOutToLog("salt-ssh remove master pre acc keys", SaltSSHCommand, args); err != nil {
 			return err

@@ -10,4 +10,6 @@ saltutil refresh grains:
 saltutil update mine:
   local.saltutil.runner:
     - name: mine.update
+    - arg:
+      - '*'
     - tgt: '{{ data['id'] }}'
