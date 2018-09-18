@@ -5,9 +5,9 @@
 {%- set containerRuntime = salt['pillar.get']('containerRuntime', 'crio') %}
 {%- set roles = salt['grains.get']('roles') %}
 {%- set host = salt['grains.get']('host') %}
-{# TODO Change from kubernetes-master-init to kubernetes-master #}
-{%- set kubernetes_master_ca_cert_hash = salt['mine.get']('roles:kubernetes-master-init', 'kubernetes_master_ca_cert_hash', tgt_type='grain').values()|first %}
-{%- set kubernetes_master_address = salt['mine.get']('roles:kubernetes-master-init', 'ip_address', tgt_type='grain').values()|random|first %}
+{# TODO Change from kubernetes_master_init to kubernetes_master #}
+{%- set kubernetes_master_ca_cert_hash = salt['mine.get']('roles:kubernetes_master_init', 'kubernetes_master_ca_cert_hash', tgt_type='grain').values()|first %}
+{%- set kubernetes_master_address = salt['mine.get']('roles:kubernetes_master_init', 'ip_address', tgt_type='grain').values()|random|first %}
 {%- if kubernetes_master_address is none or kubernetes_master_address == "" %}
 {%-  set kubernetes_master_address = salt['pillar.get']('kubernetes:kubeadm:master_address') %}
 {%- endif %}
@@ -24,7 +24,7 @@ if [ -z "${KUBEADM_JOIN_TOKEN}" ]; then
 fi
 
 {# Move after `kubeadm join` line #}
-{%- if "kubernetes-master" in roles %}
+{%- if "kubernetes_master" in roles %}
 #    --master \
 {%- endif %}
 kubeadm join \

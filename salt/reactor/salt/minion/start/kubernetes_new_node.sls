@@ -2,6 +2,6 @@
 call salt-master minion key verify orch:
   runner.state.orchestrate:
     - args:
-      - mods: orch.kubernetes.request-join
+      - mods: orch.kubernetes.new_node
       - pillar:
           minion_to_join: {{ minion_to_join }}

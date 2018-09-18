@@ -35,7 +35,7 @@ var saltCertsSyncCmd = &cobra.Command{
 			return err
 		}
 
-		names := config.Cfg.Cluster.Salt.Roster.GetEntriesByRole("salt-master").GetHosts()
+		names := config.Cfg.Cluster.Salt.Roster.GetEntriesByRole("salt_master").GetHosts()
 		cert, key, err := salt.CertsGenerate(names, viper.GetDuration("valid-time"))
 		if err != nil {
 			return err

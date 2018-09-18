@@ -13,7 +13,7 @@ selinux-config:
     - name: /etc/selinux/config
     - user: root
     - group: root
-    - mode: 600
+    - mode: '0600'
     - source: salt://common/templates/etc/selinux/config
     - template: jinja
 

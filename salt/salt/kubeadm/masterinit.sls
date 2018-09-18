@@ -1,10 +1,10 @@
 include:
-- kubernetes-kubeadm
-- kubernetes-kubeadm.kubelet-service
+- kubeadm
+- kubeadm.kubelet-service
 
 kubeadm init:
   cmd.script:
-    - source: salt://kubernetes-kubeadm/templates/scripts/kubeadm-init.sh
+    - source: salt://kubeadm/templates/scripts/kubeadm-init.sh
     - template: jinja
     - creates: /etc/kubernetes/pki/ca.crt
     - require:

@@ -6,18 +6,18 @@ base:
     - sysctl
     - system-maintenance
     - wireguard
-{%- if roles is none or "salt-master" not in roles %}
+{%- if roles is none or "salt_master" not in roles %}
     - salt-minion
 {%- endif %}
-  'G@roles:salt-master':
+  'G@roles:salt_master':
     - salt-master
     - salt-cloud
-  'G@roles:kubernetes-*':
+  'G@roles:kubernetes_*':
 {%- if containerRuntime == "crio" %}
     - crio
 {%- else %}
     - docker
 {%- endif %}
-    - kubernetes-kubeadm
-  'G@roles:kubernetes-master-init':
-    - kubernetes-kubeadm.masterinit
+    - kubeadm
+  'G@roles:kubernetes_master_init':
+    - kubeadm.masterinit

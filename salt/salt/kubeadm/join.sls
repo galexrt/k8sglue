@@ -1,12 +1,12 @@
 {%- set roles = salt['grains.get']('roles', []) %}
-{%- if "kubernetes-master-init" not in roles %}
+{%- if "kubernetes_master_init" not in roles %}
 include:
-- kubernetes-kubeadm
-- kubernetes-kubeadm.kubelet-service
+- kubeadm
+- kubeadm.kubelet-service
 
 kubeadm join:
   cmd.script:
-    - source: salt://kubernetes-kubeadm/templates/scripts/kubeadm-join.sh
+    - source: salt://kubeadm/templates/scripts/kubeadm-join.sh
     - template: jinja
     - env:
       - KUBEADM_JOIN_TOKEN: '{{ salt['pillar.get']('token') }}'
@@ -14,7 +14,7 @@ kubeadm join:
     - require:
       - service: kubelet
 
-{%- if "kubernetes-master" in roles %}
+{%- if "kubernetes_master" in roles %}
 copy kubeconfig to /root/.kube:
   file.copy:
     - name: /root/.kube/config

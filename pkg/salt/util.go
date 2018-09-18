@@ -194,7 +194,7 @@ func PrepareSaltSSH() error {
 	}
 
 	masterAddresses := ""
-	for _, machine := range config.Cfg.Cluster.Salt.Roster.GetEntriesByRole("salt-master").GetNames() {
+	for _, machine := range config.Cfg.Cluster.Salt.Roster.GetEntriesByRole("salt_master").GetNames() {
 		masterAddresses += fmt.Sprintf("- %s\n", machine)
 	}
 

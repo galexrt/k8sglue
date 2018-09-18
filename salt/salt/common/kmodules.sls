@@ -18,6 +18,6 @@ create kmodules list file:
     - name: /etc/modules-load.d/10-custom.conf
     - user: root
     - group: root
-    - mode: 644
+    - mode: '0644'
     - source: salt://common/templates/etc/modules-load.d/10-custom.conf
     - template: jinja

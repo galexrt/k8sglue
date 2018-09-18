@@ -6,3 +6,15 @@ include:
   - common.swap
 {%- endif %}
   - common.kmodules
+
+install common packages:
+  pkg.installed:
+    - pkgs:
+      - python3-dnf-plugin-tracer
+      - htop
+      - iftop
+      - iotop
+      - sysstat
+      - tcpdump
+      - conntrack-tools
+      - ipvsadm

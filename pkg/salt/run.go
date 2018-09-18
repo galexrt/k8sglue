@@ -28,7 +28,7 @@ var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/pkg/salt", "s
 
 // Run call steps necessary to init salt-master(s)
 func Run() error {
-	saltMasters := config.Cfg.Cluster.Salt.Roster.GetEntriesByRole("salt-master")
+	saltMasters := config.Cfg.Cluster.Salt.Roster.GetEntriesByRole("salt_master")
 	masters := saltMasters.GetNames()
 	if len(masters) == 0 {
 		return fmt.Errorf("no nodes with role salt-master found")

@@ -24,14 +24,13 @@ module "hcloud_kubernetes_masters" {
   cloud_config     = <<EOF
 #cloud-config
 write_files:
-- path: /etc/salt/master.d/grains.conf
+- path: /etc/salt/grains
   owner: root:root
   permissions: '0640'
   content: |
-    grains:
-      roles:
+    roles:
       - salt-master
-      - kubernetes-master
+      - kubernetes_master
 EOF
 }
 
@@ -52,12 +51,11 @@ module "hcloud_kubernetes_workers" {
   cloud_config     = <<EOF
 #cloud-config
 write_files:
-- path: /etc/salt/master.d/grains.conf
+- path: /etc/salt/grains
   owner: root:root
   permissions: '0640'
   content: |
-    grains:
-      roles:
+    roles:
       - kubernetes-worker
 EOF
 }

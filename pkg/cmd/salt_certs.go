@@ -36,7 +36,7 @@ var saltCertsCmd = &cobra.Command{
 			return err
 		}
 
-		saltMasters := config.Cfg.Cluster.Salt.Roster.GetEntriesByRole("salt-master")
+		saltMasters := config.Cfg.Cluster.Salt.Roster.GetEntriesByRole("salt_master")
 		masters := saltMasters.GetNames()
 		if len(masters) == 0 {
 			return fmt.Errorf("no nodes with role salt-master found")

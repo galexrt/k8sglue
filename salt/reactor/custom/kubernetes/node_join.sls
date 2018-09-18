@@ -6,7 +6,7 @@ kubeadm join node {{ node }}:
     - tgt_type: list
     - sync_mods: all
     - args:
-      - mods: kubernetes-kubeadm.join
+      - mods: kubeadm.join
       - pillar:
           minion_to_join: '{{ minion_to_join }}'
           token: '{{ token }}'

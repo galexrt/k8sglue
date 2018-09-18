@@ -15,6 +15,8 @@ kmods:
     load: true
   nf_conntrack_ipv4:
     load: true
+  nf_conntrack_ipv6:
+    load: true
 nameservers:
   - 1.1.1.1
   - 8.8.8.8
@@ -42,7 +44,7 @@ sysctl:
   net.ipv4.conf.default.forwarding: 1
   net.ipv6.conf.all.forwarding: 1
   net.ipv6.conf.default.forwarding: 1
-  net.ipv4.ip_local_port_range: 8192 65535
+  net.ipv4.ip_local_port_range: "8192 65535"
   net.ipv4.ipfrag_secret_interval: 600
   net.ipv4.tcp_tw_reuse: 1
   net.ipv4.tcp_syncookies: 1

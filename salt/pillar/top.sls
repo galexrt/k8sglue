@@ -5,4 +5,4 @@ base:
     - common
     - network
     - salt
-    - kubernetes-kubeadm
+    - kubeadm

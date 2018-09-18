@@ -28,23 +28,22 @@ salt:
         grains:
           defaultInterface: eth1
           roles:
-           - salt-master
-           - salt-master-init
-           - kubernetes-master
-           - kubernetes-master-init
+           - salt_master
+           - kubernetes_master
+           - kubernetes_master_init
     master2:
       host: 192.168.1.12
       minion_opts:
         grains:
           defaultInterface: eth1
           roles:
-           - salt-master
-           - kubernetes-master
+           - salt_master
+           - kubernetes_master
     master3:
       host: 192.168.1.13
       minion_opts:
         grains:
           defaultInterface: eth1
           roles:
-           - salt-master
-           - kubernetes-master
+           - salt_master
+           - kubernetes_master

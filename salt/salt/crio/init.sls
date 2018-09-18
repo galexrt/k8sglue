@@ -6,7 +6,7 @@ install crio package:
 /etc/crictl.yaml:
   file.managed:
     - template: jinja
-    - source: salt://crio/etc/crictl.yaml
+    - source: salt://crio/templates/etc/crictl.yaml
     - user: root
     - group: root
     - mode: '0640'
@@ -16,7 +16,7 @@ install crio package:
 /etc/crio/crio.conf:
   file.managed:
     - template: jinja
-    - source: salt://crio/etc/crio/crio.conf
+    - source: salt://crio/templates/etc/crio/crio.conf
     - user: root
     - group: root
     - mode: '0640'
