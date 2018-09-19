@@ -5,7 +5,7 @@ base:
     - common
     - sysctl
     - system-maintenance
-    - wireguard
+    - wireguard-install
 {%- if roles is none or "salt_master" not in roles %}
     - salt-minion
 {%- endif %}
