@@ -26,6 +26,3 @@ copy kubeconfig to /root/.kube:
       - cmd: 'kubeadm join'
 {%- endif %}
 {%- endif %}
-
-ROLES {{ roles }}
-TOKEN {{ salt['pillar.get']('token') }}

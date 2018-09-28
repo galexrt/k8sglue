@@ -4,7 +4,7 @@
 call salt-master minion key verify orch:
   runner.state.orchestrate:
     - args:
-      - mods: orch.salt-key
+      - mods: orch.salt.minion_key_verify
       - pillar:
           minion_to_check: '{{ node }}'
 {%-   endif %}
