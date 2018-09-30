@@ -22,14 +22,14 @@ import (
 
 // Cluster holds special cluster information.
 type Cluster struct {
-	General    General    `yaml:"general"`
-	Kubernetes Kubernetes `yaml:"kubernetes"`
-	Salt       Salt       `yaml:"salt,omitempty"`
-	SSHKey     string     `yaml:"sshKey"`
+	ClusterConfig ClusterConfig `yaml:"clusterConfig"`
+	Kubernetes    Kubernetes    `yaml:"kubernetes"`
+	Salt          Salt          `yaml:"salt,omitempty"`
+	SSHKey        string        `yaml:"sshKey"`
 }
 
-// General holds the config file which will be used for the actual salt state applies.
-type General struct {
+// ClusterConfig holds the config file which will be used for the actual salt state applies.
+type ClusterConfig struct {
 	ContainerRuntime string   `yaml:"containerRuntime"`
 	Nameservers      []string `yaml:"nameservers"`
 }

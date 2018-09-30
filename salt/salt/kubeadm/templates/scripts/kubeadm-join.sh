@@ -2,18 +2,9 @@
 
 {%- set defaultInterface = salt['grains.get']('defaultInterface', 'eth0') %}
 {%- set ipAddress = salt['grains.get']('ip_interfaces')[defaultInterface]|first %}
-{%- set containerRuntime = salt['pillar.get']('containerRuntime', 'crio') %}
+{%- set containerRuntime = salt['pillar.get']('cluster_config:containerRuntime', 'crio') %}
 {%- set roles = salt['grains.get']('roles') %}
 {%- set host = salt['grains.get']('host') %}
-{# TODO Change from kubernetes_master_init to kubernetes_master #}
-{%- set kubernetes_master_ca_cert_hash = salt['mine.get']('roles:kubernetes_master_init', 'kubernetes_master_ca_cert_hash', tgt_type='grain').values()|first %}
-{%- set kubernetes_master_address = salt['mine.get']('roles:kubernetes_master_init', 'ip_address', tgt_type='grain').values()|random|first %}
-{%- if kubernetes_master_address is none or kubernetes_master_address == "" %}
-{%-  set kubernetes_master_address = salt['pillar.get']('kubernetes:kubeadm:master_address') %}
-{%- endif %}
-{%- if kubernetes_master_address is none %}
-{%-  set kubernetes_master_address = '127.0.0.1:6443' %}
-{%- endif %}
 
 set -e
 set -o pipefail
@@ -23,9 +14,11 @@ if [ -z "${KUBEADM_JOIN_TOKEN}" ]; then
     exit 1
 fi
 
+KUBERNETES_CA_CERT_HASH="$(openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //')"
+
 {# Move after `kubeadm join` line #}
 {%- if "kubernetes_master" in roles %}
-#    --master \
+#    --experimental-control-plane \
 {%- endif %}
 kubeadm join \
     --feature-gates=DynamicKubeletConfig=true \
@@ -33,7 +26,7 @@ kubeadm join \
     --cri-socket=/var/run/crio/crio.sock \
 {%- endif %}
     --node-name "{{ host }}" \
-    --token "$KUBEADM_JOIN_TOKEN" \
-    --discovery-token-ca-cert-hash "sha256:{{ kubernetes_master_ca_cert_hash }}" \
-    {{ kubernetes_master_address }}:6443 | \
+    --token "${KUBEADM_JOIN_TOKEN}" \
+    --discovery-token-ca-cert-hash "sha256:${KUBERNETES_CA_CERT_HASH}" \
+    127.0.0.1:16443 | \
     tee /var/log/kubeadm-join.log

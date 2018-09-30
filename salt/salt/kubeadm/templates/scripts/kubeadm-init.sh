@@ -2,7 +2,7 @@
 
 {% set defaultInterface = salt['grains.get']('defaultInterface', 'eth0') %}
 {% set ipAddress = salt['grains.get']('ip_interfaces')[defaultInterface]|first %}
-{% set containerRuntime = salt['pillar.get']('containerRuntime', "crio") %}
+{% set containerRuntime = salt['pillar.get']('cluster_config:containerRuntime', "crio") %}
 {% set host = salt['grains.get']('host') %}
 
 set -e

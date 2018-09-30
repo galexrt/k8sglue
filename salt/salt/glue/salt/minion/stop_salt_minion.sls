@@ -1,3 +1,4 @@
+{%- set minion_to_check = salt['pillar.get']('minion_to_check') %}
 stop salt-minion on minion:
   cmd.run:
     - name: |

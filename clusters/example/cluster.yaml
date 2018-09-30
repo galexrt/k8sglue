@@ -1,5 +1,5 @@
 ---
-general:
+clusterConfig:
   containerRuntime: "crio"
   nameservers:
     - 1.1.1.1

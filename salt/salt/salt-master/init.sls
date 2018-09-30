@@ -5,7 +5,7 @@ include:
 install {{ package }} package:
   pkg.latest:
     - name: {{ package }}
-    - refresh: True
+    - refresh: true
 {% endfor %}
 
 configure salt-master:
@@ -16,8 +16,8 @@ configure salt-master:
     - group: root
     - dir_mode: 640
     - file_mode: 750
-    - replace: True
-    - clean: True
+    - replace: true
+    - clean: true
     - template: jinja
 
 {% for dir in ['/etc/salt/roster.d', '/etc/salt/ssh'] %}
@@ -82,7 +82,7 @@ copy master minion key to accepted:
   file.symlink:
     - name: '/etc/salt/pki/master/minions/{{ salt['grains.get']('fqdn') }}'
     - target: /etc/salt/pki/minion/minion.pub
-    - makedirs: True
+    - makedirs: true
     - require:
       - pkg: salt-master
       - pkg: salt-minion
@@ -98,7 +98,7 @@ start salt-master:
       - cmd: 'generate master signing signature'
     - watch:
       - file: 'configure salt-master'
-    - enable: True
+    - enable: true
 
 start salt-api:
   service.running:
@@ -108,4 +108,4 @@ start salt-api:
       - service: 'start salt-master'
     - watch:
       - file: 'configure salt-master'
-    - enable: True
+    - enable: true

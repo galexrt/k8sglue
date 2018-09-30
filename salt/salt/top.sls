@@ -1,11 +1,11 @@
 {%- set roles = salt['grains.get']('roles') %}
-{%- set containerRuntime = salt['pillar.get']('containerRuntime', "crio") -%}
+{%- set containerRuntime = salt['pillar.get']('cluster_config:containerRuntime', "crio") -%}
 base:
   '*':
     - common
     - sysctl
     - system-maintenance
-    - wireguard-install
+    - wireguard
 {%- if roles is none or "salt_master" not in roles %}
     - salt-minion
 {%- endif %}
@@ -13,11 +13,10 @@ base:
     - salt-master
     - salt-cloud
   'G@roles:kubernetes_*':
+    - docker
 {%- if containerRuntime == "crio" %}
     - crio
-{%- else %}
-    - docker
 {%- endif %}
     - kubeadm
-  'G@roles:kubernetes_master_init':
-    - kubeadm.masterinit
+#  'G@roles:kubernetes_master_init':
+#    - kubeadm.masterinit

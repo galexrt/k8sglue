@@ -1,7 +1,7 @@
 saltutil sync all:
   local.saltutil.sync_all:
     - tgt: '{{ data['id'] }}'
-    - reload_modules: True
+    - reload_modules: true
 
 saltutil refresh grains:
   local.saltutil.refresh_grains:

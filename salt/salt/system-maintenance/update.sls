@@ -1,3 +1,3 @@
 uptodate:
   pkg.uptodate:
-    - refresh: True
+    - refresh: true

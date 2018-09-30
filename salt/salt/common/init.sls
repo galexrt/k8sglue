@@ -1,5 +1,5 @@
 include:
-  - common.packages
+  - common.timezone
   - common.dns
   - common.selinux
 {%- if salt['grains.get']('swap_total', '0')|int > 0 %}
@@ -9,12 +9,4 @@ include:
 
 install common packages:
   pkg.installed:
-    - pkgs:
-      - python3-dnf-plugin-tracer
-      - htop
-      - iftop
-      - iotop
-      - sysstat
-      - tcpdump
-      - conntrack-tools
-      - ipvsadm
+    - pkgs: {{ salt['pillar.get']('common:packages', []) }}

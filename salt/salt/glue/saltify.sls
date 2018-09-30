@@ -1,4 +1,4 @@
-{% set node = 'node3' %}
+{%- set node = 'node3' %}
 create salt profile:
   file.managed:
     - name: /etc/salt/cloud.profiles.d/salt-{{ node }}.conf

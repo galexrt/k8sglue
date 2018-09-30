@@ -1,4 +1,4 @@
-{%- for kmod, opts in salt['pillar.get']('kmods', {}).items() %}
+{%- for kmod, opts in salt['pillar.get']('common:kmods', {}).items() %}
 'add and load {{ kmod }}':
 {%- if opts.load|default(true) %}
   kmod.present:
@@ -7,9 +7,9 @@
 {%- endif %}
     - mods:
       - '{{ kmod }}'
-    - persist: False
+    - persist: false
 {%- if not opts.load|default(true) %}
-    - comment: False
+    - comment: false
 {%- endif %}
 {%- endfor %}
 

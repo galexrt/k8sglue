@@ -14,15 +14,22 @@ kubeadm join:
     - require:
       - service: kubelet
 
-{%- if "kubernetes_master" in roles %}
+{%-     if "kubernetes_master" in roles %}
 copy kubeconfig to /root/.kube:
   file.copy:
     - name: /root/.kube/config
     - source: /etc/kubernetes/admin.conf
-    - makedirs: True
+    - makedirs: true
     - user: root
     - group: root
     - require:
       - cmd: 'kubeadm join'
-{%- endif %}
+
+push kubernetes ca cert to master:
+  module.run:
+    - name: cp.push
+    - path: /etc/kubernetes/pki/ca.crt
+    - require:
+      - cmd: 'kubeadm join'
+{%-     endif %}
 {%- endif %}

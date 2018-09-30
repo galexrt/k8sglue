@@ -1,7 +1,7 @@
 install crio package:
   pkg.latest:
     - name: cri-o
-    - refresh: True
+    - refresh: true
 
 /etc/crictl.yaml:
   file.managed:
@@ -26,7 +26,7 @@ install crio package:
 enabled and start crio service:
   service.running:
     - name: crio
-    - enable: True
+    - enable: true
     - require:
       - file: /etc/crio/crio.conf
       - file: /etc/crictl.yaml

@@ -2,7 +2,7 @@
 install {{ package }} package:
   pkg.latest:
     - name: {{ package }}
-    - refresh: True
+    - refresh: true
 {% endfor %}
 
 configure salt-cloud config:
@@ -13,8 +13,8 @@ configure salt-cloud config:
     - group: root
     - dir_mode: 640
     - file_mode: 750
-    - replace: True
-    - clean: True
+    - replace: true
+    - clean: true
     - template: jinja
 
 configure salt-cloud providers:
@@ -25,8 +25,8 @@ configure salt-cloud providers:
     - group: root
     - dir_mode: 640
     - file_mode: 750
-    - replace: True
-    - clean: True
+    - replace: true
+    - clean: true
     - template: jinja
 
 {% for dir in ['/etc/salt/ssh'] %}

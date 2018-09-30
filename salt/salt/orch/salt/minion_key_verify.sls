@@ -6,7 +6,7 @@
     - tgt: 'roles:salt_master'
     - tgt_type: grain
     - sls:
-      - k8sglue.salt.minion.check_minion_ssh_reachability
+      - glue.salt.minion.check_minion_ssh_reachability
     - pillar:
         minion_to_check: {{ minion_to_check }}
 
@@ -15,7 +15,7 @@
     - tgt: '{{ random_master }}'
     - tgt_type: list
     - sls:
-      - k8sglue.salt.minion.stop_salt_minion
+      - glue.salt.minion.stop_salt_minion
     - require:
       - salt: 'check if minion {{ minion_to_check }} is reachable by ssh'
 
@@ -24,7 +24,7 @@
     - tgt: 'roles:salt_master'
     - tgt_type: grain
     - sls:
-      - k8sglue.salt.minion.copy_minion_key
+      - glue.salt.minion.copy_minion_key
     - pillar:
         minion_to_check: {{ minion_to_check }}
     - require:
@@ -35,6 +35,6 @@
     - tgt: '{{ random_master }}'
     - tgt_type: list
     - sls:
-      - k8sglue.salt.minion.restart_salt_minion
+      - glue.salt.minion.restart_salt_minion
     - require:
       - salt: 'copy minion {{ minion_to_check }} ssh key'

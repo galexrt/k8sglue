@@ -9,7 +9,7 @@ docker-ce repo:
 docker-ce package:
   pkg.latest:
     - name: docker-ce
-    - refresh: True
+    - refresh: true
     - require:
       - pkgrepo: docker-ce
 
@@ -34,4 +34,4 @@ docker service running:
     - require:
       - pkg: docker-ce
       - file: /etc/systemd/system/docker.service.d/10-mount-propagation.conf
-    - enable: True
+    - enable: true

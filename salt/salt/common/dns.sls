@@ -11,11 +11,10 @@
     - user: root
     - group: root
     - mode: 755
-    - makedirs: True
+    - makedirs: true
 
 /etc/dhcp/dhclient-enter-hooks.d/00-nodnsupdate:
   file.managed:
-    - name: /etc/dhcp/dhclient-enter-hooks.d/00-nodnsupdate
     - user: root
     - group: root
     - mode: 755

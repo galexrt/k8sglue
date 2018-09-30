@@ -1,7 +1,7 @@
 install salt-minion package:
   pkg.latest:
     - name: salt-minion
-    - refresh: True
+    - refresh: true
 
 configure salt-minion:
   file.recurse:
@@ -11,8 +11,8 @@ configure salt-minion:
     - group: root
     - dir_mode: 640
     - file_mode: 750
-    - replace: True
-    - clean: False
+    - replace: true
+    - clean: false
     - template: jinja
 
 start salt-minion:
@@ -22,4 +22,4 @@ start salt-minion:
       - pkg: salt-minion
     - watch:
       - file: 'configure salt-minion'
-    - enable: True
+    - enable: true

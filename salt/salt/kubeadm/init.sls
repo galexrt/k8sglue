@@ -1,3 +1,6 @@
+include:
+  - loadbalancer.sls
+
 kubernetes repo:
   pkgrepo.managed:
     - name: kubernetes
@@ -9,20 +12,20 @@ kubernetes repo:
 kubelet package:
   pkg.latest:
     - name: kubelet
-    - refresh: True
+    - refresh: true
     - require:
       - pkgrepo: kubernetes
 
 kubeadm package:
   pkg.latest:
     - name: kubeadm
-    - refresh: True
+    - refresh: true
     - require:
       - pkgrepo: kubernetes
 
 kubectl package:
   pkg.latest:
     - name: kubectl
-    - refresh: True
+    - refresh: true
     - require:
       - pkgrepo: kubernetes

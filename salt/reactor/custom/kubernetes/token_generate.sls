@@ -1,8 +1,8 @@
-{%- set kubernetes_master = salt['mine.get']('roles:kubernetes_master_init', 'ip_address', tgt_type='grain').values() %}
+{%- set kubernetes_master = salt['mine.get']('roles:kubernetes_master_init', 'ipv4_addresses', tgt_type='grain').values() %}
 {%- set minion_to_join = data['minion_to_join'] %}
 
 TEST {{ kubernetes_master }}
-{{ salt['mine.get']('roles:kubernetes_master_init', 'ip_address', tgt_type='grain') }}
+{{ salt['mine.get']('roles:kubernetes_master_init', 'ipv4_addresses', tgt_type='grain') }}
 
 TEST2 {{ salt[''] }}
 

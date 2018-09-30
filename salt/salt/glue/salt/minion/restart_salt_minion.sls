@@ -1,4 +1,4 @@
-{% set minion_to_check = salt['pillar.get']('minion_to_check') %}
+{%- set minion_to_check = salt['pillar.get']('minion_to_check') %}
 restart salt-minion on node:
   cmd.run:
     - name: |

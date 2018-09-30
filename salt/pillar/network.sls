@@ -1,5 +1,5 @@
-{%- set defaultInterface = salt['grains.get']('defaultInterface', 'eth0') %}
 mine_functions:
-  ip_address:
+  ipv4_addresses:
     - mine_function: network.ip_addrs
-    - {{ defaultInterface }}
+  ipv6_addresses:
+    - mine_function: network.ip_addrs6

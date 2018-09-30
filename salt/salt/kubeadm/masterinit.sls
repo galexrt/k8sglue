@@ -14,8 +14,15 @@ copy kubeconfig to /root/.kube:
   file.copy:
     - name: /root/.kube/config
     - source: /etc/kubernetes/admin.conf
-    - makedirs: True
+    - makedirs: true
     - user: root
     - group: root
+    - require:
+      - cmd: 'kubeadm init'
+
+push kubernetes ca cert to master:
+  module.run:
+    - name: cp.push
+    - path: /etc/kubernetes/pki/ca.crt
     - require:
       - cmd: 'kubeadm init'
