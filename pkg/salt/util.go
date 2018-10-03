@@ -216,6 +216,10 @@ func PrepareSaltSSH() error {
 		return err
 	}
 
+	if err = util.Copy(path.Join(config.Cfg.ClusterConfigDir, "cluster_config.yaml"), path.Join(config.Cfg.TempDir, "data/cluster_config.yaml")); err != nil {
+		return err
+	}
+
 	if err = util.Symlink(path.Join(config.Cfg.TempDir, "data/cluster_config.yaml"), path.Join(config.Cfg.TempDir, "pillar/cluster_config.yaml")); err != nil {
 		return err
 	}

@@ -1,5 +1,5 @@
 include:
-  - loadbalancer.sls
+  - kubeadm.loadbalancer
 
 kubernetes repo:
   pkgrepo.managed:

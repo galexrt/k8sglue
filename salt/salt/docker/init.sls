@@ -17,10 +17,12 @@ docker.service override mount propagation:
   file.managed:
     - template: jinja
     - name: /etc/systemd/system/docker.service.d/10-mount-propagation.conf
-    - source: salt://crio/templates/etc/systemd/system/docker.service.d/10-mount-propagation.conf
+    - source: salt://docker/templates/etc/systemd/system/docker.service.d/10-mount-propagation.conf
     - user: root
     - group: root
     - mode: '0640'
+    - makedirs: true
+    - dir_mode: '0750'
     - require:
       - pkg: docker-ce
   module.run:
@@ -28,10 +30,10 @@ docker.service override mount propagation:
     - onchanges:
       - file: 'docker.service override mount propagation'
 
-docker service running:
+start docker service:
   service.running:
     - name: docker
     - require:
       - pkg: docker-ce
-      - file: /etc/systemd/system/docker.service.d/10-mount-propagation.conf
+      - file: 'docker.service override mount propagation'
     - enable: true

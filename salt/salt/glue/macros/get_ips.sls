@@ -1,4 +1,4 @@
-{% macro get_ips(tgt, tgt_type) -%}
+{% macro get_ips(tgt, tgt_type, out_type) -%}
     {%- if salt['pillar.get']('cluster_config:network:preferred_ipversion', 4) == 4 -%}
         {%- set raw_addresses = salt['mine.get'](tgt, 'ipv4_addresses', tgt_type=tgt_type) %}
     {%- else -%}
@@ -17,5 +17,11 @@
             {%- do ips.append(ip) %}
         {%- endfor %}
     {%- endfor %}
-    {{ ips }}
+    {%- if out_type == "" or out_type == "yaml" %}
+        {{- ips | yaml }}
+    {%- elif out_type == "string:comma" %}
+        {{- ips | join(',') }}
+    {%- elif out_type == "string:space" %}
+        {{- ips | join(' ') }}
+    {%- endif %}
 {%- endmacro %}

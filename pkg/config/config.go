@@ -21,6 +21,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/models"
@@ -30,11 +31,12 @@ import (
 
 // Config holds all the configs and a cluster if loaded
 type Config struct {
-	SaltInfo *models.SaltInfo
-	LogLevel capnslog.LogLevel
-	StartDir string
-	SaltDir  string
-	TempDir  string
+	SaltInfo         *models.SaltInfo
+	LogLevel         capnslog.LogLevel
+	StartDir         string
+	SaltDir          string
+	TempDir          string
+	ClusterConfigDir string
 }
 
 // Cfg is a Config struct pointer to be able to access all configs from "anywhere"
@@ -57,11 +59,12 @@ func Init(appName string) error {
 	}
 
 	Cfg = &Config{
-		SaltInfo: &models.SaltInfo{},
-		LogLevel: capnslog.INFO,
-		StartDir: startDir,
-		SaltDir:  saltDir,
-		TempDir:  tempDir,
+		SaltInfo:         &models.SaltInfo{},
+		LogLevel:         capnslog.INFO,
+		StartDir:         startDir,
+		SaltDir:          saltDir,
+		TempDir:          tempDir,
+		ClusterConfigDir: "",
 	}
 	return nil
 }
@@ -75,7 +78,7 @@ func Load(configPath string) error {
 	}
 	saltCfg.Salt.DefaultRosterData.Host = ""
 	if saltCfg.Salt.DefaultRosterDataAsBase {
-		if err := saltCfg.Salt.Roster.SetDefaultRosterData(saltCfg.Salt.DefaultRosterData); err != nil {
+		if err = saltCfg.Salt.Roster.SetDefaultRosterData(saltCfg.Salt.DefaultRosterData); err != nil {
 			return err
 		}
 	}
@@ -84,7 +87,9 @@ func Load(configPath string) error {
 	if Cfg.SaltInfo.SSHKey == "" {
 		return fmt.Errorf("no sshKey given in salt.yaml")
 	}
-	return nil
+
+	Cfg.ClusterConfigDir, err = filepath.Abs(configPath)
+	return err
 }
 
 func loadYAML(configPath string) ([]byte, error) {

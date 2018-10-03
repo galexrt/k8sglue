@@ -1,8 +1,7 @@
 {%- set roles = salt['grains.get']('roles') %}
-{%- if roles is not none %}
 include:
-{%-     if "kubernetes_master" in roles %}
+{%- if roles is not none and "kubernetes_master" in roles %}
     - kubeadm.master
-{%-     endif %}
+{%- else %}
     []
 {%- endif %}

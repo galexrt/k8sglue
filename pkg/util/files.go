@@ -17,6 +17,7 @@ limitations under the License.
 package util
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -53,4 +54,22 @@ func Symlink(oldname, newname string) error {
 		}
 	}
 	return nil
+}
+
+// Copy copies a file
+func Copy(src, dest string) error {
+	from, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer from.Close()
+
+	to, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE, 0660)
+	if err != nil {
+		return err
+	}
+	defer to.Close()
+
+	_, err = io.Copy(to, from)
+	return err
 }
