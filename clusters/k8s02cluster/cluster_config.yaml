@@ -1,0 +1,11 @@
+clusterConfig:
+  containerRuntime: "crio"
+  network:
+    preferred_ipversion: 6
+    nameservers:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 1.0.0.1
+      - 8.4.4.8
+  kubernetes:
+    kubeadm:

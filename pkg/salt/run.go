@@ -18,7 +18,6 @@ package salt
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/coreos/pkg/capnslog"
 	"github.com/galexrt/k8sglue/pkg/config"
@@ -28,7 +27,7 @@ var logger = capnslog.NewPackageLogger("github.com/galexrt/k8sglue/pkg/salt", "s
 
 // Run call steps necessary to init salt-master(s)
 func Run() error {
-	saltMasters := config.Cfg.Cluster.Salt.Roster.GetEntriesByRole("salt_master")
+	saltMasters := config.Cfg.SaltInfo.Salt.Roster.GetEntriesByRole("salt_master")
 	masters := saltMasters.GetNames()
 	if len(masters) == 0 {
 		return fmt.Errorf("no nodes with role salt-master found")
@@ -38,20 +37,9 @@ func Run() error {
 		return err
 	}
 
-	names := saltMasters.GetHosts()
-	names = append(names, masters...)
-
-	if err := Certs(masters, names, 35040*time.Hour, 4380*time.Hour, false); err != nil {
-		return err
-	}
-
 	if err := SSHApply(masters, HighState); err != nil {
 		return err
 	}
 
-	if err := Sync(masters); err != nil {
-		return err
-	}
-
-	return nil
+	return Sync(masters)
 }

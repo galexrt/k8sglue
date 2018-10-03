@@ -17,8 +17,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/galexrt/k8sglue/pkg/config"
 	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
@@ -29,12 +27,10 @@ var saltPingCmd = &cobra.Command{
 	Use:   "ping",
 	Short: "Run `test.ping` using `salt-ssh`.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("salt ping called")
 		if err := bootstrapCommand(cmd, true); err != nil {
 			return err
 		}
-
-		return salt.Ping(config.Cfg.Cluster.Salt.Roster.GetNames())
+		return salt.Ping(config.Cfg.SaltInfo.Salt.Roster.GetNames())
 	},
 }
 

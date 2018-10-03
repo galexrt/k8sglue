@@ -1,6 +1,5 @@
-{%- from 'glue/utils/ips.sls' import get_ip with context %}
-{%- set ip_version = salt['pillar.get']('cluster_config:network:preferred_ipversion', 4) %}
-{%- set kubernetes_master_ips = salt['mine.get']('roles:salt_master', 'ipv'+ip_version+'_addresses', tgt_type='grain').values() %}
+{%- from 'glue/utils/ips.sls' import get_ips with context %}
+{%- set kubernetes_master_ips = get_ips('roles:salt_master', 'grain') %}
 
 run k8s master lb container:
   docker_container.running:

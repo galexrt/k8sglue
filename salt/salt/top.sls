@@ -18,5 +18,3 @@ base:
     - crio
 {%- endif %}
     - kubeadm
-#  'G@roles:kubernetes_master_init':
-#    - kubeadm.masterinit

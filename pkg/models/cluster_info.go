@@ -14,15 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package salt
+package models
 
 import (
-	"time"
+	saltmodels "github.com/galexrt/k8sglue/pkg/salt/models"
 )
 
-// CertsCheck checks how long the certificates are still valid and for who they are valid
-func CertsCheck(targets []string) ([]string, time.Time, error) {
-	// TODO Use salt state `tls.valid_certificate` if working as needed
+// SaltInfo holds special cluster information.
+type SaltInfo struct {
+	Salt   Salt   `yaml:"salt,omitempty"`
+	SSHKey string `yaml:"sshKey"`
+}
 
-	return []string{}, time.Now(), nil
+// Salt holds all required information for cluster setup.
+type Salt struct {
+	DefaultRosterDataAsBase bool                  `yaml:"defaultRosterDataAsBase"`
+	DefaultRosterData       saltmodels.RosterData `yaml:"defaultRosterData"`
+	Roster                  *saltmodels.Roster    `yaml:"roster"`
 }

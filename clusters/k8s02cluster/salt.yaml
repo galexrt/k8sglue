@@ -1,14 +1,5 @@
 ---
-clusterConfig:
-  containerRuntime: "crio"
-  nameservers:
-    - 1.1.1.1
-    - 8.8.8.8
-    - 1.0.0.1
-    - 8.4.4.8
 sshKey: /home/atrost/.ssh/id_rsa
-kubernetes:
-  kubeadm:
 salt:
   # always merge the defaultRosterData into the roster data of each node
   defaultRosterDataAsBase: true
@@ -30,7 +21,6 @@ salt:
           roles:
            - salt_master
            - kubernetes_master
-           - kubernetes_master_init
     master2:
       host: 192.168.1.12
       minion_opts:

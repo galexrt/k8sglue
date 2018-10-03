@@ -22,5 +22,5 @@ import (
 
 // Roster prints out the master roster file
 func Roster() ([]byte, error) {
-	return config.Cfg.Cluster.Salt.Roster.ToByte()
+	return config.Cfg.SaltInfo.Salt.Roster.ToByte()
 }

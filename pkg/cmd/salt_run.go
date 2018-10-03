@@ -17,8 +17,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/galexrt/k8sglue/pkg/salt"
 	"github.com/spf13/cobra"
 )
@@ -28,11 +26,9 @@ var saltRunCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Run everything needed for the salt-master(s) to be ready.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("salt run called")
 		if err := bootstrapCommand(cmd, true); err != nil {
 			return err
 		}
-
 		return salt.Run()
 	},
 }

@@ -29,12 +29,11 @@ var saltSyncCmd = &cobra.Command{
 	Use:   "sync",
 	Short: "Sync current (given) `salt` directory to all salt-master(s).",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("salt sync called")
 		if err := bootstrapCommand(cmd, true); err != nil {
 			return err
 		}
 
-		masters := config.Cfg.Cluster.Salt.Roster.GetEntriesByRole("salt_master").GetNames()
+		masters := config.Cfg.SaltInfo.Salt.Roster.GetEntriesByRole("salt_master").GetNames()
 		if len(masters) == 0 {
 			return fmt.Errorf("no nodes with role salt-master found")
 		}

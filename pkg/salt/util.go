@@ -174,7 +174,7 @@ func PrepareSaltSSH() error {
 		}
 	}
 
-	saltMasterRosterDefaults, err := config.Cfg.Cluster.Salt.DefaultRosterData.ToByte()
+	saltMasterRosterDefaults, err := config.Cfg.SaltInfo.Salt.DefaultRosterData.ToByte()
 	if err != nil {
 		return err
 	}
@@ -194,7 +194,7 @@ func PrepareSaltSSH() error {
 	}
 
 	masterAddresses := ""
-	for _, machine := range config.Cfg.Cluster.Salt.Roster.GetEntriesByRole("salt_master").GetNames() {
+	for _, machine := range config.Cfg.SaltInfo.Salt.Roster.GetEntriesByRole("salt_master").GetNames() {
 		masterAddresses += fmt.Sprintf("- %s\n", machine)
 	}
 
@@ -205,14 +205,18 @@ func PrepareSaltSSH() error {
 		return err
 	}
 	if err = ioutil.WriteFile(
-		path.Join(config.Cfg.TempDir, "data", "salt_master_addresses.yaml"),
+		path.Join(config.Cfg.TempDir, "data/salt_master_addresses.yaml"),
 		[]byte(rendered),
 		0640,
 	); err != nil {
 		return err
 	}
 
-	if err = util.Symlink(path.Join(config.Cfg.TempDir, "data", "salt_master_addresses.yaml"), path.Join(config.Cfg.TempDir, "pillar", "salt_master_addresses.yaml")); err != nil {
+	if err = util.Symlink(path.Join(config.Cfg.TempDir, "data/salt_master_addresses.yaml"), path.Join(config.Cfg.TempDir, "pillar/salt_master_addresses.yaml")); err != nil {
+		return err
+	}
+
+	if err = util.Symlink(path.Join(config.Cfg.TempDir, "data/cluster_config.yaml"), path.Join(config.Cfg.TempDir, "pillar/cluster_config.yaml")); err != nil {
 		return err
 	}
 
@@ -220,11 +224,11 @@ func PrepareSaltSSH() error {
 		return err
 	}
 
-	if err = util.Symlink(path.Clean(config.Cfg.Cluster.SSHKey), path.Join(config.Cfg.TempDir, "data/ssh_id_rsa")); err != nil {
+	if err = util.Symlink(path.Clean(config.Cfg.SaltInfo.SSHKey), path.Join(config.Cfg.TempDir, "data/ssh_id_rsa")); err != nil {
 		return err
 	}
 
-	if err := util.Symlink(path.Join(config.Cfg.SaltDir), path.Join(config.Cfg.TempDir, "data", "k8sglue-salt")); err != nil {
+	if err := util.Symlink(path.Join(config.Cfg.SaltDir), path.Join(config.Cfg.TempDir, "data/k8sglue-salt")); err != nil {
 		return err
 	}
 

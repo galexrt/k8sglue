@@ -16,22 +16,17 @@ limitations under the License.
 
 package models
 
-import (
-	saltmodels "github.com/galexrt/k8sglue/pkg/salt/models"
-)
-
-// Cluster holds special cluster information.
-type Cluster struct {
-	ClusterConfig ClusterConfig `yaml:"clusterConfig"`
-	Kubernetes    Kubernetes    `yaml:"kubernetes"`
-	Salt          Salt          `yaml:"salt,omitempty"`
-	SSHKey        string        `yaml:"sshKey"`
+// ClusterConfig holds the config for salt.
+type ClusterConfig struct {
+	ContainerRuntime string     `yaml:"containerRuntime"`
+	Network          Network    `yaml:"network"`
+	Kubernetes       Kubernetes `yaml:"kubernetes"`
 }
 
-// ClusterConfig holds the config file which will be used for the actual salt state applies.
-type ClusterConfig struct {
-	ContainerRuntime string   `yaml:"containerRuntime"`
-	Nameservers      []string `yaml:"nameservers"`
+// Network hold network related config for salt.
+type Network struct {
+	Nameservers        []string `yaml:"nameservers"`
+	PreferredIPVersion int      `yaml:"preferred_ipversion"`
 }
 
 // Kubernetes holds all Kubernetes and kubeadm related settings.
@@ -42,11 +37,4 @@ type Kubernetes struct {
 // Kubeadm contains kubeadm configurations which will be used for the cluster.
 type Kubeadm struct {
 	// TODO Add kubeadm settings, which is used on every node (Kubernetes master and worker)
-}
-
-// Salt holds all required information for cluster setup.
-type Salt struct {
-	DefaultRosterDataAsBase bool                  `yaml:"defaultRosterDataAsBase"`
-	DefaultRosterData       saltmodels.RosterData `yaml:"defaultRosterData"`
-	Roster                  *saltmodels.Roster    `yaml:"roster"`
 }

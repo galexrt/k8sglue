@@ -24,6 +24,5 @@ func Ping(machines []string) error {
 		generateTargetFlags(machines)...,
 	)
 	args = append(args, "test.ping")
-
 	return executor.ExecOutToLog("salt-ssh test.ping", SaltSSHCommand, args)
 }
