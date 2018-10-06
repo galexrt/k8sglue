@@ -4,7 +4,6 @@ base:
   '*':
     - common
     - sysctl
-    - system-maintenance
     - wireguard
 {%- if roles is none or "salt_master" not in roles %}
     - salt-minion
