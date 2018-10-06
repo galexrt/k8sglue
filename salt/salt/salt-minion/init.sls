@@ -1,3 +1,10 @@
+salt-minion python additional feature dependencies:
+  pkg.latest:
+    - pkgs:
+      - python-croniter
+      - python-dateutil
+    - refresh: true
+
 install salt-minion package:
   pkg.latest:
     - name: salt-minion
@@ -20,6 +27,7 @@ start salt-minion:
     - name: salt-minion
     - require:
       - pkg: salt-minion
+      - pkg: 'salt-minion python additional feature dependencies'
     - watch:
       - file: 'configure salt-minion'
     - enable: true

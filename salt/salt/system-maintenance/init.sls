@@ -1,8 +1,13 @@
-{%- set available_pkgs_upgrades = salt['pkg.list_upgrades']()|length %}
-{%- if available_pkgs_upgrades > 0 %}
-send custom/node/updates-available event:
-  event.send:
-    - name: custom/node/updates-available
-    - data:
-        count: {{ available_pkgs_upgrades }}
-{%- endif %}
+'schedule 12-hourly update check':
+  schedule.present:
+    - enabled: true
+    - persist: true
+    - maxrunning: 1
+    - function: state.sls
+    - job_args:
+      - system-maintenance.update_check
+    - hours: 12
+    - splay: 300
+    - skip_during_range:
+        - start: 10pm
+        - end: 6am

@@ -3,6 +3,7 @@
 base:
   '*':
     - common
+    - system-mainteance
     - sysctl
     - wireguard
 {%- if roles is none or "salt_master" not in roles %}
