@@ -9,5 +9,5 @@ send kubeadm token created event:
     - require:
       - service: kubelet
     - data:
-        token: '{{ salt['cmd.script']('salt://kubeadm/templates/scripts/kubeadm-token.sh', template='jinja')['stdout'] }}'
+        token: '{{ salt['cmd.script']('salt://kubeadm/templates/scripts/kubeadm-token.j2', template='jinja')['stdout'] }}'
         minion_to_join: '{{ minion_to_join }}'

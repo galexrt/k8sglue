@@ -1,11 +1,50 @@
-clusterConfig:
-  containerRuntime: "crio"
-  network:
-    preferred_ipversion: 6
-    nameservers:
-      - 1.1.1.1
-      - 8.8.8.8
-      - 1.0.0.1
-      - 8.4.4.8
-  kubernetes:
-    kubeadm:
+version: '0'
+containerRuntime: "crio"
+network:
+  preferredIPVersion: 6
+  nameservers:
+    - 1.1.1.1
+    - 8.8.8.8
+    - 1.0.0.1
+    - 8.4.4.8
+kubernetes:
+  kubeadm:
+    token:
+      ttl: "10m"
+    config:
+      clusterConfiguration:
+        apiVersion: kubeadm.k8s.io/v1alpha3
+        auditPolicy:
+          logDir: /var/log/kubernetes/audit
+          logMaxAge: 2
+          path: ""
+        certificatesDir: /etc/kubernetes/pki
+        clusterName: kubernetes
+        controlPlaneEndpoint: "127.0.0.1:16443"
+        etcd:
+          local:
+            extraArgs:
+              listen-client-urls: "https://127.0.0.1:2379,https://CP0_IP:2379"
+              advertise-client-urls: "https://CP0_IP:2379"
+              listen-peer-urls: "https://CP0_IP:2380"
+              initial-advertise-peer-urls: "https://CP0_IP:2380"
+              initial-cluster: "CP0_HOSTNAME=https://CP0_IP:2380"
+            serverCertSANs:
+              - CP0_HOSTNAME
+              - CP0_IP
+            peerCertSANs:
+              - CP0_HOSTNAME
+              - CP0_IP
+            dataDir: /var/lib/etcd
+            image: ""
+        imageRepository: k8s.gcr.io
+        kind: ClusterConfiguration
+        kubernetesVersion: v1.12.1
+        networking:
+          dnsDomain: cluster.local
+          podSubnet: ""
+          serviceSubnet: 10.96.0.0/12
+        unifiedControlPlaneImage: ""
+        apiServerCertSANs:
+        - "127.0.0.1"
+        - "localhost"

@@ -21,15 +21,28 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-// LoadSalt load a cluster config
+// LoadSalt load a salt config
 func LoadSalt(configPath string) (*models.SaltInfo, error) {
 	out, err := loadYAML(configPath)
 	if err != nil {
 		return nil, err
 	}
 	saltCfg := &models.SaltInfo{}
-	if err := yaml.Unmarshal(out, saltCfg); err != nil {
+	if err = yaml.Unmarshal(out, saltCfg); err != nil {
 		return nil, err
 	}
 	return saltCfg, nil
+}
+
+// LoadClusterConfig load a cluster config
+func LoadClusterConfig(configPath string) (*models.ClusterConfig, error) {
+	out, err := loadYAML(configPath)
+	if err != nil {
+		return nil, err
+	}
+	clusterConfig := &models.ClusterConfig{}
+	if err = yaml.Unmarshal(out, clusterConfig); err != nil {
+		return nil, err
+	}
+	return clusterConfig, nil
 }

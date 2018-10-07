@@ -5,7 +5,7 @@ include:
 
 kubeadm join:
   cmd.script:
-    - source: salt://kubeadm/templates/scripts/kubeadm-join.sh
+    - source: salt://kubeadm/templates/scripts/kubeadm-join.j2
     - template: jinja
     - env:
       - KUBEADM_JOIN_TOKEN: '{{ salt['pillar.get']('token') }}'

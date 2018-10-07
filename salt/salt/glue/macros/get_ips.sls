@@ -1,5 +1,9 @@
+# get_ips(tgt, tgt_type string, out_type string)
+#     tgt (string):
+#     tgt_type (string):
+#     out_type (string): yaml, string:comma, string:space
 {% macro get_ips(tgt, tgt_type, out_type) -%}
-    {%- if salt['pillar.get']('cluster_config:network:preferred_ipversion', 4) == 4 -%}
+    {%- if salt['pillar.get']('clusterConfig:network:preferredIPVersion', 4) == 4 -%}
         {%- set raw_addresses = salt['mine.get'](tgt, 'ipv4_addresses', tgt_type=tgt_type) %}
     {%- else -%}
         {%- set raw_addresses = salt['mine.get'](tgt, 'ipv6_addresses', tgt_type=tgt_type) %}

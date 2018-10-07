@@ -32,6 +32,7 @@ import (
 // Config holds all the configs and a cluster if loaded
 type Config struct {
 	SaltInfo         *models.SaltInfo
+	ClusterConfig    *models.ClusterConfig
 	LogLevel         capnslog.LogLevel
 	StartDir         string
 	SaltDir          string
@@ -71,8 +72,13 @@ func Init(appName string) error {
 
 // Load load cluster config into Cfg variable
 func Load(configPath string) error {
-	saltConfigFile := path.Join(configPath, "salt.yaml")
-	saltCfg, err := LoadSalt(saltConfigFile)
+	var err error
+	Cfg.ClusterConfigDir, err = filepath.Abs(configPath)
+	if err != nil {
+		return err
+	}
+
+	saltCfg, err := LoadSalt(path.Join(configPath, "salt.yaml"))
 	if err != nil {
 		return err
 	}
@@ -88,7 +94,13 @@ func Load(configPath string) error {
 		return fmt.Errorf("no sshKey given in salt.yaml")
 	}
 
-	Cfg.ClusterConfigDir, err = filepath.Abs(configPath)
+	clusterConfig, err := LoadClusterConfig(path.Join(configPath, "cluster_config.yaml"))
+	if err != nil {
+		return err
+	}
+
+	Cfg.ClusterConfig = clusterConfig
+
 	return err
 }
 

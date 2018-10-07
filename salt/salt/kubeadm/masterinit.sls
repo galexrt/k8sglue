@@ -4,7 +4,7 @@ include:
 
 kubeadm init:
   cmd.script:
-    - source: salt://kubeadm/templates/scripts/kubeadm-init.sh
+    - source: salt://kubeadm/templates/scripts/kubeadm-init.j2
     - template: jinja
     - creates: /etc/kubernetes/pki/ca.crt
     - require:

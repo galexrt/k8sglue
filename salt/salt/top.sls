@@ -1,5 +1,5 @@
 {%- set roles = salt['grains.get']('roles') %}
-{%- set containerRuntime = salt['pillar.get']('cluster_config:containerRuntime', "crio") -%}
+{%- set containerRuntime = salt['pillar.get']('clusterConfig:containerRuntime', "crio") -%}
 base:
   '*':
     - common

@@ -1,6 +1,5 @@
 {%- from 'glue/macros/get_ips.sls' import get_ips with context %}
 {%- set kubernetes_master_ips = get_ips('roles:kubernetes_master', 'grain', 'string:space') %}
-
 include:
 - docker
 

@@ -16,6 +16,12 @@ limitations under the License.
 
 package models
 
+import (
+	"time"
+
+	kubeadmapi "k8s.io/kubernetes/cmd/kubeadm/app/apis/kubeadm"
+)
+
 // ClusterConfig holds the config for salt.
 type ClusterConfig struct {
 	ContainerRuntime string     `yaml:"containerRuntime"`
@@ -26,7 +32,7 @@ type ClusterConfig struct {
 // Network hold network related config for salt.
 type Network struct {
 	Nameservers        []string `yaml:"nameservers"`
-	PreferredIPVersion int      `yaml:"preferred_ipversion"`
+	PreferredIPVersion int      `yaml:"preferredIPVersion"`
 }
 
 // Kubernetes holds all Kubernetes and kubeadm related settings.
@@ -37,4 +43,15 @@ type Kubernetes struct {
 // Kubeadm contains kubeadm configurations which will be used for the cluster.
 type Kubeadm struct {
 	// TODO Add kubeadm settings, which is used on every node (Kubernetes master and worker)
+	Token  Token  `yaml:"token"`
+	Config Config `yaml:"config"`
+}
+
+// Token contains config for kubeadm tokens
+type Token struct {
+	TTL time.Duration `yaml:"ttl"`
+}
+
+type Config struct {
+	ClusterConfiguration kubeadmapi.ClusterConfiguration
 }

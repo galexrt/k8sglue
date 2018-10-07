@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+set -o pipefail
+
+kubeadm token create --kubeconfig /etc/kubernetes/admin.conf --ttl {{ salt['pillar.get']('clusterConfig:kubernetes:kubeadm:token:ttl', '10m') }}
