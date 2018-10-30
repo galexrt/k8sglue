@@ -30,6 +30,9 @@ common:
     kernel.pid_max: 4194303
     kernel.sched_autogroup_enabled: 0
     net.core.somaxconn: 4096
+    net.core.default_qdisc: fq
+    net.ipv4.tcp_congestion_control: bbr
+    net.ipv4.tcp_notsent_lowat: 16384
     net.nf_conntrack_max: 1024000
     net.netfilter.nf_conntrack_expect_max: 1024
     net.netfilter.nf_conntrack_max: 1024000
